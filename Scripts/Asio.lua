@@ -6,19 +6,21 @@ project "Asio"
 
 	characterset ("MBCS")
 
+asioSrcDir = "../Vendor/Asio/"
+
 	targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files 
 	{
-		"../vendor/Asio/include/**.h",
-		"../vendor/Asio/**.cpp"
+		asioSrcDir .. "**.h",
+		asioSrcDir .. "**.cpp"
 	}
 
 	includedirs
 	{
-		"../vendor/Asio",
-		"../vendor/Asio/include"
+		asioSrcDir,
+		asioSrcDir .. "Include"
 	}
 
 	filter "system:windows"

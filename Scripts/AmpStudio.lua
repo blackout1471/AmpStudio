@@ -3,6 +3,8 @@ workspace "AmpStudio"
 	architecture "x86_64"
 	startproject "AmpStudio"
 
+	characterset ("MBCS")
+
 	configurations
 	{
 		"Debug",
@@ -20,7 +22,7 @@ srcDir = "../Source/AmpStudio/"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["Asio"] = "../vendor/Asio/include"
+IncludeDir["Asio"] = "../Vendor/Asio/Include"
 
 group "Dependencies"
 	include "Asio.lua"
@@ -48,7 +50,7 @@ project "AmpStudio"
 	includedirs
 	{
 		srcDir,
-		"%{IncludeDir.Asio}",
+		"%{IncludeDir.Asio}"
 	}
 	
 	links
