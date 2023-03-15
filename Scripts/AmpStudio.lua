@@ -32,6 +32,8 @@ group "Demos"
 	include "Sandbox.lua"
 group ""
 
+include "AmpProcessing.lua"
+
 project "AmpStudio"
 	location(srcDir)
 	kind "ConsoleApp"
