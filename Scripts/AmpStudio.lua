@@ -28,6 +28,10 @@ group "Dependencies"
 	include "Asio.lua"
 group ""
 
+group "Demos"
+	include "Sandbox.lua"
+group ""
+
 project "AmpStudio"
 	location(srcDir)
 	kind "ConsoleApp"
