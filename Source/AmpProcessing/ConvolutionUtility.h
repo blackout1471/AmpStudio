@@ -1,6 +1,6 @@
 #include <vector>
 class ConvolutionUtility {
-
+public:
     inline static std::vector<float> Convolution(const std::vector<float>& buffer, const std::vector<float>& ir) {
         int buffer_size = buffer.size();
         int ir_size = ir.size();

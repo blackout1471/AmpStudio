@@ -21,6 +21,7 @@ project "UnitTest"
 	includedirs
 	{
 		UnitDir,
+		"../Source/AmpProcessing/",
 		"%{IncludeDir.GTest}",
 		"%{IncludeDir.GTest}" .. "include/"
 	}
