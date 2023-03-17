@@ -1,7 +1,7 @@
 processDir = "../Source/AmpProcessing/"
 
 project "AmpProcessing"
-	location(srcDir)
+	location(processDir)
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"

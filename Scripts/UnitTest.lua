@@ -1,7 +1,7 @@
-sandboxDir = "../Source/Sandbox/"
+UnitDir = "../Source/UnitTest/"
 
-project "Sandbox"
-	location(sandboxDir)
+project "UnitTest"
+	location(UnitDir)
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -12,19 +12,22 @@ project "Sandbox"
 
 	files
 	{
-		sandboxDir .. "**.h",
-		sandboxDir .. "**.cpp"
+		UnitDir .. "**.h",
+		UnitDir .. "**.cpp",
+		"%{IncludeDir.GTest}" .. "**.h",
+		"%{IncludeDir.GTest}" .. "src/gtest-all.cc"
 	}
 
 	includedirs
 	{
-		sandboxDir,
-		"%{IncludeDir.Asio}"
+		UnitDir,
+		"%{IncludeDir.GTest}",
+		"%{IncludeDir.GTest}" .. "include/"
 	}
 	
 	links
 	{
-		"Asio"
+		"AmpStudio"
 	}
 
 	filter "system:windows"
