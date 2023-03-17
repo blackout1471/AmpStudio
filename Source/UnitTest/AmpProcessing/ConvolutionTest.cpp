@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <ConvolutionUtility.h>
 
+using namespace Convolution;
+
 namespace UnitTest {
 	TEST(ConvolutionShould, GiveBackExpectedVector_When_Invoked) {
         // Arrange
