@@ -28,5 +28,34 @@ namespace Convolution {
 
             return output;
         }
+
+        inline static void ProcessBuffer(const std::vector<float>& input_block, const std::vector<float>& filter_kernel,
+            std::vector<float>& output_block, std::vector<float>& overlap) {
+
+            int block_size = input_block.size();
+            int ir_size = filter_kernel.size();
+
+            // Pad the input block and overlap with the previous block
+            std::vector<float> padded_block(block_size + ir_size - 1);
+            for (int i = 0; i < block_size; i++) {
+                padded_block[i] = input_block[i];
+            }
+            for (int i = 0; i < ir_size - 1; i++) {
+                padded_block[block_size + i] = overlap[i];
+            }
+
+            // Apply the convolution operation to the padded block
+            std::vector<float> padded_output_block = ConvolutionUtility::Convolution(padded_block, filter_kernel);
+
+            // Overlap and add with the previous block's output
+            for (int i = 0; i < block_size; i++) {
+                output_block[i] = padded_output_block[i] + overlap[i];
+            }
+
+            // Update the overlap buffer
+            for (int i = 0; i < ir_size - 1; i++) {
+                overlap[i] = padded_output_block[block_size + i];
+            }
+        }
     };
 }
