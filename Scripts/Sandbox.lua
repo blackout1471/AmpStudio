@@ -19,6 +19,7 @@ project "Sandbox"
 	includedirs
 	{
 		sandboxDir,
+		processDir,
 		"%{IncludeDir.Asio}"
 	}
 	

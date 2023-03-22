@@ -24,6 +24,9 @@ srcDir = "../Source/AmpStudio/"
 IncludeDir = {}
 IncludeDir["Asio"] = "../Vendor/Asio/Include"
 IncludeDir["GTest"] = "../Vendor/googletest/googletest/"
+IncludeDir["SPDLOG"] = "../Vendor/spdlog/include"
+
+include "AmpProcessing.lua"
 
 group "Dependencies"
 	include "Asio.lua"
@@ -36,8 +39,6 @@ group ""
 group "Test"
 	include "UnitTest.lua"
 group ""
-
-include "AmpProcessing.lua"
 
 project "AmpStudio"
 	location(srcDir)
@@ -61,7 +62,8 @@ project "AmpStudio"
 	includedirs
 	{
 		srcDir,
-		"%{IncludeDir.Asio}"
+		"%{IncludeDir.Asio}",
+		"%{IncludeDir.SPDLOG}"
 	}
 	
 	links

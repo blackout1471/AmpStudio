@@ -17,11 +17,14 @@ project "AmpProcessing"
 
 	includedirs
 	{
-		processDir
+		processDir,
+		"%{IncludeDir.Asio}",
+		"%{IncludeDir.SPDLOG}"
 	}
 	
 	links
 	{
+		"Asio"
 	}
 
 	filter "system:windows"

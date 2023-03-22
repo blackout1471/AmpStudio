@@ -1,5 +1,7 @@
 #include "AudioFile.h"
-#include "../AmpProcessing/ConvolutionUtility.h"
+#include <Utility/ConvolutionUtility.h>
+
+using namespace AmpProcessing;
 
 static std::vector<float> get_next_input_block(std::vector<float>& input, std::vector<float>::iterator& startPosition, uint32_t blocksize) {
     auto endPosition = startPosition + blocksize;

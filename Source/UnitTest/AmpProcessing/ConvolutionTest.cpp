@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <ConvolutionUtility.h>
+#include <Utility/ConvolutionUtility.h>
 
-using namespace Convolution;
+using namespace AmpProcessing::Convolution;
 
 namespace UnitTest {
 	TEST(ConvolutionShould, GiveBackExpectedVector_When_Invoked) {
