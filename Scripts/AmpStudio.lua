@@ -3,8 +3,6 @@ workspace "AmpStudio"
 	architecture "x86_64"
 	startproject "AmpStudio"
 
-	characterset ("MBCS")
-
 	configurations
 	{
 		"Debug",
@@ -25,6 +23,7 @@ IncludeDir = {}
 IncludeDir["Asio"] = "../Vendor/Asio/Include"
 IncludeDir["GTest"] = "../Vendor/googletest/googletest/"
 IncludeDir["SPDLOG"] = "../Vendor/spdlog/include"
+IncludeDir["Process"] = "../Source/AmpProcessing/"
 
 include "AmpProcessing.lua"
 
@@ -63,12 +62,14 @@ project "AmpStudio"
 	{
 		srcDir,
 		"%{IncludeDir.Asio}",
-		"%{IncludeDir.SPDLOG}"
+		"%{IncludeDir.SPDLOG}",
+		"%{IncludeDir.Process}"
 	}
 	
 	links
 	{
-		"Asio"
+		"Asio",
+		"AmpProcessing"
 	}
 
 	filter "system:windows"
