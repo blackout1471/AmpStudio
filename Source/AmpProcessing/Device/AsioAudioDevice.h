@@ -24,6 +24,7 @@ namespace AmpProcessing {
 			bool LoadDriver(const std::string& driverName);
 			bool LoadDeviceDetails();
 			bool SetupBuffers();
+			bool LoadChannelInformation();
 			bool SetupDeviceCallbacks();
 
 			long OnAsioMessage(long selector, long value, void* message, double* opt);
@@ -35,6 +36,7 @@ namespace AmpProcessing {
 			AsioDrivers m_AsioDriver;
 			ASIODriverInfo m_DriverInformation;
 			AudioDeviceDetails m_DeviceDetails;
+			ASIOChannelInfo* m_Channels;
 			ASIOBufferInfo* m_Buffers;
 			ASIOCallbacks m_Callbacks;
 

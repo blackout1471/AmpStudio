@@ -1,5 +1,7 @@
 #include "AsioAudioDevice.h"
 #include "Logging/Logger.h"
+#include "Utility/MESA.h"
+#include "Utility/ConvolutionUtility.h"
 
 namespace AmpProcessing {
 	namespace Device {
@@ -29,7 +31,10 @@ namespace AmpProcessing {
 			LOG_ASSERT(SetupDeviceCallbacks(), "Could not setup callbacks for device");
 
 			LOG_ASSERT(ASIOStart() == 0, "Could not start asio");
-			return false;
+
+			LOG_ASSERT(LoadChannelInformation(), "Could not get channel information");
+
+			return true;
 		}
 
 		bool AsioAudioDevice::Close()
@@ -128,6 +133,24 @@ namespace AmpProcessing {
 			return true;
 		}
 
+		bool AsioAudioDevice::LoadChannelInformation()
+		{
+			long totalChannels = m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels;
+			m_Channels = new ASIOChannelInfo[totalChannels];
+
+			for (int i = 0; i < totalChannels; i++)
+			{
+				m_Channels[i].channel = m_Buffers[i].channelNum;
+				m_Channels[i].isInput = m_Buffers[i].isInput;
+				int result = ASIOGetChannelInfo(&m_Channels[i]);
+				LOG_ASSERT(result == 0, "Could not get channel information for channel {}", i);
+				if (result != ASE_OK)
+					return false;
+			}
+
+			return true;
+		}
+
 		bool AsioAudioDevice::SetupDeviceCallbacks()
 		{
 			s_CurrentContext = this;
@@ -191,33 +214,51 @@ namespace AmpProcessing {
 					outputIndexes.push_back(i);
 			}
 
-			for (size_t i = 0; i < inputIndexes.size(); i++)
+			/*for (size_t k = 0; k < outputIndexes.size(); k++)
 			{
-				for (size_t k = 0; k < outputIndexes.size(); k++)
+				int* outBuf = (int*)m_Buffers[outputIndexes[k]].buffers[doubleBufferIndex];
+
+				for (size_t t = 0; t < m_DeviceDetails.prefferedBufferSize; t++)
 				{
-					int* outBuf = (int*)m_Buffers[outputIndexes[k]].buffers[doubleBufferIndex];
+					if (s_CurrentSampleTime >= 1000000.f)
+						s_CurrentSampleTime = 0;
 
-					for (size_t t = 0; t < m_DeviceDetails.prefferedBufferSize; t++)
-					{
-						if (s_CurrentSampleTime >= 1000000.f)
-							s_CurrentSampleTime = 0;
+					constexpr float double_pi = 2 * 3.14159265358979323846;
+					float delta_time = 1.f / m_DeviceDetails.sampleRate;
+					constexpr int frequenzy = 100;
 
-						constexpr float double_pi = 2 * 3.14159265358979323846;
-						float delta_time = 1.f / m_DeviceDetails.sampleRate;
-						constexpr int frequenzy = 100;
+					auto sin = std::sin(double_pi * frequenzy * s_CurrentSampleTime);
 
-						auto sin = std::sin(double_pi * frequenzy * s_CurrentSampleTime);
+					*outBuf = static_cast<int32_t>(sin * 2147483648.0f);
+					outBuf++;
 
-						*outBuf = static_cast<int16_t>(sin * 32768.0f);
-						outBuf++;
-
-						s_CurrentSampleTime += delta_time;
-					}
-
-					break;
+					s_CurrentSampleTime += delta_time;
 				}
+			}*/
 
-				break;
+			auto* input = (int*)m_Buffers[inputIndexes.front()].buffers[doubleBufferIndex];
+
+			//auto vector_input = std::vector<float>(m_DeviceDetails.prefferedBufferSize);
+
+			/*for (size_t i = 0; i < m_DeviceDetails.prefferedBufferSize; i++)
+			{
+				auto val = static_cast<float>(input[i] / 2147483648.0f);
+				vector_input.push_back(val);
+			}*/
+
+			for (size_t i = 0; i < outputIndexes.size(); i++)
+			{
+
+				auto type = m_Channels[i].type;
+
+				int* outBuf = (int*)m_Buffers[outputIndexes[i]].buffers[doubleBufferIndex];
+				
+				for (size_t k = 0; k < m_DeviceDetails.prefferedBufferSize * 4; k++)
+				{
+					//outBuf[k] = static_cast<int32_t>(vector_input[i] * 2147483648.0f);
+					*outBuf = input[k];
+					outBuf++;
+				}
 			}
 
 			return nullptr;
