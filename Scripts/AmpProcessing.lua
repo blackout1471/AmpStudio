@@ -29,6 +29,7 @@ project "AmpProcessing"
 
 	filter "system:windows"
 		systemversion "latest"
+		staticruntime "On"
 		
 	filter "configurations:Debug"
 		defines "_DEBUG"

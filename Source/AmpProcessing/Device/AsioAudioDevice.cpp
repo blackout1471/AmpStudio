@@ -196,69 +196,52 @@ namespace AmpProcessing {
 			OnAsioBufferSwitchTimeInfo(&timeInfo, doubleBufferIndex, process);
 		}
 
-		float s_CurrentSampleTime = 0;
-
 		ASIOTime* AsioAudioDevice::OnAsioBufferSwitchTimeInfo(ASIOTime* params, long doubleBufferIndex, ASIOBool& directProcess)
 		{
 			auto buffersCount = m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels;
-			auto inputIndexes = std::vector<int>(m_DeviceDetails.inputChannels);
-			auto outputIndexes = std::vector<int>(m_DeviceDetails.outputChannels);
+			auto buffersize = m_DeviceDetails.prefferedBufferSize * 4;
 
 			// TODO: support double buffers etc...
 
 			for (size_t i = 0; i < buffersCount; i++)
 			{
-				if (m_Buffers[i].isInput)
-					inputIndexes.push_back(i);
-				else
-					outputIndexes.push_back(i);
+				if (!m_Buffers[i].isInput)
+					continue;
+
+				auto* asio_input_buffer = (int*)m_Buffers[i].buffers[doubleBufferIndex];
+
+				std::vector<float> inputBuffer = std::vector<float>(buffersize);
+				std::transform(asio_input_buffer, asio_input_buffer + buffersize, inputBuffer.begin(),
+					[](int val) { return static_cast<float>(val / 2147483648.0f); });
+
+				if (!m_OnInputReady)
+					return nullptr;
+
+				m_OnInputReady(inputBuffer);
+
+				break;
 			}
 
-			/*for (size_t k = 0; k < outputIndexes.size(); k++)
+			for (size_t i = 0; i < buffersCount; i++)
 			{
-				int* outBuf = (int*)m_Buffers[outputIndexes[k]].buffers[doubleBufferIndex];
+				if (m_Buffers[i].isInput)
+					continue;
 
-				for (size_t t = 0; t < m_DeviceDetails.prefferedBufferSize; t++)
+				if (!m_OnOutput)
+					return nullptr;
+
+				auto output_buffer = m_OnOutput();
+				if (output_buffer.size() == 0)
+					break;
+
+				int* bufferOut = (int*)m_Buffers[i].buffers[doubleBufferIndex];
+
+				for (size_t i = 0; i < buffersize; i++)
 				{
-					if (s_CurrentSampleTime >= 1000000.f)
-						s_CurrentSampleTime = 0;
-
-					constexpr float double_pi = 2 * 3.14159265358979323846;
-					float delta_time = 1.f / m_DeviceDetails.sampleRate;
-					constexpr int frequenzy = 100;
-
-					auto sin = std::sin(double_pi * frequenzy * s_CurrentSampleTime);
-
-					*outBuf = static_cast<int32_t>(sin * 2147483648.0f);
-					outBuf++;
-
-					s_CurrentSampleTime += delta_time;
+					bufferOut[i] = static_cast<int32_t>(output_buffer[i] * 2147483648.0f);
 				}
-			}*/
 
-			auto* input = (int*)m_Buffers[inputIndexes.front()].buffers[doubleBufferIndex];
-
-			//auto vector_input = std::vector<float>(m_DeviceDetails.prefferedBufferSize);
-
-			/*for (size_t i = 0; i < m_DeviceDetails.prefferedBufferSize; i++)
-			{
-				auto val = static_cast<float>(input[i] / 2147483648.0f);
-				vector_input.push_back(val);
-			}*/
-
-			for (size_t i = 0; i < outputIndexes.size(); i++)
-			{
-
-				auto type = m_Channels[i].type;
-
-				int* outBuf = (int*)m_Buffers[outputIndexes[i]].buffers[doubleBufferIndex];
-				
-				for (size_t k = 0; k < m_DeviceDetails.prefferedBufferSize * 4; k++)
-				{
-					//outBuf[k] = static_cast<int32_t>(vector_input[i] * 2147483648.0f);
-					*outBuf = input[k];
-					outBuf++;
-				}
+				break;
 			}
 
 			return nullptr;
