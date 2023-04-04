@@ -38,17 +38,26 @@ namespace AmpProcessing {
                 std::vector<float> output(buffer_size + ir_size - 1);
                 size_t num_segments = std::ceil(static_cast<float>(buffer_size) / segment_size);
 
+                std::vector<std::future<void>> futures(num_segments);
+
                 for (size_t n = 0; n < num_segments; ++n) {
 
                     size_t segment_start = n * segment_size;
                     size_t segment_end = std::min<size_t>(segment_start + segment_size, buffer_size);
 
-                    std::vector<float> segment_buffer(buffer.begin() + segment_start, buffer.begin() + segment_end);
-                    std::vector<float> convolved_segment = Convolution(segment_buffer, ir);
+                    futures[n] = std::async(std::launch::async, [&, segment_start, segment_end]() {
+                    
+                        std::vector<float> segment_buffer(buffer.begin() + segment_start, buffer.begin() + segment_end);
+                        std::vector<float> convolved_segment = Convolution(segment_buffer, ir);
 
-                    for (size_t i = 0; i < convolved_segment.size(); ++i) {
-                        output[segment_start + i] += convolved_segment[i];
-                    }
+                        for (size_t i = 0; i < convolved_segment.size(); ++i) {
+                            output[segment_start + i] += convolved_segment[i];
+                        }
+                    });
+                }
+
+                for (auto& future : futures) {
+                    future.wait();
                 }
 
                 return output;

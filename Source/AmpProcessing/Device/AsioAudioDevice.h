@@ -42,8 +42,7 @@ namespace AmpProcessing {
 			ASIOCallbacks m_Callbacks;
 
 		public: // Todo: create function wrappers to assign
-			std::function<void(const std::vector<float>&)> m_OnInputReady;
-			std::function<std::vector<float>&()> m_OnOutput;
+			std::function<void(std::vector<float>&)> m_OnInputReady;
 
 		private:
 			static AsioAudioDevice* s_CurrentContext;

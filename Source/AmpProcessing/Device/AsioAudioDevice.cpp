@@ -229,10 +229,10 @@ namespace AmpProcessing {
 				std::transform(asio_input_buffer, asio_input_buffer + buffersize, input_vector.begin(),
 					[](int val) { return static_cast<float>(val / 2147483648.0f); });
 
-				/*if (!m_OnInputReady)
+				if (!m_OnInputReady)
 					return nullptr;
 
-				m_OnInputReady(inputBuffer);*/
+				m_OnInputReady(input_vector);
 
 				break;
 			}
@@ -242,15 +242,9 @@ namespace AmpProcessing {
 				if (m_Buffers[i].isInput)
 					continue;
 
-				/*if (!m_OnOutput)
-					return nullptr;
-
-				auto& output_buffer = m_OnOutput();
+				auto& output_buffer = input_vector;
 				if (output_buffer.size() == 0)
-					break;*/
-
-				auto output_buffer = Convolution::ConvolutionUtility::OverlapAddConvolution(input_vector, frames, 24);
-				//auto output_buffer = input_vector;
+					break;
 
 				int* bufferOut = (int*)m_Buffers[i].buffers[doubleBufferIndex];
 
