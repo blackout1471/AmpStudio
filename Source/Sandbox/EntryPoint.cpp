@@ -3,6 +3,7 @@
 #include <Device/AsioAudioDevice.h>
 #include <Logging/Logger.h>
 #include <queue>
+#include <Utility/MESA.h>
 
 using namespace AmpProcessing;
 
@@ -72,7 +73,7 @@ void OnInputReady(const std::vector<float>& input)
 	inputBufferSamples.push(input);
 }
 
-std::vector<float> OnOutputReady() {
+std::vector<float>& OnOutputReady() {
 	if (bufferSamples.empty())
 		return std::vector<float>();
 
@@ -91,13 +92,15 @@ int main() {
 	device.Open(names.front());
 
 	while (true) {
-		while (!inputBufferSamples.empty()) {
+		Sleep(3000);
+		/*while (!inputBufferSamples.empty()) {
 
 			auto input = inputBufferSamples.front();
-			auto output = input;
+			auto output = Convolution::ConvolutionUtility::OverlapAddConvolution(input, frames, 1024);
+
 			bufferSamples.push(output);
 			inputBufferSamples.pop();
-		}
+		}*/
 	}
 
 	device.Close();

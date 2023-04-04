@@ -1,6 +1,6 @@
 #include <vector>
 #include <algorithm>
-#include <cmath>
+#include <future>
 
 namespace AmpProcessing {
     namespace Convolution {
@@ -39,6 +39,7 @@ namespace AmpProcessing {
                 size_t num_segments = std::ceil(static_cast<float>(buffer_size) / segment_size);
 
                 for (size_t n = 0; n < num_segments; ++n) {
+
                     size_t segment_start = n * segment_size;
                     size_t segment_end = std::min<size_t>(segment_start + segment_size, buffer_size);
 

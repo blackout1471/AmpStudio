@@ -161,6 +161,8 @@ namespace AmpProcessing {
 			return true;
 		}
 
+		static auto input_vector = std::vector<float>();
+
 		bool AsioAudioDevice::SetupDeviceCallbacks()
 		{
 			s_CurrentContext = this;
@@ -184,6 +186,8 @@ namespace AmpProcessing {
 			int code = ASIOCreateBuffers(m_Buffers, m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels, m_DeviceDetails.prefferedBufferSize, &m_Callbacks);
 			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not create buffers for device", code);
 
+			input_vector.resize(m_DeviceDetails.prefferedBufferSize * 4);
+
 			return code == 0;
 		}
 
@@ -206,6 +210,8 @@ namespace AmpProcessing {
 			OnAsioBufferSwitchTimeInfo(&timeInfo, doubleBufferIndex, process);
 		}
 
+		
+
 		ASIOTime* AsioAudioDevice::OnAsioBufferSwitchTimeInfo(ASIOTime* params, long doubleBufferIndex, ASIOBool& directProcess)
 		{
 			auto buffersCount = m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels;
@@ -220,14 +226,13 @@ namespace AmpProcessing {
 
 				auto* asio_input_buffer = (int*)m_Buffers[i].buffers[doubleBufferIndex];
 
-				std::vector<float> inputBuffer = std::vector<float>(buffersize);
-				std::transform(asio_input_buffer, asio_input_buffer + buffersize, inputBuffer.begin(),
+				std::transform(asio_input_buffer, asio_input_buffer + buffersize, input_vector.begin(),
 					[](int val) { return static_cast<float>(val / 2147483648.0f); });
 
-				if (!m_OnInputReady)
+				/*if (!m_OnInputReady)
 					return nullptr;
 
-				m_OnInputReady(inputBuffer);
+				m_OnInputReady(inputBuffer);*/
 
 				break;
 			}
@@ -237,12 +242,15 @@ namespace AmpProcessing {
 				if (m_Buffers[i].isInput)
 					continue;
 
-				if (!m_OnOutput)
+				/*if (!m_OnOutput)
 					return nullptr;
 
-				auto output_buffer = m_OnOutput();
+				auto& output_buffer = m_OnOutput();
 				if (output_buffer.size() == 0)
-					break;
+					break;*/
+
+				auto output_buffer = Convolution::ConvolutionUtility::OverlapAddConvolution(input_vector, frames, 24);
+				//auto output_buffer = input_vector;
 
 				int* bufferOut = (int*)m_Buffers[i].buffers[doubleBufferIndex];
 
