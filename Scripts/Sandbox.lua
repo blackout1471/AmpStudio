@@ -20,12 +20,14 @@ project "Sandbox"
 	{
 		sandboxDir,
 		processDir,
-		"%{IncludeDir.Asio}"
+		"%{IncludeDir.Asio}",
+		"%{IncludeDir.SPDLOG}"
 	}
 	
 	links
 	{
-		"Asio"
+		"Asio",
+		"AmpProcessing"
 	}
 
 	filter "system:windows"

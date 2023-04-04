@@ -1,6 +1,8 @@
 #include "AudioFile.h"
 #include <Utility/ConvolutionUtility.h>
-#include "MESA.h"
+#include <Device/AsioAudioDevice.h>
+#include <Logging/Logger.h>
+#include <queue>
 
 using namespace AmpProcessing;
 
@@ -59,7 +61,46 @@ static void Log(const std::string& message) {
 //    return 0;
 //}
 
-int main() {
+using namespace AmpProcessing::Device;
+using namespace AmpProcessing::Convolution;
 
-    return 0;
+static auto bufferSamples = std::queue<std::vector<float>>();
+static auto inputBufferSamples = std::queue<std::vector<float>>();
+
+void OnInputReady(const std::vector<float>& input) 
+{
+	inputBufferSamples.push(input);
+}
+
+std::vector<float> OnOutputReady() {
+	if (bufferSamples.empty())
+		return std::vector<float>();
+
+	auto val = bufferSamples.front();
+	bufferSamples.pop();
+	return val;
+}
+
+int main() {
+	
+	AmpProcessing::Logger::Logger::Get().Init();
+	auto device = AsioAudioDevice();
+	const auto& names = device.GetDeviceNames();
+	device.m_OnInputReady = OnInputReady;
+	device.m_OnOutput = OnOutputReady;
+	device.Open(names.front());
+
+	while (true) {
+		while (!inputBufferSamples.empty()) {
+
+			auto input = inputBufferSamples.front();
+			auto output = input;
+			bufferSamples.push(output);
+			inputBufferSamples.pop();
+		}
+	}
+
+	device.Close();
+
+	return 0;
 }
