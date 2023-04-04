@@ -10,12 +10,16 @@ namespace AmpProcessing {
 		// We have to store the object which should be used for function binding.
 		AsioAudioDevice* AsioAudioDevice::s_CurrentContext = nullptr;
 
-		AsioAudioDevice::AsioAudioDevice()
+		AsioAudioDevice::AsioAudioDevice() : m_Buffers(), m_Callbacks(), m_Channels(), m_DriverInformation()
 		{
 		}
 
 		AsioAudioDevice::~AsioAudioDevice()
 		{
+			Close();
+
+			delete m_Buffers;
+			delete m_Channels;
 		}
 
 		bool AsioAudioDevice::Open(const std::string& deviceName)
@@ -39,7 +43,13 @@ namespace AmpProcessing {
 
 		bool AsioAudioDevice::Close()
 		{
-			return false;
+			LOG_ASSERT(ASIOStop() == 0, "Could not stop ASIO");
+
+			LOG_ASSERT(ASIODisposeBuffers() == 0, "Could not dispose of asio buffers");
+
+			LOG_ASSERT(ASIOExit() == 0, "Could not exit ASIO");
+
+			return true;
 		}
 
 		const std::vector<std::string> AsioAudioDevice::GetDeviceNames()
@@ -69,7 +79,7 @@ namespace AmpProcessing {
 
 		bool AsioAudioDevice::LoadDriver(const std::string& driverName)
 		{
-			char* name = strdup(driverName.c_str());
+			char* name = _strdup(driverName.c_str());
 			bool success = m_AsioDriver.loadDriver(name);
 			LOG_ASSERT(success, "Could not load driver {}", name);
 			delete name;
@@ -101,7 +111,7 @@ namespace AmpProcessing {
 			ASIOSampleRate sampleRate;
 			code = ASIOGetSampleRate(&sampleRate);
 			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not get sample rate for asio device", code);
-			m_DeviceDetails.sampleRate = sampleRate;
+			m_DeviceDetails.sampleRate = (float)sampleRate;
 
 			code = ASIOSetSampleRate(sampleRate);
 			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not set sample rate for asio device", code);

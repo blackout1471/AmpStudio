@@ -13,7 +13,7 @@ namespace AmpProcessing {
 			long prefferedBufferSize;
 			long granularityBuffer;
 
-			long sampleRate;
+			float sampleRate;
 		};
 	}
 }
