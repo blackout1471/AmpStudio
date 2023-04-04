@@ -28,7 +28,7 @@ project "UnitTest"
 	
 	links
 	{
-		"AmpStudio"
+		"AmpProcessing"
 	}
 
 	filter "system:windows"

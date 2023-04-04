@@ -1,5 +1,6 @@
 #include <vector>
-#include <xmmintrin.h>
+#include <algorithm>
+#include <cmath>
 
 namespace AmpProcessing {
     namespace Convolution {
@@ -31,33 +32,25 @@ namespace AmpProcessing {
                 return output;
             }
 
-            inline static void ProcessBuffer(const std::vector<float>& input_block, const std::vector<float>& filter_kernel,
-                std::vector<float>& output_block, std::vector<float>& overlap) {
+            inline static std::vector<float> OverlapAddConvolution(const std::vector<float>& buffer, const std::vector<float>& ir, size_t segment_size) {
+                auto buffer_size = buffer.size();
+                auto ir_size = ir.size();
+                std::vector<float> output(buffer_size + ir_size - 1);
+                size_t num_segments = std::ceil(static_cast<float>(buffer_size) / segment_size);
 
-                auto block_size = input_block.size();
-                auto ir_size = filter_kernel.size();
+                for (size_t n = 0; n < num_segments; ++n) {
+                    size_t segment_start = n * segment_size;
+                    size_t segment_end = std::min<size_t>(segment_start + segment_size, buffer_size);
 
-                // Pad the input block and overlap with the previous block
-                std::vector<float> padded_block(block_size + ir_size - 1);
-                for (size_t i = 0; i < block_size; i++) {
-                    padded_block[i] = input_block[i];
-                }
-                for (size_t i = 0; i < ir_size - 1; i++) {
-                    padded_block[block_size + i] = overlap[i];
-                }
+                    std::vector<float> segment_buffer(buffer.begin() + segment_start, buffer.begin() + segment_end);
+                    std::vector<float> convolved_segment = Convolution(segment_buffer, ir);
 
-                // Apply the convolution operation to the padded block
-                std::vector<float> padded_output_block = ConvolutionUtility::Convolution(padded_block, filter_kernel);
-
-                // Overlap and add with the previous block's output
-                for (size_t i = 0; i < block_size; i++) {
-                    output_block[i] = padded_output_block[i] + overlap[i];
+                    for (size_t i = 0; i < convolved_segment.size(); ++i) {
+                        output[segment_start + i] += convolved_segment[i];
+                    }
                 }
 
-                // Update the overlap buffer
-                for (size_t i = 0; i < ir_size - 1; i++) {
-                    overlap[i] = padded_output_block[block_size + i];
-                }
+                return output;
             }
         };
     }
