@@ -6,9 +6,10 @@
 #include <string>
 #include <functional>
 #include "AudioDeviceDetails.h"
+#include "Converters/IAudioConverter.h"
 
 namespace AmpProcessing {
-	namespace Device {
+	namespace Devices {
 		class AsioAudioDevice
 		{
 		public:
@@ -40,6 +41,7 @@ namespace AmpProcessing {
 			ASIOChannelInfo* m_Channels;
 			ASIOBufferInfo* m_Buffers;
 			ASIOCallbacks m_Callbacks;
+			Converters::IAudioConverter* m_AudioConverter;
 
 		public: // Todo: create function wrappers to assign
 			std::function<void(std::vector<float>&)> m_OnInputReady;

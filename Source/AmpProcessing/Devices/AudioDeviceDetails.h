@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 namespace AmpProcessing {
-	namespace Device {
+	namespace Devices {
 		struct AudioDeviceDetails {
 			std::string name;
 

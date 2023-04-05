@@ -2,15 +2,17 @@
 #include "Logging/Logger.h"
 #include "Utility/MESA.h"
 #include "Utility/ConvolutionUtility.h"
+#include "Converters/Int32MsbAudioConverter.h"
 
 namespace AmpProcessing {
-	namespace Device {
+	namespace Devices {
 
 		// This is stupid, to be able to get the current context for callbacks.
 		// We have to store the object which should be used for function binding.
 		AsioAudioDevice* AsioAudioDevice::s_CurrentContext = nullptr;
 
-		AsioAudioDevice::AsioAudioDevice() : m_Buffers(), m_Callbacks(), m_Channels(), m_DriverInformation()
+		AsioAudioDevice::AsioAudioDevice() : m_Buffers(), m_Callbacks(), m_Channels(), m_DriverInformation(), 
+			m_AudioConverter(new Converters::Int32MsbAudioConverter())
 		{
 		}
 
@@ -46,8 +48,6 @@ namespace AmpProcessing {
 			LOG_ASSERT(ASIOStop() == 0, "Could not stop ASIO");
 
 			LOG_ASSERT(ASIODisposeBuffers() == 0, "Could not dispose of asio buffers");
-
-			LOG_ASSERT(ASIOExit() == 0, "Could not exit ASIO");
 
 			return true;
 		}
@@ -210,8 +210,6 @@ namespace AmpProcessing {
 			OnAsioBufferSwitchTimeInfo(&timeInfo, doubleBufferIndex, process);
 		}
 
-		
-
 		ASIOTime* AsioAudioDevice::OnAsioBufferSwitchTimeInfo(ASIOTime* params, long doubleBufferIndex, ASIOBool& directProcess)
 		{
 			auto buffersCount = m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels;
@@ -224,10 +222,9 @@ namespace AmpProcessing {
 				if (!m_Buffers[i].isInput)
 					continue;
 
-				auto* asio_input_buffer = (int*)m_Buffers[i].buffers[doubleBufferIndex];
+				void* asio_input_buffer = m_Buffers[i].buffers[doubleBufferIndex];
 
-				std::transform(asio_input_buffer, asio_input_buffer + buffersize, input_vector.begin(),
-					[](int val) { return static_cast<float>(val / 2147483648.0f); });
+				m_AudioConverter->ConvertToFloat(asio_input_buffer, input_vector, buffersize);
 
 				if (!m_OnInputReady)
 					return nullptr;
@@ -242,16 +239,9 @@ namespace AmpProcessing {
 				if (m_Buffers[i].isInput)
 					continue;
 
-				auto& output_buffer = input_vector;
-				if (output_buffer.size() == 0)
-					break;
+				void* bufferOut = m_Buffers[i].buffers[doubleBufferIndex];
 
-				int* bufferOut = (int*)m_Buffers[i].buffers[doubleBufferIndex];
-
-				for (size_t i = 0; i < buffersize; i++)
-				{
-					bufferOut[i] = static_cast<int32_t>(output_buffer[i] * 2147483648.0f);
-				}
+				m_AudioConverter->ConvertFromFloat(input_vector, bufferOut);
 
 				break;
 			}
