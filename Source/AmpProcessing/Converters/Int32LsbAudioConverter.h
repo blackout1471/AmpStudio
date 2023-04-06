@@ -3,11 +3,11 @@
 
 namespace AmpProcessing {
 	namespace Converters {
-		class Int32MsbAudioConverter : public IAudioConverter
+		class Int32LsbAudioConverter : public IAudioConverter
 		{
 		public:
-			Int32MsbAudioConverter() = default;
-			inline ~Int32MsbAudioConverter() {};
+			Int32LsbAudioConverter() = default;
+			inline ~Int32LsbAudioConverter() {};
 
 			virtual void ConvertToFloat(void* from, std::vector<float>& to, unsigned int fromAmount) override;
 			virtual void ConvertFromFloat(std::vector<float>& from, void* to) override;

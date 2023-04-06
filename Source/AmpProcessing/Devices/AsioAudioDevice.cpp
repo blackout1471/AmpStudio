@@ -2,7 +2,7 @@
 #include "Logging/Logger.h"
 #include "Utility/MESA.h"
 #include "Utility/ConvolutionUtility.h"
-#include "Converters/Int32MsbAudioConverter.h"
+#include "Converters/Int32LsbAudioConverter.h"
 
 namespace AmpProcessing {
 	namespace Devices {
@@ -12,7 +12,7 @@ namespace AmpProcessing {
 		AsioAudioDevice* AsioAudioDevice::s_CurrentContext = nullptr;
 
 		AsioAudioDevice::AsioAudioDevice() : m_Buffers(), m_Callbacks(), m_Channels(), m_DriverInformation(), 
-			m_AudioConverter(new Converters::Int32MsbAudioConverter())
+			m_AudioConverter(new Converters::Int32LsbAudioConverter())
 		{
 		}
 

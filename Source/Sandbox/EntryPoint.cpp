@@ -8,31 +8,23 @@
 using namespace AmpProcessing;
 using namespace AmpProcessing::Devices;
 
-void OnInput(std::vector<float>& data) {
-
-}
-
 void DoLoopBackDemo() {
 	auto device = AsioAudioDevice();
 	auto names = device.GetDeviceNames();
 
-	device.m_OnInputReady = OnInput;
+	device.m_OnInputReady = [](std::vector<float>& data) {};
 	device.Open(names.front());
 
+	LOG_INFO("Playing back audio");
 	while (true) {
 		Sleep(5000);
 	}
 }
 
-
-static void Log(const std::string& message) {
-    std::cout << message << std::endl;
-}
-
 int main() {
 	AmpProcessing::Logger::Logger::Get().Init();
 
-	Log("1. Loopback");
+	LOG_INFO("Enter '1' for loopback demo");
 	std::string input;
 
 	std::cin >> input;
