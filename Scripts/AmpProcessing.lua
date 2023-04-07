@@ -9,6 +9,9 @@ project "AmpProcessing"
 	targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "amppch.h"
+	pchsource(processDir .. "amppch.cpp")
+
 	files
 	{
 		processDir .. "**.h",

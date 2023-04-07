@@ -1,4 +1,6 @@
+#include <amppch.h>
 #include "Int32LsbAudioConverter.h"
+
 namespace AmpProcessing {
 	namespace Converters {
 

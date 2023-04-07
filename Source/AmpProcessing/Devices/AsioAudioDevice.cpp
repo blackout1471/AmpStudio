@@ -1,3 +1,4 @@
+#include <amppch.h>
 #include "AsioAudioDevice.h"
 #include "Logging/Logger.h"
 #include "Utility/MESA.h"

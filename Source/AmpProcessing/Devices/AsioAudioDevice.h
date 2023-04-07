@@ -2,10 +2,6 @@
 #include "asiosys.h"
 #include "asio.h"
 #include "asiodrivers.h"
-#include <vector>
-#include <string>
-#include <functional>
-#include <memory>
 #include "DeviceDetails.h"
 #include "Converters/IAudioConverter.h"
 
