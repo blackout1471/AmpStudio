@@ -352,6 +352,7 @@ MigrationBackup/
 # custom
 Bin/
 Bin-int/
+*.wav
 
 # project files
 *.sln

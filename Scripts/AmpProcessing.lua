@@ -9,6 +9,9 @@ project "AmpProcessing"
 	targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "amppch.h"
+	pchsource(processDir .. "amppch.cpp")
+
 	files
 	{
 		processDir .. "**.h",
@@ -17,15 +20,19 @@ project "AmpProcessing"
 
 	includedirs
 	{
-		processDir
+		processDir,
+		"%{IncludeDir.Asio}",
+		"%{IncludeDir.SPDLOG}"
 	}
 	
 	links
 	{
+		"Asio"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
+		staticruntime "On"
 		
 	filter "configurations:Debug"
 		defines "_DEBUG"

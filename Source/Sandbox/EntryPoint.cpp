@@ -1,57 +1,62 @@
 #include "AudioFile.h"
-#include "../AmpProcessing/ConvolutionUtility.h"
+#include <Utility/ConvolutionUtility.h>
+#include <Devices/AsioAudioDevice.h>
+#include <Logging/Logger.h>
+#include <Utility/MESA.h>
 
-static std::vector<float> get_next_input_block(std::vector<float>& input, std::vector<float>::iterator& startPosition, uint32_t blocksize) {
-    auto endPosition = startPosition + blocksize;
+using namespace AmpProcessing;
+using namespace AmpProcessing::Devices;
 
-    if (endPosition >= input.end())
-        return std::vector<float>(input.end() - blocksize, input.end());
+void DoLoopBackDemo() {
+	auto device = AsioAudioDevice();
+	auto names = device.GetDeviceNames();
 
-    auto output = std::vector<float>(startPosition, endPosition);
-    startPosition += blocksize;
-    return output;
+	device.m_OnInputReady = [](std::vector<float>& data) {};
+	device.Open(names.front());
+
+	LOG_INFO("Playing back audio");
+	while (true) {
+		Sleep(5000);
+	}
 }
 
-static void Log(const std::string& message) {
-    std::cout << message << std::endl;
+void DoRecordingDemo() {
+	auto device = AsioAudioDevice();
+	auto names = device.GetDeviceNames();
+	auto filename = "recordingDemo.wav";
+
+	std::vector<float> buffer;
+
+	device.m_OnInputReady = [&](std::vector<float>& data) 
+	{
+		buffer.insert(buffer.end(), data.begin(), data.end());
+	};
+	device.Open(names.front());
+
+	LOG_INFO("Recording 5 seconds");
+	Sleep(5000);
+	device.Close();
+
+	LOG_INFO("Saving file to {}", filename);
+	AudioFile<float> out;
+	out.setBitDepth(24);
+	out.setSampleRate(44100);
+	out.setAudioBuffer(std::vector<std::vector<float>> { buffer });
+	out.save(filename);
 }
 
 int main() {
+	AmpProcessing::Logger::Logger::Get().Init();
 
-    // Read data
-    AudioFile<float> ir;
-    ir.load("C:/Repos/resources/greathall.wav");
+	LOG_INFO("Enter '1' for loopback demo");
+	LOG_INFO("Enter '2' for recording to wav file");
+	std::string input;
 
-    AudioFile<float> input;
-    input.load("C:/Repos/resources/example.wav");
+	std::cin >> input;
 
-    Log("Loaded files");
-
-    // Initialize the filter kernel and overlap buffer
-    int filter_size = 1024 * 5;
-    std::vector filter_kernel(ir.samples[0].begin(), ir.samples[0].begin() + filter_size);
-    std::vector<float> overlap(filter_kernel.size() - 1);
-
-    // Process the input signal in blocks
-    int block_size = 1024;
-    std::vector<float> input_block(block_size);
-    std::vector<float> output_block(block_size);
-    std::vector<float> output_signal;
-
-    uint32_t currentJump = 0;
-    auto amount = input.samples[0].size() / block_size;
-
-    Log("Beginning processing");
-
-    output_block = Convolution::ConvolutionUtility::Convolution(input.samples[0], filter_kernel);
-
-
-    Log("Writing to file");
-
-    AudioFile<float> out;
-    out.setSampleRate(44100);
-    out.setAudioBuffer(std::vector<std::vector<float>>{output_block, output_block});
-    out.save("C:/Repos/resources/overlapp.wav", AudioFileFormat::Wave);
-
-    return 0;
+	if (input == "1")
+		DoLoopBackDemo();
+	
+	if (input == "2")
+		DoRecordingDemo();
 }

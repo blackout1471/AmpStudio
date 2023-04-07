@@ -3,6 +3,7 @@ project "Asio"
 	location "../Vendor/Asio/"
 	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
 
 	characterset ("MBCS")
 
