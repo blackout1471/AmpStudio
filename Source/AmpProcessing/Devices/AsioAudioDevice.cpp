@@ -186,7 +186,7 @@ namespace AmpProcessing {
 			int code = ASIOCreateBuffers(m_Buffers, m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels, m_DeviceDetails.prefferedBufferSize, &m_Callbacks);
 			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not create buffers for device", code);
 
-			input_vector.resize(m_DeviceDetails.prefferedBufferSize * 4);
+			input_vector.resize(m_DeviceDetails.prefferedBufferSize);
 
 			return code == 0;
 		}
@@ -213,7 +213,7 @@ namespace AmpProcessing {
 		ASIOTime* AsioAudioDevice::OnAsioBufferSwitchTimeInfo(ASIOTime* params, long doubleBufferIndex, ASIOBool& directProcess)
 		{
 			auto buffersCount = m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels;
-			auto buffersize = m_DeviceDetails.prefferedBufferSize * 4;
+			auto buffersize = m_DeviceDetails.prefferedBufferSize;
 
 			// TODO: support double buffers etc...
 
