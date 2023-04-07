@@ -18,6 +18,7 @@ namespace AmpProcessing {
 
 		public:
 			const std::vector<std::string> GetDeviceNames();
+			const uint32_t GetSampleRate() const { return m_DeviceDetails.sampleRate; }
 
 		private:
 			bool LoadDriver(const std::string& driverName);
