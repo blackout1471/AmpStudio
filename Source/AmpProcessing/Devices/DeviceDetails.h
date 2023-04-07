@@ -2,7 +2,7 @@
 #include <string>
 namespace AmpProcessing {
 	namespace Devices {
-		struct AudioDeviceDetails {
+		struct DeviceDetails {
 			std::string name;
 
 			long inputChannels;

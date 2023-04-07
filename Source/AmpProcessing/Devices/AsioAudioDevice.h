@@ -6,7 +6,7 @@
 #include <string>
 #include <functional>
 #include <memory>
-#include "AudioDeviceDetails.h"
+#include "DeviceDetails.h"
 #include "Converters/IAudioConverter.h"
 
 namespace AmpProcessing {
@@ -38,7 +38,7 @@ namespace AmpProcessing {
 		private:
 			AsioDrivers m_AsioDriver;
 			ASIODriverInfo m_DriverInformation;
-			AudioDeviceDetails m_DeviceDetails;
+			DeviceDetails m_DeviceDetails;
 			ASIOCallbacks m_Callbacks;
 			std::unique_ptr<ASIOChannelInfo[]> m_Channels;
 			std::unique_ptr<ASIOBufferInfo[]> m_Buffers;
