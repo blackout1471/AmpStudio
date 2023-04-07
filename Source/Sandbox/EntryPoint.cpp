@@ -2,7 +2,6 @@
 #include <Utility/ConvolutionUtility.h>
 #include <Devices/AsioAudioDevice.h>
 #include <Logging/Logger.h>
-#include <queue>
 #include <Utility/MESA.h>
 
 using namespace AmpProcessing;

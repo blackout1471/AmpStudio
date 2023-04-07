@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <memory>
 #include "AudioDeviceDetails.h"
 #include "Converters/IAudioConverter.h"
 
@@ -38,10 +39,10 @@ namespace AmpProcessing {
 			AsioDrivers m_AsioDriver;
 			ASIODriverInfo m_DriverInformation;
 			AudioDeviceDetails m_DeviceDetails;
-			ASIOChannelInfo* m_Channels;
-			ASIOBufferInfo* m_Buffers;
 			ASIOCallbacks m_Callbacks;
-			Converters::IAudioConverter* m_AudioConverter;
+			std::unique_ptr<ASIOChannelInfo[]> m_Channels;
+			std::unique_ptr<ASIOBufferInfo[]> m_Buffers;
+			std::unique_ptr<Converters::IAudioConverter> m_AudioConverter;
 
 		public: // Todo: create function wrappers to assign
 			std::function<void(std::vector<float>&)> m_OnInputReady;

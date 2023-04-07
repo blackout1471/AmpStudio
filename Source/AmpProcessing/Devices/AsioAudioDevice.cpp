@@ -12,16 +12,14 @@ namespace AmpProcessing {
 		AsioAudioDevice* AsioAudioDevice::s_CurrentContext = nullptr;
 
 		AsioAudioDevice::AsioAudioDevice() : m_Buffers(), m_Callbacks(), m_Channels(), m_DriverInformation(), 
-			m_AudioConverter(new Converters::Int32LsbAudioConverter())
+			m_AudioConverter()
 		{
+			m_AudioConverter = std::make_unique<Converters::Int32LsbAudioConverter>();
 		}
 
 		AsioAudioDevice::~AsioAudioDevice()
 		{
 			Close();
-
-			delete m_Buffers;
-			delete m_Channels;
 		}
 
 		bool AsioAudioDevice::Open(const std::string& deviceName)
@@ -121,8 +119,8 @@ namespace AmpProcessing {
 
 		bool AsioAudioDevice::SetupBuffers()
 		{
-			m_Buffers = new ASIOBufferInfo[m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels];
-			ASIOBufferInfo* bufferPtr = m_Buffers; // Create other pointer so the one pointing to the buffer doesn't increase :)
+			m_Buffers = std::make_unique<ASIOBufferInfo[]>(m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels);
+			ASIOBufferInfo* bufferPtr = m_Buffers.get(); // Create other pointer so the one pointing to the buffer doesn't increase :)
 
 			// Prepare input buffers
 			for (int i = 0; i < m_DeviceDetails.inputChannels; i++, bufferPtr++)
@@ -146,7 +144,7 @@ namespace AmpProcessing {
 		bool AsioAudioDevice::LoadChannelInformation()
 		{
 			long totalChannels = m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels;
-			m_Channels = new ASIOChannelInfo[totalChannels];
+			m_Channels = std::make_unique<ASIOChannelInfo[]>(totalChannels);
 
 			for (int i = 0; i < totalChannels; i++)
 			{
@@ -183,7 +181,7 @@ namespace AmpProcessing {
 				s_CurrentContext->OnAsioSampleRateDidChange(sRate);
 			};
 
-			int code = ASIOCreateBuffers(m_Buffers, m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels, m_DeviceDetails.prefferedBufferSize, &m_Callbacks);
+			int code = ASIOCreateBuffers(m_Buffers.get(), m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels, m_DeviceDetails.prefferedBufferSize, &m_Callbacks);
 			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not create buffers for device", code);
 
 			input_vector.resize(m_DeviceDetails.prefferedBufferSize);
@@ -245,6 +243,8 @@ namespace AmpProcessing {
 
 				break;
 			}
+
+			ASIOOutputReady();
 
 			return nullptr;
 		}
