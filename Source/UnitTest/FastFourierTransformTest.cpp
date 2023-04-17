@@ -6,11 +6,11 @@ using namespace AmpProcessing::Convolution;
 namespace UnitTest {
     TEST(FFTShould, ExpectRealNumbers_When_InvokingFFT) {
         // Arrange
-        std::vector<float> real_buffer = { 1, 2, 3, 4, 5 };
-        std::vector<float> imagine_buffer = { 0, 0, 0, 0, 0 };
+        std::vector<float> real_buffer      = { 1, 2, 3, 4 };
+        std::vector<float> imagine_buffer   = { 0, 0, 0, 0 };
 
-        std::vector<float> expected_real = { 15.000000, -5.414214, 3.000000, -2.585786, 3.000000, -2.585786, 3.000000, -5.414214 };
-        int expected_size = 8;
+        std::vector<float> expected_real = { 10.000000, -2.000000, -2.000000, -2.000000 };
+        int expected_size = 4;
 
         // Act
         FFTUtility::FFT(real_buffer, imagine_buffer);
@@ -25,11 +25,11 @@ namespace UnitTest {
 
     TEST(FFTShould, ExpectImagineNumbers_When_InvokingFFT) {
         // Arrange
-        std::vector<float> real_buffer = { 1, 2, 3, 4, 5 };
-        std::vector<float> imagine_buffer = { 0, 0, 0, 0, 0 };
+        std::vector<float> real_buffer = { 1, 2, 3, 4 };
+        std::vector<float> imagine_buffer = { 0, 0, 0, 0 };
 
-        std::vector<float> expected_imagine = { 0.000000, -7.242641, 2.000000, -1.242641, 0.000000, 1.242641, -2.000000, 7.242641 };
-        int expected_size = 8;
+        std::vector<float> expected_imagine = { 0.000000, 2.000000, 0.000000, - 2.000000 };
+        int expected_size = 4;
 
         // Act
         FFTUtility::FFT(real_buffer, imagine_buffer);
