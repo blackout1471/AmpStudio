@@ -40,7 +40,29 @@ namespace AmpProcessing {
             };
 
             inline static void IFFT(std::vector<float>& real_part, std::vector<float>& imag_part) {
+                int n = real_part.size();
+                if (n <= 1) {
+                    return;
+                }
 
+                // Conjugate the complex input signal
+                for (int i = 0; i < n; i++) {
+                    imag_part[i] = -imag_part[i];
+                }
+
+                // Compute FFT of conjugated input signal
+                FFT(real_part, imag_part);
+
+                // Conjugate the complex FFT output
+                for (int i = 0; i < n; i++) {
+                    imag_part[i] = -imag_part[i];
+                }
+
+                // Divide FFT output by n and take real part to get IFFT output
+                for (int i = 0; i < n; i++) {
+                    real_part[i] /= n;
+                    imag_part[i] /= n;
+                }
             };
         };
     }
