@@ -3,10 +3,14 @@
 #include <Devices/AsioAudioDevice.h>
 #include <Logging/Logger.h>
 #include <Utility/MESA.h>
+#include <Utility/FFTUtility.h>
 #include <queue>
+#include <FFTConvolver/FFTConvolver.h>
 
 using namespace AmpProcessing;
 using namespace AmpProcessing::Devices;
+using namespace AmpProcessing::Convolution;
+
 
 void DoLoopBackDemo() {
 	auto device = AsioAudioDevice();
@@ -50,51 +54,21 @@ void DoRealTimeConvolution() {
 	auto device = AsioAudioDevice();
 	auto names = device.GetDeviceNames();
 
-	auto processedQueue = std::queue<std::vector<float>>();
-	auto unprocessedQueue = std::queue<std::vector<float>>();
-	int* delayAmount = new int(25);
-	int* delayCounter = new int(0);
+	auto convolver = fftconvolver::FFTConvolver();
+	auto success = convolver.init(128 * 2, &frames[0], frames.size());
+	auto output = std::vector<float>(128);
 
-	std::mutex processQueueLock;
-	
 	device.m_OnInputReady = [&](std::vector<float>& sample) {
-		unprocessedQueue.push(sample);
-		if (*delayCounter <= *delayAmount) {
-			for (size_t i = 0; i < sample.size(); i++)
-			{
-				sample[i] = 0.f;
-			}
-			(*delayCounter)++;
-		}
-		else 
-		{
-			if (processedQueue.empty())
-				return;
+		
+		convolver.process(&sample[0], &output[0], 128);
 
-			std::lock_guard<std::mutex> lock(processQueueLock);
-			auto processed = processedQueue.front();
-			for (size_t i = 0; i < sample.size(); i++)
-			{
-				sample[i] = processed[i];
-			}
-
-			processedQueue.pop();
-		}
+		sample.assign(output.begin(), output.end());
 	};
-
 	device.Open(names.front());
 
-	while (true) {
-		while (!unprocessedQueue.empty()) {
-			std::lock_guard<std::mutex> lock(processQueueLock);
 
-			auto input = unprocessedQueue.front();
-			auto result = Convolution::ConvolutionUtility::Convolution(input, frames);
 
-			processedQueue.push(result);
-			unprocessedQueue.pop();
-		}
-	};
+	Sleep(10000);
 }
 
 int main() {
@@ -115,6 +89,4 @@ int main() {
 
 	if (input == "3")
 		DoRealTimeConvolution();
-
-
 }
