@@ -2,6 +2,8 @@
 #include <string>
 #include "Renderer.h"
 
+#include <Windows.h>
+
 namespace GuitarBlade {
 	namespace Application {
 		class Window {

@@ -1,4 +1,5 @@
 #include "Application.h"
+#include <Logging/Logger.h>
 
 namespace GuitarBlade {
 	namespace Application {
@@ -8,7 +9,7 @@ namespace GuitarBlade {
 		Application::Application() : Window(), m_SubWindows()
 		{
 			// Setup application data
-			Logger::Logger::Get().Init();
+			AmpProcessing::Logger::Logger::Get().Init();
 			LOG_ASSERT(Application::s_ApplicationNotCreated, "Application already exists");
 			Application::s_ApplicationNotCreated = true;
 
@@ -24,7 +25,6 @@ namespace GuitarBlade {
 
 		bool Application::OnInit()
 		{
-			LOG_ASSERT(m_SystemManager.Init(), "Could not initialise systems");
 			for (auto& subWindow : m_SubWindows)
 				subWindow->Init();
 
@@ -33,8 +33,6 @@ namespace GuitarBlade {
 
 		void Application::OnUpdate()
 		{
-			m_SystemManager.Update();
-
 			for (auto& subWindow : m_SubWindows)
 				subWindow->Update();
 		}
