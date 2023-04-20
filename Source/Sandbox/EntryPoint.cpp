@@ -3,9 +3,29 @@
 #include <Devices/AsioAudioDevice.h>
 #include <Logging/Logger.h>
 #include <Utility/MESA.h>
+#include <Utility/FFTUtility.h>
+#include <queue>
+#include <Utility/FilterUtility.h>
+#include <DSP/Convolution/FFTSampleConvolver.h>
 
 using namespace AmpProcessing;
 using namespace AmpProcessing::Devices;
+using namespace AmpProcessing::Convolution;
+using namespace AmpProcessing::Filter;
+using namespace AmpProcessing::DSP;
+
+const float M_PI = 3.14159265;
+
+void apply_distortion(std::vector<float>& samples, float drive, float range, float blend, float volume) {
+	for (size_t i = 0; i < samples.size(); i++)
+	{
+		float cleanValue = samples[i];
+
+		samples[i] *= drive * range;
+
+		samples[i] = (((2.f / M_PI) * atan(samples[i]) * blend) + (cleanValue * (1.f - blend)) / 2.f) * volume;
+	}
+}
 
 void DoLoopBackDemo() {
 	auto device = AsioAudioDevice();
@@ -45,11 +65,49 @@ void DoRecordingDemo() {
 	out.save(filename);
 }
 
+void DoRealTimeConvolution() {
+	auto device = AsioAudioDevice();
+	auto names = device.GetDeviceNames();
+
+	auto internal_size = int(std::pow(2.0, 10));
+
+	auto cabConvoler = FFTSampleConvolver();
+	auto success = cabConvoler.Init(internal_size, frames);
+
+	auto output = std::vector<float>(128);
+	auto output2 = std::vector<float>(128);
+
+	const float level = 0.2f;
+
+	device.m_OnInputReady = [&](std::vector<float>& samples) {
+
+		auto& currentIn = samples;
+		
+		cabConvoler.Process(currentIn, output2);
+		currentIn = output2;
+
+		apply_distortion(currentIn, 1.f, 100.f, 1.f, 1.f);
+		for (size_t i = 0; i < currentIn.size(); i++)
+		{
+			currentIn[i] *= level;
+		}
+
+		samples.assign(currentIn.begin(), currentIn.end());
+	};
+	device.Open(names.front());
+
+
+	while (true) {
+		Sleep(10000);
+	}
+}
+
 int main() {
 	AmpProcessing::Logger::Logger::Get().Init();
 
 	LOG_INFO("Enter '1' for loopback demo");
 	LOG_INFO("Enter '2' for recording to wav file");
+	LOG_INFO("Enter '3' for realtime convolution");
 	std::string input;
 
 	std::cin >> input;
@@ -59,4 +117,7 @@ int main() {
 	
 	if (input == "2")
 		DoRecordingDemo();
+
+	if (input == "3")
+		DoRealTimeConvolution();
 }

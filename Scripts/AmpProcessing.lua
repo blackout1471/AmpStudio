@@ -22,12 +22,14 @@ project "AmpProcessing"
 	{
 		processDir,
 		"%{IncludeDir.Asio}",
-		"%{IncludeDir.SPDLOG}"
+		"%{IncludeDir.FFTConvolver}",
+		"%{IncludeDir.SPDLOG}",
 	}
 	
 	links
 	{
-		"Asio"
+		"Asio",
+		"FFTConvolver"
 	}
 
 	filter "system:windows"

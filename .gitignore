@@ -357,4 +357,4 @@ Bin-int/
 # project files
 *.sln
 *.csproj
-*.vcxproj*
+**.vcxproj*

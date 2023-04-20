@@ -241,8 +241,6 @@ namespace AmpProcessing {
 				void* bufferOut = m_Buffers[i].buffers[doubleBufferIndex];
 
 				m_AudioConverter->ConvertFromFloat(input_vector, bufferOut);
-
-				break;
 			}
 
 			ASIOOutputReady();

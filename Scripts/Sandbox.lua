@@ -21,12 +21,14 @@ project "Sandbox"
 		sandboxDir,
 		processDir,
 		"%{IncludeDir.Asio}",
-		"%{IncludeDir.SPDLOG}"
+		"%{IncludeDir.SPDLOG}",
+		"%{IncludeDir.FFTConvolver}",
 	}
 	
 	links
 	{
 		"Asio",
+		"FFTConvolver",
 		"AmpProcessing"
 	}
 
