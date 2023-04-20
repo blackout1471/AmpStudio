@@ -5,12 +5,27 @@
 #include <Utility/MESA.h>
 #include <Utility/FFTUtility.h>
 #include <queue>
-#include <FFTConvolver/FFTConvolver.h>
+#include <Utility/FilterUtility.h>
+#include <DSP/Convolution/FFTSampleConvolver.h>
 
 using namespace AmpProcessing;
 using namespace AmpProcessing::Devices;
 using namespace AmpProcessing::Convolution;
+using namespace AmpProcessing::Filter;
+using namespace AmpProcessing::DSP;
 
+const float M_PI = 3.14159265;
+
+void apply_distortion(std::vector<float>& samples, float drive, float range, float blend, float volume) {
+	for (size_t i = 0; i < samples.size(); i++)
+	{
+		float cleanValue = samples[i];
+
+		samples[i] *= drive * range;
+
+		samples[i] = (((2.f / M_PI) * atan(samples[i]) * blend) + (cleanValue * (1.f - blend)) / 2.f) * volume;
+	}
+}
 
 void DoLoopBackDemo() {
 	auto device = AsioAudioDevice();
@@ -54,21 +69,48 @@ void DoRealTimeConvolution() {
 	auto device = AsioAudioDevice();
 	auto names = device.GetDeviceNames();
 
-	auto convolver = fftconvolver::FFTConvolver();
-	auto success = convolver.init(128 * 2, &frames[0], frames.size());
+	AudioFile<float> in;
+	in.load("C:\\Repos\\resources\\greathall.wav");
+	auto& ir = in.samples[0];
+
+	auto internal_size = int(std::pow(2.0, 10));
+
+	auto convolver = FFTSampleConvolver();
+	auto success = convolver.Init(internal_size, ir);
+
+	auto cabConvoler = FFTSampleConvolver();
+	success = cabConvoler.Init(internal_size, frames);
+
 	auto output = std::vector<float>(128);
+	auto output2 = std::vector<float>(128);
 
-	device.m_OnInputReady = [&](std::vector<float>& sample) {
+	const float level = 0.2f;
+
+	device.m_OnInputReady = [&](std::vector<float>& samples) {
+
+		auto& currentIn = samples;
+
+		convolver.Process(currentIn, output);
+		currentIn = output;
 		
-		convolver.process(&sample[0], &output[0], 128);
 
-		sample.assign(output.begin(), output.end());
+		/*cabConvoler.process(&currentIn.front(), &output2.front(), 128);
+		currentIn = output2;
+
+		apply_distortion(currentIn, 1.f, 100.f, 1.f, 1.f);*/
+		/*for (size_t i = 0; i < currentIn.size(); i++)
+		{
+			currentIn[i] *= level;
+		}*/
+
+		samples.assign(currentIn.begin(), currentIn.end());
 	};
 	device.Open(names.front());
 
 
-
-	Sleep(10000);
+	while (true) {
+		Sleep(10000);
+	}
 }
 
 int main() {

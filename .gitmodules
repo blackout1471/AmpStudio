@@ -4,3 +4,6 @@
 [submodule "Vendor/spdlog"]
 	path = Vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Vendor/FFTConvolver"]
+	path = Vendor/FFTConvolver
+	url = https://github.com/HiFi-LoFi/FFTConvolver.git

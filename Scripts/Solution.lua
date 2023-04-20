@@ -20,6 +20,8 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["Asio"] = "../Vendor/Asio/Include"
+IncludeDir["FFTConvolver"] = "../Vendor/FFTConvolver"
+
 IncludeDir["GTest"] = "../Vendor/googletest/googletest/"
 IncludeDir["SPDLOG"] = "../Vendor/spdlog/include"
 IncludeDir["Process"] = "../Source/AmpProcessing/"
@@ -28,6 +30,7 @@ include "AmpProcessing.lua"
 
 group "Dependencies"
 	include "Asio.lua"
+	include "FFTConvolver.lua"
 group ""
 
 group "Demos"
