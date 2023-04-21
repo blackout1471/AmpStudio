@@ -358,3 +358,5 @@ Bin-int/
 *.sln
 *.csproj
 **.vcxproj*
+
+Vendor/*.vcxproj*
