@@ -13,7 +13,6 @@ namespace AmpStudio {
 
 			inline virtual void OnInit() override
 			{
-
 			};
 
 			inline virtual void OnUpdate() override

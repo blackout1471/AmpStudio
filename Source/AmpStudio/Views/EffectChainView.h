@@ -1,19 +1,20 @@
 #pragma once
 #include "Application/SubWindow.h"
 #include <imgui.h>
+#include <AudioEngine.h>
 
 namespace AmpStudio {
 	namespace Views {
 		class EffectChainView : public Application::SubWindow {
 		public:
-			EffectChainView() : Application::SubWindow({ "Effect chain" }) {}
+			EffectChainView() : Application::SubWindow({ "Effect chain" }), m_AudioEngine() {}
 			~EffectChainView() {};
 
 		protected:
 
 			inline virtual void OnInit() override
 			{
-
+				m_AudioEngine.Init();
 			};
 
 			inline virtual void OnUpdate() override
@@ -28,10 +29,19 @@ namespace AmpStudio {
 				ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(60, 60, 70, 200));
 				ImGui::BeginChild("scroll_view", { 0, 0 }, true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 
+				auto& processors = m_AudioEngine.GetEffectsProcessors();
+				for (size_t i = 0; i < processors.size(); i++)
+				{
+					if (ImGui::Button("Toggle Effect", { 50, 20 }))
+						processors[i]->ToggleCanProcess();
+				}
+
 				ImGui::EndChild();
 				ImGui::PopStyleColor();
 				ImGui::EndGroup();
 			}
+		private:
+			AmpProcessing::AudioEngine m_AudioEngine;
 		};
 	}
 }
