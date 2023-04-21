@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-namespace GuitarBlade {
+namespace AmpStudio {
 	namespace Application {
 		struct SubWindowProperties {
 			std::string Name;

@@ -1,13 +1,12 @@
+#include "studiopch.h"
 #include "Window.h"
 
 #include <tchar.h>
 #include <backends/imgui_impl_win32.h>
 
-#include <Logging/Logger.h>
-
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-namespace GuitarBlade {
+namespace AmpStudio {
 	namespace Application {
 
         LRESULT WINAPI WndProc(HWND m_HWND, UINT msg, WPARAM wParam, LPARAM lParam);

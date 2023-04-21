@@ -10,6 +10,9 @@ project "AmpStudio"
 	targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "studiopch.h"
+	pchsource(ampstudioDir .. "studiopch.cpp")
+
 	files
 	{
 		ampstudioDir .. "**.h",

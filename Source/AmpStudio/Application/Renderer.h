@@ -1,7 +1,7 @@
 #pragma once
 #include "Application/SubWindow.h"
 
-namespace GuitarBlade {
+namespace AmpStudio {
 	namespace Gui {
 		class Renderer {
 		public:

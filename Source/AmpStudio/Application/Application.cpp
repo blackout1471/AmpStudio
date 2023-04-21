@@ -1,7 +1,10 @@
+#include "studiopch.h"
 #include "Application.h"
-#include <Logging/Logger.h>
 
-namespace GuitarBlade {
+// TODO:: Create header with all views
+#include "Views/AudioEffectsView.h"
+
+namespace AmpStudio {
 	namespace Application {
 
 		bool Application::s_ApplicationNotCreated = true;
@@ -12,6 +15,10 @@ namespace GuitarBlade {
 			AmpProcessing::Logger::Logger::Get().Init();
 			LOG_ASSERT(Application::s_ApplicationNotCreated, "Application already exists");
 			Application::s_ApplicationNotCreated = true;
+
+			// Add windows
+
+			AddWindow(new Views::AudioEffectsView());
 
 			// Init
 			Window::Init();

@@ -1,16 +1,15 @@
+#include "studiopch.h"
 #include "Renderer.h"
 
 #include <backends/imgui_impl_dx9.h>
 #include <backends/imgui_impl_win32.h>
 #include <d3d9.h>
 
-#include <Logging/Logger.h>
-
 static LPDIRECT3D9              g_pD3D = NULL;
 static LPDIRECT3DDEVICE9        g_pd3dDevice = NULL;
 static D3DPRESENT_PARAMETERS    g_d3dpp = {};
 
-namespace GuitarBlade {
+namespace AmpStudio {
 	namespace Gui {
 
 		Renderer::Renderer(void* windowHandle) : m_WindowHandle(windowHandle)

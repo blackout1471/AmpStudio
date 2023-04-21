@@ -1,7 +1,8 @@
+#include "studiopch.h"
 #include "Application/Application.h"
 
 int main() {
-	auto app = new GuitarBlade::Application::Application();
+	auto app = new AmpStudio::Application::Application();
 	app->Run();
 	app->Close();
 	delete app;

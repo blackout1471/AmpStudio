@@ -1,6 +1,7 @@
+#include "studiopch.h"
 #include "SubWindow.h"
 
-namespace GuitarBlade {
+namespace AmpStudio {
 	namespace Application {
 
 		SubWindow::SubWindow(const SubWindowProperties& properties) : m_Properties(properties)

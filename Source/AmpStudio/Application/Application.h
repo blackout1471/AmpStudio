@@ -3,7 +3,7 @@
 #include "SubWindow.h"
 #include <vector>
 
-namespace GuitarBlade {
+namespace AmpStudio {
 	namespace Application {
 		class Application : public Window {
 		public:

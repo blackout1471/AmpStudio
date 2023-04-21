@@ -4,7 +4,7 @@
 
 #include <Windows.h>
 
-namespace GuitarBlade {
+namespace AmpStudio {
 	namespace Application {
 		class Window {
 		public:
