@@ -7,3 +7,7 @@
 [submodule "Vendor/FFTConvolver"]
 	path = Vendor/FFTConvolver
 	url = https://github.com/HiFi-LoFi/FFTConvolver.git
+[submodule "Vendor/imgui"]
+	path = Vendor/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
