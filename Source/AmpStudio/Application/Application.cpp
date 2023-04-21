@@ -3,6 +3,8 @@
 
 // TODO:: Create header with all views
 #include "Views/AudioEffectsView.h"
+#include "Views/EffectChainView.h"
+#include "Views/AudioControlView.h"
 
 namespace AmpStudio {
 	namespace Application {
@@ -17,8 +19,10 @@ namespace AmpStudio {
 			Application::s_ApplicationNotCreated = true;
 
 			// Add windows
-
+			LOG_INFO("Adding views");
 			AddWindow(new Views::AudioEffectsView());
+			AddWindow(new Views::EffectChainView());
+			AddWindow(new Views::AudioControlView());
 
 			// Init
 			Window::Init();
