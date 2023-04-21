@@ -32,12 +32,21 @@ namespace AmpStudio {
 				auto& processors = m_AudioEngine.GetEffectsProcessors();
 				for (size_t i = 0; i < processors.size(); i++)
 				{
+					ImGui::BeginGroup();
 					auto& processor = processors[i];
 
 					ImGui::Text(processor->GetName().c_str());
 
 					if (ImGui::Button("Toggle Effect", { 50, 20 }))
 						processor->ToggleCanProcess();
+
+					auto& controls = processor->GetParameters();
+					for (size_t i = 0; i < controls.size(); i++)
+					{
+						auto& control = controls[i];
+						ImGui::SliderFloat(control->Name.c_str(), &control->Value, control->Min, control->Max, "%.3f");
+					}
+					ImGui::EndGroup();
 				}
 
 				ImGui::EndChild();

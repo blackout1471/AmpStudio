@@ -18,11 +18,16 @@ namespace AmpProcessing {
 
 			inline const std::string& GetName() const { return m_Name; }
 
-			inline const std::vector<Controls::EffectParameter>& GetParameters() const { return m_Parameters; }
-			inline const void AddParameter(const Controls::EffectParameter& parameter) { m_Parameters.push_back(parameter); }
+			inline std::vector<std::shared_ptr<Controls::EffectParameter>>& GetParameters() { return m_Parameters; }
+			template<typename... Args>
+			inline std::shared_ptr<Controls::EffectParameter> AddParameter(Args&&... args) {
+				auto parameter = std::make_shared<Controls::EffectParameter>(std::forward<Args>(args)...);
+				m_Parameters.push_back(parameter);
+				return parameter;
+			}
 
 		private:
-			std::vector<Controls::EffectParameter> m_Parameters;
+			std::vector<std::shared_ptr<Controls::EffectParameter>> m_Parameters;
 			std::string m_Name;
 			bool m_CanProcess;
 		};
