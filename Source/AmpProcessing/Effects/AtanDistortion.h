@@ -6,10 +6,10 @@ namespace AmpProcessing {
 		class AtanDistortion : public IEffectProcessor {
 		public:
 			AtanDistortion() : IEffectProcessor("Atan Distortion"), 
-				m_Drive(AddParameter(Controls::EffectParameter{"Drive", 1.0f, 0.f, 1.f})),
-				m_Range(AddParameter(Controls::EffectParameter{"Range", 3000.0f, 0.f, 300.f})),
-				m_Volume(AddParameter(Controls::EffectParameter{ "Volume", 1.0f, 0.f, 0.7f })),
-				m_Blend(AddParameter(Controls::EffectParameter{ "Blend", 1.0f, 0.f, 0.6f }))
+				m_Drive(AddParameter(Controls::EffectParameter{"Drive2", 1.0f, 0.f, 1.f})),
+				m_Range(AddParameter(Controls::EffectParameter{"Range2", 3000.0f, 0.f, 300.f})),
+				m_Volume(AddParameter(Controls::EffectParameter{ "Volume2", 1.0f, 0.f, 0.7f })),
+				m_Blend(AddParameter(Controls::EffectParameter{ "Blend2", 1.0f, 0.f, 0.6f }))
 			{
 				m_Drive->Value = 0.5f;
 			};

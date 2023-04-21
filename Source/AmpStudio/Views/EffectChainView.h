@@ -41,10 +41,10 @@ namespace AmpStudio {
 						processor->ToggleCanProcess();
 
 					auto& controls = processor->GetParameters();
-					for (size_t i = 0; i < controls.size(); i++)
+					for (size_t k = 0; k < controls.size(); k++)
 					{
-						auto& control = controls[i];
-						ImGui::SliderFloat(control->Name.c_str(), &control->Value, control->Min, control->Max, "%.3f");
+						auto& control = controls[k];
+						ImGui::SliderFloat((control->Name + "##" + std::to_string(i)).c_str(), &control->Value, control->Min, control->Max, "%.3f");
 					}
 					ImGui::EndGroup();
 				}
