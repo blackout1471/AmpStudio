@@ -11,7 +11,6 @@ namespace AmpProcessing {
 				m_Volume(AddParameter(Controls::EffectParameter{ "Volume2", 1.0f, 0.f, 0.7f })),
 				m_Blend(AddParameter(Controls::EffectParameter{ "Blend2", 1.0f, 0.f, 0.6f }))
 			{
-				m_Drive->Value = 0.5f;
 			};
 			~AtanDistortion() {};
 
@@ -26,10 +25,10 @@ namespace AmpProcessing {
 				}
 			};
 		private:
-			std::shared_ptr<Controls::EffectParameter> m_Drive;
-			std::shared_ptr<Controls::EffectParameter> m_Range;
-			std::shared_ptr<Controls::EffectParameter> m_Volume;
-			std::shared_ptr<Controls::EffectParameter> m_Blend;
+			const std::shared_ptr<const Controls::EffectParameter> m_Drive;
+			const std::shared_ptr<const Controls::EffectParameter> m_Range;
+			const std::shared_ptr<const Controls::EffectParameter> m_Volume;
+			const std::shared_ptr<const Controls::EffectParameter> m_Blend;
 		};
 	}
 }

@@ -20,7 +20,7 @@ namespace AmpProcessing {
 
 			inline std::vector<std::shared_ptr<Controls::EffectParameter>>& GetParameters() { return m_Parameters; }
 			template<typename... Args>
-			inline std::shared_ptr<Controls::EffectParameter> AddParameter(Args&&... args) {
+			inline const std::shared_ptr<Controls::EffectParameter> AddParameter(Args&&... args) {
 				auto parameter = std::make_shared<Controls::EffectParameter>(std::forward<Args>(args)...);
 				m_Parameters.push_back(parameter);
 				return parameter;

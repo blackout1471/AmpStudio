@@ -7,7 +7,6 @@ namespace AmpProcessing {
 	void AudioEngine::Init()
 	{
 		m_EffectProcessors.push_back(std::make_unique<Effects::AtanDistortion>());
-		m_EffectProcessors.push_back(std::make_unique<Effects::AtanDistortion>());
 
 		auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();
