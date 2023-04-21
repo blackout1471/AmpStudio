@@ -5,7 +5,13 @@ namespace AmpProcessing {
 	namespace Effects {
 		class AtanDistortion : public IEffectProcessor {
 		public:
-			AtanDistortion() : m_Drive(1), m_Blend(0.6f), m_Range(300), m_Volume(0.7f) {};
+			AtanDistortion() : IEffectProcessor("Atan Distortion") 
+			{
+				m_Drive = { "Drive", 1.0f, 0.f, 1.f }; AddParameter(m_Drive);
+				m_Range = { "Range", 3000.0f, 0.f, 300.f }; AddParameter(m_Range);
+				m_Volume = { "Volume", 1.0f, 0.f, 0.7f }; AddParameter(m_Volume);
+				m_Blend = { "Blend", 1.0f, 0.f, 0.6f }; AddParameter(m_Blend);
+			};
 			~AtanDistortion() {};
 
 			inline virtual void Process(std::vector<float>& sample) override {
@@ -13,16 +19,16 @@ namespace AmpProcessing {
 				{
 					float cleanValue = sample[i];
 
-					sample[i] *= m_Drive * m_Range;
+					sample[i] *= m_Drive.Value * m_Range.Value;
 
-					sample[i] = (((2.f / M_PI) * atan(sample[i]) * m_Blend) + (cleanValue * (1.f - m_Blend)) / 2.f) * m_Volume;
+					sample[i] = (((2.f / M_PI) * atan(sample[i]) * m_Blend.Value) + (cleanValue * (1.f - m_Blend.Value)) / 2.f) * m_Volume.Value;
 				}
 			};
 		private:
-			float m_Drive;
-			float m_Range;
-			float m_Volume;
-			float m_Blend;
+			Controls::EffectParameter m_Drive;
+			Controls::EffectParameter m_Range;
+			Controls::EffectParameter m_Volume;
+			Controls::EffectParameter m_Blend;
 		};
 	}
 }

@@ -32,8 +32,12 @@ namespace AmpStudio {
 				auto& processors = m_AudioEngine.GetEffectsProcessors();
 				for (size_t i = 0; i < processors.size(); i++)
 				{
+					auto& processor = processors[i];
+
+					ImGui::Text(processor->GetName().c_str());
+
 					if (ImGui::Button("Toggle Effect", { 50, 20 }))
-						processors[i]->ToggleCanProcess();
+						processor->ToggleCanProcess();
 				}
 
 				ImGui::EndChild();
