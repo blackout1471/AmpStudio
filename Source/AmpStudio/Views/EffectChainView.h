@@ -2,7 +2,7 @@
 #include "Application/SubWindow.h"
 #include <imgui.h>
 #include <AudioEngine.h>
-//#include <imnodes.h>
+#include <imgui-knobs.h>
 
 namespace AmpStudio {
 	namespace Views {
@@ -50,7 +50,8 @@ namespace AmpStudio {
 					for (size_t k = 0; k < controls.size(); k++)
 					{
 						auto& control = controls[k];
-						ImGui::SliderFloat((control->Name + "##" + std::to_string(i)).c_str(), &control->Value, control->Min, control->Max, "%.3f");
+						auto step = (control->Max - control->Min) * 0.001f;
+						ImGuiKnobs::Knob((control->Name).c_str(), &control->Value, control->Min, control->Max, step, "%.1f", ImGuiKnobVariant_Tick);
 					}
 					ImGui::EndGroup();
 				}

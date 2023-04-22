@@ -28,11 +28,13 @@ project "ImGui"
 		imguiDir .. "backends/imgui_impl_dx9.cpp",
 		imguiDir .. "backends/imgui_impl_win32.cpp",
 
+		IncludeDir["ImKnobs"] .. "imgui-knobs.cpp"
 	}
 
 	includedirs
 	{
-		imguiDir
+		imguiDir,
+		IncludeDir["ImKnobs"]
 	}
 
 	filter "system:windows"
