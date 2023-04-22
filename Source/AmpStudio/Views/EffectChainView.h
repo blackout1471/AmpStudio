@@ -2,13 +2,16 @@
 #include "Application/SubWindow.h"
 #include <imgui.h>
 #include <AudioEngine.h>
+//#include <imnodes.h>
 
 namespace AmpStudio {
 	namespace Views {
 		class EffectChainView : public Application::SubWindow {
 		public:
 			EffectChainView() : Application::SubWindow({ "Effect chain" }), m_AudioEngine() {}
-			~EffectChainView() {};
+			~EffectChainView() 
+			{
+			};
 
 		protected:
 
@@ -37,8 +40,11 @@ namespace AmpStudio {
 
 					ImGui::Text(processor->GetName().c_str());
 
-					if (ImGui::Button("Toggle Effect", { 50, 20 }))
+					if (ImGui::Button(("Toggle Effect##" + std::to_string(i)).c_str(), {50, 20}))
 						processor->ToggleCanProcess();
+
+					if (processor->GetCanProcess())
+						ImGui::Text((processor->GetName() + std::to_string(processor->GetCanProcess())).c_str());
 
 					auto& controls = processor->GetParameters();
 					for (size_t k = 0; k < controls.size(); k++)

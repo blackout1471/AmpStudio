@@ -66,13 +66,17 @@ void DoRecordingDemo() {
 }
 
 void DoRealTimeConvolution() {
+
+	AudioFile<float> in;
+	in.load("C:\\Repos\\resources\\greathall.wav");
+
 	auto device = AsioAudioDevice();
 	auto names = device.GetDeviceNames();
 
 	auto internal_size = int(std::pow(2.0, 10));
 
 	auto cabConvoler = FFTSampleConvolver();
-	auto success = cabConvoler.Init(internal_size, frames);
+	auto success = cabConvoler.Init(internal_size, in.samples[0]);
 
 	auto output = std::vector<float>(128);
 	auto output2 = std::vector<float>(128);
@@ -83,10 +87,10 @@ void DoRealTimeConvolution() {
 
 		auto& currentIn = samples;
 		
-		/*cabConvoler.Process(currentIn, output2);
-		currentIn = output2;*/
+		cabConvoler.Process(currentIn, output2);
+		currentIn = output2;
 
-		apply_distortion(currentIn, 1.f, 100.f, 1.f, 1.f);
+		//apply_distortion(currentIn, 1.f, 100.f, 1.f, 1.f);
 		/*for (size_t i = 0; i < currentIn.size(); i++)
 		{
 			currentIn[i] *= level;

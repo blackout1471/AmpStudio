@@ -2,11 +2,13 @@
 #include "AudioEngine.h"
 
 #include "Effects/AtanDistortion.h"
+#include "Effects/MesaCabinet.h"
 
 namespace AmpProcessing {
 	void AudioEngine::Init()
 	{
 		m_EffectProcessors.push_back(std::make_unique<Effects::AtanDistortion>());
+		m_EffectProcessors.push_back(std::make_unique<Effects::MesaCabinet>());
 
 		auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();
