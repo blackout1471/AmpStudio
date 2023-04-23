@@ -3,12 +3,14 @@
 
 #include "Effects/AtanDistortion.h"
 #include "Effects/MesaCabinet.h"
+#include "Effects/HardClipper.h"
 
 namespace AmpProcessing {
 	void AudioEngine::Init()
 	{
 		m_EffectProcessors.push_back(std::make_unique<Effects::AtanDistortion>());
 		m_EffectProcessors.push_back(std::make_unique<Effects::MesaCabinet>());
+		m_EffectProcessors.push_back(std::make_unique<Effects::HardClipper>());
 
 		auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();
