@@ -51,7 +51,7 @@ namespace AmpStudio {
 					{
 						auto& control = controls[k];
 						auto step = (control->Max - control->Min) * 0.001f;
-						ImGuiKnobs::Knob((control->Name).c_str(), &control->Value, control->Min, control->Max, step, "%.1f", ImGuiKnobVariant_Tick);
+						ImGuiKnobs::Knob((control->Name).c_str(), &control->Value, control->Min, control->Max, step, "%.01f", ImGuiKnobVariant_Tick);
 					}
 					ImGui::EndGroup();
 				}

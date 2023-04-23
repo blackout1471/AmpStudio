@@ -1,7 +1,7 @@
 #pragma once
 #include "IEffectProcessor.h"
 #include "DSP/Convolution/FFTSampleConvolver.h"
-#include "Utility/AudioFile.h"
+#include "Utility/MESA.h"
 #include <cmath>
 
 namespace AmpProcessing {
@@ -12,9 +12,7 @@ namespace AmpProcessing {
 				m_Wet(AddParameter(Controls::EffectParameter{ "Wet", 1.0f, 0.f, 0.1f })),
 				m_Dry(AddParameter(Controls::EffectParameter{ "Dry", 1.0f, 0.f, 0.1f }))
 			{
-				AudioFile<float> cabFile;
-				cabFile.load("C:\\Repos\\resources\\cabs\\57_1_inch_cap_pres_2.wav");
-				auto& outBuffer = cabFile.samples[0];
+				auto& outBuffer = MesaFrames;
 
 				m_SampleConvolver->Init(128 * 2, outBuffer);
 			};
