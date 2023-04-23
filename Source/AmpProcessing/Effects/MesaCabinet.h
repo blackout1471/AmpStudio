@@ -30,28 +30,6 @@ namespace AmpProcessing {
 			};
 
 		private:
-			inline float resampleSample(const std::vector<float>& buffer, float phaseIncrement, float phase) {
-				int index = ((int)phase + buffer.size()) % buffer.size();
-				float frac = phase - index;
-				float s0 = buffer[index];
-				float s1 = buffer[(index + 1) % buffer.size()];
-				float resampled = s0 + frac * (s1 - s0);
-				phase += phaseIncrement;
-				while (phase >= buffer.size()) {
-					phase -= buffer.size();
-				}
-				return resampled;
-			}
-
-			void resampleBuffer(const std::vector<float>& inBuffer, std::vector<float>& outBuffer, float ratio) {
-				float phaseIncrement = inBuffer.size() / (float)outBuffer.size() * ratio;
-				float phase = 0.0f;
-				for (int i = 0; i < outBuffer.size(); i++) {
-					outBuffer[i] = resampleSample(inBuffer, phaseIncrement, phase);
-					phase += phaseIncrement;
-				}
-			}
-		private:
 			std::vector<float> m_ProcessBuffer;
 			const std::shared_ptr<const Controls::EffectParameter> m_Wet;
 			const std::shared_ptr<const Controls::EffectParameter> m_Dry;
