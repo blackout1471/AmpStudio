@@ -36,29 +36,41 @@ namespace AmpStudio {
 				for (size_t i = 0; i < processors.size(); i++)
 				{
 					ImGui::BeginGroup();
+
 					auto& processor = processors[i];
 
 					ImGui::Text(processor->GetName().c_str());
 
-					if (ImGui::Button(("Toggle Effect##" + std::to_string(i)).c_str(), {50, 20}))
+					if (ImGui::Button(("Toggle Effect##" + std::to_string(i)).c_str(), { 50, 20 }))
 						processor->ToggleCanProcess();
 
 					if (processor->GetCanProcess())
 						ImGui::Text((processor->GetName() + std::to_string(processor->GetCanProcess())).c_str());
 
+
+
 					auto& controls = processor->GetParameters();
 					for (size_t k = 0; k < controls.size(); k++)
 					{
-						auto& control = controls[k];
-						auto step = (control->Max - control->Min) * 0.001f;
-						ImGuiKnobs::Knob((control->Name).c_str(), &control->Value, control->Min, control->Max, step, "%.01f", ImGuiKnobVariant_Tick);
+						auto control = controls[k].get();
+						DrawParameter(control);
 					}
+
 					ImGui::EndGroup();
 				}
 
 				ImGui::EndChild();
 				ImGui::PopStyleColor();
 				ImGui::EndGroup();
+			}
+
+			inline void DrawParameter(AmpProcessing::Controls::EffectParameter* control) {
+				auto step = (control->Max - control->Min) * 0.001f;
+				ImGuiKnobs::Knob((control->Name).c_str(), &control->Value, control->Min, control->Max, step, "%.2f", ImGuiKnobVariant_Tick);
+			}
+
+			inline void DrawProcessorEffect(const AmpProcessing::Effects::IEffectProcessor* effect) {
+				
 			}
 		private:
 			AmpProcessing::AudioEngine m_AudioEngine;

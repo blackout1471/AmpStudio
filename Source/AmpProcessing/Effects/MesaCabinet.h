@@ -2,7 +2,6 @@
 #include "IEffectProcessor.h"
 #include "DSP/Convolution/FFTSampleConvolver.h"
 #include "Utility/MESA.h"
-#include <cmath>
 
 namespace AmpProcessing {
 	namespace Effects {
