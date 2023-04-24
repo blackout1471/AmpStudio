@@ -44,18 +44,19 @@ namespace AmpStudio {
 					if (ImGui::Button(("Toggle Effect##" + std::to_string(i)).c_str(), { 50, 20 }))
 						processor->ToggleCanProcess();
 
-					if (processor->GetCanProcess())
-						ImGui::Text((processor->GetName() + std::to_string(processor->GetCanProcess())).c_str());
-
-
+					ImGui::BeginGroup();
 
 					auto& controls = processor->GetParameters();
 					for (size_t k = 0; k < controls.size(); k++)
 					{
+
 						auto control = controls[k].get();
 						DrawParameter(control);
+						ImGui::SameLine();
+
 					}
 
+					ImGui::EndGroup();
 					ImGui::EndGroup();
 				}
 
