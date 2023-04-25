@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <AudioEngine.h>
 #include <imgui-knobs.h>
+#include "Gui/NodeEditor.h"
 
 namespace AmpStudio {
 	namespace Views {
@@ -26,11 +27,26 @@ namespace AmpStudio {
 
 			inline virtual void OnDraw() override
 			{
-				ImGuiIO& io = ImGui::GetIO();
+				Gui::NodeEditor editor;
+				editor.Begin();
+
+				auto& processors = m_AudioEngine.GetEffectsProcessors();
+				for (size_t i = 0; i < processors.size(); i++)
+				{
+					editor.DrawEffectNode(processors[i].get());
+				}
+
+				editor.End();
+
+				/*ImGuiIO& io = ImGui::GetIO();
+				auto* drawList = ImGui::GetWindowDrawList();
+				auto p = ImGui::GetCursorScreenPos();
+
 
 				ImGui::BeginGroup();
 				ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(60, 60, 70, 200));
 				ImGui::BeginChild("scroll_view", { 0, 0 }, true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+				drawList->AddRectFilled(p, { p.x + 40, p.y + 40 }, IM_COL32(255, 0, 0, 255), 0.5f);
 
 				auto& processors = m_AudioEngine.GetEffectsProcessors();
 				for (size_t i = 0; i < processors.size(); i++)
@@ -62,7 +78,7 @@ namespace AmpStudio {
 
 				ImGui::EndChild();
 				ImGui::PopStyleColor();
-				ImGui::EndGroup();
+				ImGui::EndGroup();*/
 			}
 
 			inline void DrawParameter(AmpProcessing::Controls::EffectParameter* control) {
