@@ -33,7 +33,19 @@ namespace AmpStudio {
 				auto& processors = m_AudioEngine.GetEffectsProcessors();
 				for (size_t i = 0; i < processors.size(); i++)
 				{
-					editor.DrawEffectNode(processors[i].get());
+					auto* current_processor = processors[i].get();
+					auto& parameters = current_processor->GetParameters();
+
+					editor.BeginNode(current_processor);
+					for (size_t i = 0; i < parameters.size(); i++)
+					{
+						auto* currentParameter = parameters[i].get();
+
+						DrawParameter(currentParameter);
+						ImGui::SameLine();
+					}
+
+					editor.EndNode();
 				}
 
 				editor.End();
