@@ -21,6 +21,7 @@ namespace AmpStudio {
 		void NodeEditor::BeginNode(AmpProcessing::Effects::IEffectProcessor* effect)
 		{
 			auto node = InsertNewNode(effect->GetName(), m_Settings.NodeDefaultSize);
+			m_CurrentNode = &(*node);
 
 			// Draw box
 			ImVec2 pMin = m_Context.ScreenPos + node->Position;
@@ -44,6 +45,12 @@ namespace AmpStudio {
 		{
 			ImGui::EndGroup();
 			ImGui::SetCursorPos(m_Context.ScreenPos);
+		}
+
+		void NodeEditor::Parameter(const std::string& name, float* value, float min, float max)
+		{
+			auto step = max * 0.001f;
+			ImGuiKnobs::Knob((name).c_str(), value, min, max, step, "%.2f", ImGuiKnobVariant_Tick, 40.f); // 40 = magic number for size.
 		}
 
 		void NodeEditor::SetContext()
