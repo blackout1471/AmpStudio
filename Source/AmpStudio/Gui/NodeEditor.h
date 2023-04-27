@@ -21,11 +21,13 @@ namespace AmpStudio {
 			uint32_t NodeBackgroundColor = IM_COL32(128, 128, 128, 255);
 			uint32_t NodeTitleBackgroundColor = IM_COL32(200, 30, 30, 255);
 			uint32_t NodeTitleForegroundColor = IM_COL32(255, 255, 255, 255);
+			uint32_t NodeLineColor = IM_COL32(255, 255, 255, 255);
 			
 			ImVec2 NodeDefaultSize = ImVec2(200, 300);
 			
 			float NodeTitleHeight = 35;
 			float NodeGap = 50;
+			float GridSpace = 30.f;
 		};
 
 		struct Node {
@@ -53,12 +55,16 @@ namespace AmpStudio {
 			void SetContext();
 			void DrawBackground();
 			void DrawGrids();
+			void DrawLines();
 
 			std::vector<Node>::iterator InsertNewNode(const std::string& name, const ImVec2 size);
 
+			const ImVec2 GetNodeLeftCenter(const Node& node) const;
+			const ImVec2 GetNodeRightCenter(const Node& node) const;
+
 		private:
 			NodeContext m_Context;
-			const NodeEditorSettings m_Settings;
+			NodeEditorSettings m_Settings;
 			std::vector<Node> m_Nodes;
 			Node* m_CurrentNode;
 		};

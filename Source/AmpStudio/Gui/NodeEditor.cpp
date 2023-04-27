@@ -44,6 +44,9 @@ namespace AmpStudio {
 		void NodeEditor::EndNode()
 		{
 			ImGui::EndGroup();
+
+			DrawLines();
+
 			ImGui::SetCursorPos(m_Context.ScreenPos);
 		}
 
@@ -71,7 +74,7 @@ namespace AmpStudio {
 
 		void NodeEditor::DrawGrids()
 		{
-			const int cellSize = 30;
+			const int cellSize = m_Settings.GridSpace;
 
 			float xAmount = m_Context.ScreenSize.x / cellSize;
 			float yAmount = m_Context.ScreenSize.y / cellSize;
@@ -87,6 +90,22 @@ namespace AmpStudio {
 				m_Context.DrawList->AddLine(ImVec2(m_Context.ScreenPos.x, ypos), ImVec2(m_Context.ScreenPos.x + xAmount * cellSize, ypos), m_Settings.GridColor);
 			}
 		}
+
+		void NodeEditor::DrawLines()
+		{
+
+			for (size_t i = 0; i < m_Nodes.size() - 1; i++)
+			{
+				const auto& cur_node = m_Nodes[i];
+				const auto& next_node = m_Nodes[i + 1];
+
+				const auto p1 = GetNodeRightCenter(cur_node) + m_Context.ScreenPos;
+				const auto p2 = GetNodeLeftCenter(next_node) + m_Context.ScreenPos;
+
+				m_Context.DrawList->AddLine(p1, p2, m_Settings.NodeLineColor);
+			}
+		}
+
 		std::vector<Node>::iterator NodeEditor::InsertNewNode(const std::string& name, const ImVec2 size)
 		{
 			auto node = std::find_if(m_Nodes.begin(), m_Nodes.end(), [&](const Node& node) {return node.Name == name; });
@@ -102,6 +121,16 @@ namespace AmpStudio {
 			}
 
 			return node;
+		}
+
+		const ImVec2 NodeEditor::GetNodeLeftCenter(const Node& node) const
+		{
+			return ImVec2(node.Position.x, node.Position.y + (node.Size.y * 0.5f));
+		}
+
+		const ImVec2 NodeEditor::GetNodeRightCenter(const Node& node) const
+		{
+			return GetNodeLeftCenter(node) + ImVec2(node.Size.x, 0.f);
 		}
 	}
 }
