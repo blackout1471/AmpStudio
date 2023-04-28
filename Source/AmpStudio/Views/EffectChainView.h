@@ -59,7 +59,7 @@ namespace AmpStudio {
 					else
 						ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(255, 0, 0, 255));
 
-					if (ImGui::Button(("Toggle##" + std::to_string(i)).c_str(), { 40, 20 }))
+					if (ImGui::Button(("Toggle##" + std::to_string(i)).c_str(), { 50, 20 }))
 						current_processor->ToggleCanProcess();
 
 					ImGui::PopStyleColor();

@@ -99,7 +99,6 @@ namespace AmpStudio {
 			ImGui::NewFrame();
 
 			bool show_demo_window = true;
-			bool show_another_window = true;
 			
 			ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
