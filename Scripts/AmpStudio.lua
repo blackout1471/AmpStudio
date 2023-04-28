@@ -34,6 +34,7 @@ project "AmpStudio"
 	links
 	{
 		"Asio",
+		"Lua",
 		"FFTConvolver",
 		"AmpProcessing",
 		"ImGui",

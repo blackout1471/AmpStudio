@@ -24,12 +24,14 @@ project "AmpProcessing"
 		"%{IncludeDir.Asio}",
 		"%{IncludeDir.FFTConvolver}",
 		"%{IncludeDir.SPDLOG}",
+		"%{IncludeDir.Lua}"
 	}
 	
 	links
 	{
 		"Asio",
-		"FFTConvolver"
+		"FFTConvolver",
+		"Lua"
 	}
 
 	filter "system:windows"
