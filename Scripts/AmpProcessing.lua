@@ -24,7 +24,7 @@ project "AmpProcessing"
 		"%{IncludeDir.Asio}",
 		"%{IncludeDir.FFTConvolver}",
 		"%{IncludeDir.SPDLOG}",
-		"%{IncludeDir.Lua}"
+		"%{IncludeDir.Vendor}"
 	}
 	
 	links
