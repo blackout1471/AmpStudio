@@ -20,11 +20,11 @@ namespace AmpStudio {
 			{
 				m_AudioEngine.Init();
 
-				auto filePath = "C:\\Repos\\resources\\reverb.lua";
-				auto content = AmpProcessing::Utility::File::ReadContent(filePath);
+				/*auto filePath = "C:\\Repos\\resources\\reverb.lua";
+				auto content = AmpProcessing::Utility::File(filePath).ReadContent();
 				AmpProcessing::Plugin::LuaFile luaFile("fileName", content);
 				luaFile.Compile();
-				luaFile.CallLuaFunction("OnInit");
+				luaFile.CallLuaFunction("OnInit");*/
 			};
 
 			inline virtual void OnUpdate() override
