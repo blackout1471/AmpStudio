@@ -4,19 +4,19 @@
 namespace AmpProcessing {
 	namespace Plugin {
 
-		LuaFile::LuaFile(const std::string& filePath, const std::string& fileContent) : m_LuaContext(luaL_newstate(), lua_close), m_FilePath(filePath),
+		LuaFile::LuaFile(const std::string& fileName, const std::string& fileContent) : m_LuaContext(luaL_newstate(), lua_close), m_FileName(fileName),
 			m_FileContent(fileContent)
 		{
 			luaL_openlibs(m_LuaContext.get());
 
-			LOG_INFO("[LUA] has been loaded for {}", filePath);
+			LOG_INFO("[LUA] has been loaded for {}", fileName);
 		}
 
 		LuaFile::~LuaFile() {}
 
 		bool LuaFile::Compile()
 		{
-			LOG_INFO("[LUA] Compiled the file {}", m_FilePath);
+			LOG_INFO("[LUA] Compiled the file {}", m_FileName);
 			int success = luaL_dostring(m_LuaContext.get(), m_FileContent.c_str());
 			CheckLua(m_LuaContext.get(), success);
 
@@ -30,7 +30,7 @@ namespace AmpProcessing {
 
 			if (!lua_isfunction(context, -1))
 			{
-				LOG_WARN("[LUA] {} was not found in file {}", functionName, m_FilePath);
+				LOG_WARN("[LUA] {} was not found in file {}", functionName, m_FileName);
 				return;
 			}
 

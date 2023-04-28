@@ -11,7 +11,7 @@ namespace AmpProcessing {
 		class LuaFile
 		{
 		public:
-			LuaFile(const std::string& path, const std::string& fileContent);
+			LuaFile(const std::string& fileName, const std::string& fileContent);
 			~LuaFile();
 
 			bool Compile();
@@ -23,7 +23,7 @@ namespace AmpProcessing {
 
 		private:
 			std::unique_ptr<lua_State, decltype(&lua_close)> m_LuaContext;
-			std::string m_FilePath;
+			std::string m_FileName;
 			std::string m_FileContent;
 		};
 	}

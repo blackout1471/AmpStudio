@@ -5,37 +5,24 @@
 #include <imgui-knobs.h>
 #include "Gui/NodeEditor.h"
 #include <Plugin/LuaFile.h>
+#include <Utility/File.h>
 
-#include <iostream>
-#include <fstream>
 
 namespace AmpStudio {
 	namespace Views {
 		class EffectChainView : public Application::SubWindow {
 		public:
 			EffectChainView() : Application::SubWindow({ "Effect chain" }), m_AudioEngine() {}
-			~EffectChainView() 
-			{
-			};
+			~EffectChainView() {};
 
 		protected:
-
 			inline virtual void OnInit() override
 			{
 				m_AudioEngine.Init();
 
 				auto filePath = "C:\\Repos\\resources\\reverb.lua";
-				std::ifstream file(filePath);
-				// Check if the file was successfully opened
-				if (!file.is_open()) {
-					LOG_ERROR("Could not open file {}", filePath);
-				}
-				// Read the file content
-				std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-				// Close the file
-				file.close();
-
-				AmpProcessing::Plugin::LuaFile luaFile(filePath, content);
+				auto content = AmpProcessing::Utility::File::ReadContent(filePath);
+				AmpProcessing::Plugin::LuaFile luaFile("fileName", content);
 				luaFile.Compile();
 				luaFile.CallLuaFunction("OnInit");
 			};
