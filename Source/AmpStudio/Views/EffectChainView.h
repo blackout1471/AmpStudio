@@ -27,7 +27,7 @@ namespace AmpStudio {
 
 			inline virtual void OnDraw() override
 			{
-				editor.Begin();
+				m_NodeEditor.Begin();
 
 				auto& processors = m_AudioEngine.GetEffectsProcessors();
 				for (size_t i = 0; i < processors.size(); i++)
@@ -35,8 +35,8 @@ namespace AmpStudio {
 					auto* current_processor = processors[i].get();
 					auto& parameters = current_processor->GetParameters();
 
-					editor.BeginNode(current_processor);
-					auto max_boundaries_x = editor.GetCurrentNode()->Size.x;
+					m_NodeEditor.BeginNode(current_processor);
+					auto max_boundaries_x = m_NodeEditor.GetCurrentNode()->Size.x;
 					for (size_t k = 0; k < parameters.size(); k++)
 					{
 						auto* currentParameter = parameters[k].get();
@@ -46,13 +46,12 @@ namespace AmpStudio {
 							ImGui::SameLine();
 
 						ImGui::PushID((currentParameter->Name + "##" + std::to_string(i)).c_str());
-						editor.Parameter(currentParameter->Name, &currentParameter->Value, currentParameter->Min, currentParameter->Max);
+						m_NodeEditor.Parameter(currentParameter->Name, &currentParameter->Value, currentParameter->Min, currentParameter->Max);
 						ImGui::PopID();
 						
 						
 					}
 					
-
 					ImGui::NewLine();
 					if (current_processor->GetCanProcess())
 						ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 255, 0, 255));
@@ -64,14 +63,14 @@ namespace AmpStudio {
 
 					ImGui::PopStyleColor();
 
-					editor.EndNode();
+					m_NodeEditor.EndNode();
 				}
 
-				editor.End();
+				m_NodeEditor.End();
 			}
 		private:
 			AmpProcessing::AudioEngine m_AudioEngine;
-			Gui::NodeEditor editor;
+			Gui::NodeEditor m_NodeEditor;
 		};
 	}
 }
