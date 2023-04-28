@@ -28,7 +28,8 @@ project "AmpStudio"
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.FFTConvolver}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.ImKnobs}"
+		"%{IncludeDir.ImKnobs}",
+		"%{IncludeDir.Vendor}"
 	}
 	
 	links
