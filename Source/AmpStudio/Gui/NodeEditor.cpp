@@ -54,7 +54,7 @@ namespace AmpStudio {
 		void NodeEditor::Parameter(const std::string& name, float* value, float min, float max)
 		{
 			auto step = max * 0.001f;
-			ImGuiKnobs::Knob((name).c_str(), value, min, max, step, "%.2f", ImGuiKnobVariant_Tick, 40.f); // 40 = magic number for size.
+			ImGuiKnobs::Knob((name).c_str(), value, min, max, step, "%.2f", ImGuiKnobVariant_Tick, m_Settings.ParameterDiameterSize);
 		}
 
 		void NodeEditor::SetContext()

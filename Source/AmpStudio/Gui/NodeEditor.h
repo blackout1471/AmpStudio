@@ -28,6 +28,7 @@ namespace AmpStudio {
 			float NodeTitleHeight = 35;
 			float NodeGap = 50;
 			float GridSpace = 30.f;
+			float ParameterDiameterSize = 40.f;
 		};
 
 		struct Node {
@@ -50,6 +51,7 @@ namespace AmpStudio {
 			void Parameter(const std::string& name, float* value, float min, float max);
 
 			const Node* GetCurrentNode() const { return m_CurrentNode; }
+			const NodeEditorSettings& GetEditorSettings() const { return m_Settings; }
 
 		private:
 			void SetContext();

@@ -28,6 +28,7 @@ namespace AmpStudio {
 			inline virtual void OnDraw() override
 			{
 				m_NodeEditor.Begin();
+				const auto& settings = m_NodeEditor.GetEditorSettings();
 
 				auto& processors = m_AudioEngine.GetEffectsProcessors();
 				for (size_t i = 0; i < processors.size(); i++)
@@ -41,15 +42,13 @@ namespace AmpStudio {
 					{
 						auto* currentParameter = parameters[k].get();
 
-						auto parameter_pos_x = 40.f * (k + 1); // Calculate in local space
+						auto parameter_pos_x = settings.ParameterDiameterSize * (k + 1); // Calculate in local space
 						if (parameter_pos_x < max_boundaries_x && k != 0)
 							ImGui::SameLine();
 
 						ImGui::PushID((currentParameter->Name + "##" + std::to_string(i)).c_str());
 						m_NodeEditor.Parameter(currentParameter->Name, &currentParameter->Value, currentParameter->Min, currentParameter->Max);
 						ImGui::PopID();
-						
-						
 					}
 					
 					ImGui::NewLine();
