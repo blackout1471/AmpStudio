@@ -27,7 +27,6 @@ namespace AmpStudio {
 
 			inline virtual void OnDraw() override
 			{
-				Gui::NodeEditor editor;
 				editor.Begin();
 
 				auto& processors = m_AudioEngine.GetEffectsProcessors();
@@ -37,16 +36,20 @@ namespace AmpStudio {
 					auto& parameters = current_processor->GetParameters();
 
 					editor.BeginNode(current_processor);
-					auto max_boundaries_x = ImGui::GetCursorScreenPos().x + editor.GetCurrentNode()->Size.x;
-					for (size_t i = 0; i < parameters.size(); i++)
+					auto max_boundaries_x = editor.GetCurrentNode()->Size.x;
+					for (size_t k = 0; k < parameters.size(); k++)
 					{
-						auto* currentParameter = parameters[i].get();
+						auto* currentParameter = parameters[k].get();
 
-						editor.Parameter(currentParameter->Name, &currentParameter->Value, currentParameter->Min, currentParameter->Max);
-						
-						auto parameter_x = ImGui::GetCursorScreenPos().x;
-						if (parameter_x < max_boundaries_x)
+						auto parameter_pos_x = 40.f * (k + 1); // Calculate in local space
+						if (parameter_pos_x < max_boundaries_x && k != 0)
 							ImGui::SameLine();
+
+						ImGui::PushID((currentParameter->Name + "##" + std::to_string(i)).c_str());
+						editor.Parameter(currentParameter->Name, &currentParameter->Value, currentParameter->Min, currentParameter->Max);
+						ImGui::PopID();
+						
+						
 					}
 					
 
@@ -68,6 +71,7 @@ namespace AmpStudio {
 			}
 		private:
 			AmpProcessing::AudioEngine m_AudioEngine;
+			Gui::NodeEditor editor;
 		};
 	}
 }

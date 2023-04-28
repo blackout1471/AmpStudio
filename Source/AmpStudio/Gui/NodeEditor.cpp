@@ -14,6 +14,7 @@ namespace AmpStudio {
 
 		void NodeEditor::End()
 		{
+			UpdateIO();
 			ImGui::EndChild();
 			ImGui::PopStyleColor();
 		}
@@ -24,7 +25,7 @@ namespace AmpStudio {
 			m_CurrentNode = &(*node);
 
 			// Draw box
-			ImVec2 pMin = m_Context.ScreenPos + node->Position;
+			ImVec2 pMin = m_Context.ScreenPos + node->Position + m_NodeOffsetPosition;
 			ImVec2 pMax = pMin + node->Size;
 			m_Context.DrawList->AddRectFilled(pMin, pMax, m_Settings.NodeBackgroundColor, 5.f);
 			m_Context.DrawList->AddRectFilled(pMin, { pMax.x, pMin.y + m_Settings.NodeTitleHeight }, m_Settings.NodeTitleBackgroundColor, 5.f);
@@ -62,8 +63,18 @@ namespace AmpStudio {
 			{
 				ImGui::GetCursorScreenPos(),
 				ImGui::GetWindowViewport()->Size,
-				ImGui::GetWindowDrawList()
+				ImGui::GetWindowDrawList(),
 			};
+		}
+
+		void NodeEditor::UpdateIO()
+		{
+			auto io_mouse_delta = ImGui::GetIO().MouseDelta;
+
+			if (ImGui::IsMouseDragging(ImGuiMouseButton_Middle, 0.0f) && ImGui::IsWindowHovered())
+			{
+				m_NodeOffsetPosition = m_NodeOffsetPosition + ImVec2{ io_mouse_delta.x, 0.f };
+			}
 		}
 
 		void NodeEditor::DrawBackground()
@@ -99,8 +110,8 @@ namespace AmpStudio {
 				const auto& cur_node = m_Nodes[i];
 				const auto& next_node = m_Nodes[i + 1];
 
-				const auto p1 = GetNodeRightCenter(cur_node) + m_Context.ScreenPos;
-				const auto p2 = GetNodeLeftCenter(next_node) + m_Context.ScreenPos;
+				const auto p1 = GetNodeRightCenter(cur_node) + m_Context.ScreenPos + m_NodeOffsetPosition;
+				const auto p2 = GetNodeLeftCenter(next_node) + m_Context.ScreenPos + m_NodeOffsetPosition;
 
 				m_Context.DrawList->AddLine(p1, p2, m_Settings.NodeLineColor);
 			}
@@ -115,7 +126,7 @@ namespace AmpStudio {
 					m_Nodes.push_back({ name, m_Nodes[m_Nodes.size() - 1].Position + ImVec2(size.x + m_Settings.NodeGap, 0), size });
 				else
 				{
-					m_Nodes.push_back({ name, {20.f, 20.f}, size });
+					m_Nodes.push_back({ name, {0.f, 0.f}, size });
 				}
 				node = std::prev(m_Nodes.end());
 			}

@@ -23,7 +23,7 @@ namespace AmpStudio {
 			uint32_t NodeTitleForegroundColor = IM_COL32(255, 255, 255, 255);
 			uint32_t NodeLineColor = IM_COL32(255, 255, 255, 255);
 			
-			ImVec2 NodeDefaultSize = ImVec2(200, 300);
+			ImVec2 NodeDefaultSize = ImVec2(150, 220);
 			
 			float NodeTitleHeight = 35;
 			float NodeGap = 50;
@@ -38,7 +38,7 @@ namespace AmpStudio {
 
 		class NodeEditor {
 		public:
-			NodeEditor() : m_Settings(), m_Context(), m_Nodes(), m_CurrentNode(nullptr) {};
+			NodeEditor() : m_Settings(), m_Context(), m_Nodes(), m_CurrentNode(nullptr), m_NodeOffsetPosition() {};
 			~NodeEditor() {};
 
 			void Begin();
@@ -53,9 +53,12 @@ namespace AmpStudio {
 
 		private:
 			void SetContext();
+
 			void DrawBackground();
 			void DrawGrids();
 			void DrawLines();
+
+			void UpdateIO();
 
 			std::vector<Node>::iterator InsertNewNode(const std::string& name, const ImVec2 size);
 
@@ -65,6 +68,7 @@ namespace AmpStudio {
 		private:
 			NodeContext m_Context;
 			NodeEditorSettings m_Settings;
+			ImVec2 m_NodeOffsetPosition;
 			std::vector<Node> m_Nodes;
 			Node* m_CurrentNode;
 		};
