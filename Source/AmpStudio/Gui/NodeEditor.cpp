@@ -48,7 +48,7 @@ namespace AmpStudio {
 
 			DrawLines();
 
-			ImGui::SetCursorPos(m_Context.ScreenPos);
+			ImGui::SetCursorScreenPos(m_Context.ScreenPos);
 		}
 
 		void NodeEditor::Parameter(const std::string& name, float* value, float min, float max)
