@@ -16,7 +16,8 @@ project "AmpStudio"
 	files
 	{
 		ampstudioDir .. "**.h",
-		ampstudioDir .. "**.cpp"
+		ampstudioDir .. "**.cpp",
+
 	}
 
 	includedirs
@@ -27,6 +28,7 @@ project "AmpStudio"
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.FFTConvolver}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.ImKnobs}"
 	}
 	
 	links
@@ -55,3 +57,6 @@ project "AmpStudio"
 		defines "_DIST"
 		runtime "Release"
 		optimize "on"
+
+	filter "files:../vendor/imnodes/**.cpp"
+	flags {"NoPCH"}

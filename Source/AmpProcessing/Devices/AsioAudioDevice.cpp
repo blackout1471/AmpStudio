@@ -13,7 +13,7 @@ namespace AmpProcessing {
 		AsioAudioDevice* AsioAudioDevice::s_CurrentContext = nullptr;
 
 		AsioAudioDevice::AsioAudioDevice() : m_Buffers(), m_Callbacks(), m_Channels(), m_DriverInformation(), 
-			m_AudioConverter()
+			m_AudioConverter(), m_HasBeenStopped(true)
 		{
 			m_AudioConverter = std::make_unique<Converters::Int32LsbAudioConverter>();
 		}
@@ -39,14 +39,23 @@ namespace AmpProcessing {
 
 			LOG_ASSERT(LoadChannelInformation(), "Could not get channel information");
 
+			m_HasBeenStopped = false;
+
 			return true;
 		}
 
 		bool AsioAudioDevice::Close()
 		{
+			if (m_HasBeenStopped)
+				return true;
+
 			LOG_ASSERT(ASIOStop() == 0, "Could not stop ASIO");
 
 			LOG_ASSERT(ASIODisposeBuffers() == 0, "Could not dispose of asio buffers");
+
+			LOG_ASSERT(ASIOExit() == 0, "Could not exit ASIO");
+
+			m_HasBeenStopped = true;
 
 			return true;
 		}
@@ -225,10 +234,7 @@ namespace AmpProcessing {
 
 				m_AudioConverter->ConvertToFloat(asio_input_buffer, input_vector, buffersize);
 
-				if (!m_OnInputReady)
-					return nullptr;
-
-				m_OnInputReady(input_vector);
+				InvokeSampleReady(input_vector);
 
 				break;
 			}

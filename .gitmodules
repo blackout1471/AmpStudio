@@ -11,3 +11,6 @@
 	path = Vendor/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+[submodule "Vendor/imgui-knobs"]
+	path = Vendor/imgui-knobs
+	url = https://github.com/altschuler/imgui-knobs.git

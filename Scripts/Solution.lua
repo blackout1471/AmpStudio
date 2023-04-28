@@ -21,7 +21,8 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["Asio"] = "../Vendor/Asio/Include"
 IncludeDir["FFTConvolver"] = "../Vendor/FFTConvolver"
-IncludeDir["ImGui"] = "../Vendor/imgui"
+IncludeDir["ImGui"] = "../Vendor/imgui/"
+IncludeDir["ImKnobs"] = "../Vendor/imgui-knobs/"
 
 IncludeDir["GTest"] = "../Vendor/googletest/googletest/"
 IncludeDir["SPDLOG"] = "../Vendor/spdlog/include"

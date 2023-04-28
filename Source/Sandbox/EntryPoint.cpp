@@ -31,7 +31,7 @@ void DoLoopBackDemo() {
 	auto device = AsioAudioDevice();
 	auto names = device.GetDeviceNames();
 
-	device.m_OnInputReady = [](std::vector<float>& data) {};
+	device.SetSampleReadyCallback([](std::vector<float>& data) {});
 	device.Open(names.front());
 
 	LOG_INFO("Playing back audio");
@@ -47,10 +47,10 @@ void DoRecordingDemo() {
 
 	std::vector<float> buffer;
 
-	device.m_OnInputReady = [&](std::vector<float>& data) 
+	device.SetSampleReadyCallback([&](std::vector<float>& data) 
 	{
 		buffer.insert(buffer.end(), data.begin(), data.end());
-	};
+	});
 	device.Open(names.front());
 
 	LOG_INFO("Recording 5 seconds");
@@ -66,34 +66,38 @@ void DoRecordingDemo() {
 }
 
 void DoRealTimeConvolution() {
+
+	AudioFile<float> in;
+	in.load("C:\\Repos\\resources\\greathall.wav");
+
 	auto device = AsioAudioDevice();
 	auto names = device.GetDeviceNames();
 
 	auto internal_size = int(std::pow(2.0, 10));
 
 	auto cabConvoler = FFTSampleConvolver();
-	auto success = cabConvoler.Init(internal_size, frames);
+	auto success = cabConvoler.Init(internal_size, in.samples[0]);
 
 	auto output = std::vector<float>(128);
 	auto output2 = std::vector<float>(128);
 
 	const float level = 0.2f;
 
-	device.m_OnInputReady = [&](std::vector<float>& samples) {
+	device.SetSampleReadyCallback([&](std::vector<float>& samples) {
 
 		auto& currentIn = samples;
 		
 		cabConvoler.Process(currentIn, output2);
 		currentIn = output2;
 
-		apply_distortion(currentIn, 1.f, 100.f, 1.f, 1.f);
-		for (size_t i = 0; i < currentIn.size(); i++)
+		//apply_distortion(currentIn, 1.f, 100.f, 1.f, 1.f);
+		/*for (size_t i = 0; i < currentIn.size(); i++)
 		{
 			currentIn[i] *= level;
-		}
+		}*/
 
 		samples.assign(currentIn.begin(), currentIn.end());
-	};
+	});
 	device.Open(names.front());
 
 

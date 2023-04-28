@@ -10,8 +10,8 @@ project "ImGui"
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files 
-	{
-        imguiDir .. "imconfig.h",
+	{        
+		imguiDir .. "imconfig.h",
 		imguiDir .. "imgui.h",
 		imguiDir .. "imgui_internal.h",
 		imguiDir .. "imstb_rectpack.h",
@@ -26,12 +26,15 @@ project "ImGui"
 		imguiDir .. "imgui_tables.cpp",
 		imguiDir .. "imgui_demo.cpp",
 		imguiDir .. "backends/imgui_impl_dx9.cpp",
-		imguiDir .. "backends/imgui_impl_win32.cpp"
+		imguiDir .. "backends/imgui_impl_win32.cpp",
+
+		IncludeDir["ImKnobs"] .. "imgui-knobs.cpp"
 	}
 
 	includedirs
 	{
-		imguiDir
+		imguiDir,
+		IncludeDir["ImKnobs"]
 	}
 
 	filter "system:windows"

@@ -27,7 +27,7 @@ namespace AmpStudio {
 			// Create window
 			m_WC = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui window"), NULL };
 			::RegisterClassEx(&m_WC);
-			m_HWND = ::CreateWindow(m_WC.lpszClassName, _T("GuitarBlade"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, m_WC.hInstance, NULL);
+			m_HWND = ::CreateWindow(m_WC.lpszClassName, _T("AmpStudio"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, m_WC.hInstance, NULL);
 
 			// Create d9 device
 			m_Renderer = new Gui::Renderer(&m_HWND);

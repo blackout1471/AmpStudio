@@ -4,20 +4,21 @@
 #include "asiodrivers.h"
 #include "DeviceDetails.h"
 #include "Converters/IAudioConverter.h"
+#include "IAudioDevice.h"
 
 namespace AmpProcessing {
 	namespace Devices {
-		class AsioAudioDevice
+		class AsioAudioDevice : public IAudioDevice
 		{
 		public:
 			AsioAudioDevice();
 			~AsioAudioDevice();
 
-			bool Open(const std::string& deviceName);
-			bool Close();
+			bool Open(const std::string& deviceName) override;
+			bool Close() override;
 
 		public:
-			const std::vector<std::string> GetDeviceNames();
+			const std::vector<std::string> GetDeviceNames() override;
 			const uint32_t GetSampleRate() const { return m_DeviceDetails.sampleRate; }
 
 		private:
@@ -40,9 +41,7 @@ namespace AmpProcessing {
 			std::unique_ptr<ASIOChannelInfo[]> m_Channels;
 			std::unique_ptr<ASIOBufferInfo[]> m_Buffers;
 			std::unique_ptr<Converters::IAudioConverter> m_AudioConverter;
-
-		public: // Todo: create function wrappers to assign
-			std::function<void(std::vector<float>&)> m_OnInputReady;
+			bool m_HasBeenStopped;
 
 		private:
 			static AsioAudioDevice* s_CurrentContext;

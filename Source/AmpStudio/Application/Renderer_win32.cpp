@@ -1,6 +1,6 @@
 #include "studiopch.h"
 #include "Renderer.h"
-
+#include <imgui.h>
 #include <backends/imgui_impl_dx9.h>
 #include <backends/imgui_impl_win32.h>
 #include <d3d9.h>
@@ -99,7 +99,6 @@ namespace AmpStudio {
 			ImGui::NewFrame();
 
 			bool show_demo_window = true;
-			bool show_another_window = true;
 			
 			ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
