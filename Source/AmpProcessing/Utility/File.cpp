@@ -27,6 +27,17 @@ namespace AmpProcessing {
 			return content;
 		}
 
+		bool File::HasModifiedChanged()
+		{
+			return false;
+			/*const auto currentTime = ReadModifiedTime();
+
+			auto changed = m_LastModifiedTime != currentTime;
+			m_LastModifiedTime = currentTime;
+
+			return changed;*/
+		}
+
 		const std::string File::ReadFileName() const
 		{
 			return m_FilePath

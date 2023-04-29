@@ -22,8 +22,15 @@ namespace AmpProcessing {
 
 			m_Files.insert(m_Files.end(), diff.begin(), diff.end());
 
-			for each (auto & diffFile in diff)
+			for each (auto& diffFile in diff)
 				NewFileFound(diffFile);
+		}
+
+		void FileWatcherSystem::GetChangesForFiles()
+		{
+			for (size_t i = 0; i < m_Files.size(); i++)
+				if (m_Files[i].HasModifiedChanged())
+					FileModifiedFound(m_Files[0]);
 		}
 
 		void FileWatcherSystem::NewFileFound(const Utility::File& file)
@@ -32,6 +39,14 @@ namespace AmpProcessing {
 
 			if (m_FileStateChangedCallback)
 				m_FileStateChangedCallback(file, FileStateChanged::New);
+		}
+
+		void FileWatcherSystem::FileModifiedFound(const Utility::File& file)
+		{
+			LOG_INFO("[FileWatcher] file has been modified {}", file.GetFilePath());
+
+			if (m_FileStateChangedCallback)
+				m_FileStateChangedCallback(file, FileStateChanged::Changed);
 		}
 
 		const std::vector<Utility::File> FileWatcherSystem::GetDistinctionFromFiles(std::vector<Utility::File>& files)

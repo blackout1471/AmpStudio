@@ -17,9 +17,11 @@ namespace AmpProcessing {
 			~FileWatcherSystem();
 
 			void GetNewFilesInDirectory();
+			void GetChangesForFiles();
 
 		private:
 			void NewFileFound(const Utility::File& file);
+			void FileModifiedFound(const Utility::File& file);
 
 			const std::vector<Utility::File> GetDistinctionFromFiles(std::vector<Utility::File>& files);
 			const std::vector<std::filesystem::path> GetAllFilesInDirectory(const std::string& path, const std::string& extension) const;
