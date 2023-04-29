@@ -11,9 +11,9 @@ namespace AmpProcessing {
 
 			const std::string ReadContent() const;
 
-			const std::string GetFilePath() const { return m_FilePath.string(); };
-			const std::string& GetFileName() const { return m_FileName; }
-			const std::time_t& GetLastModifiedTime() const { return m_LastModifiedTime; }
+			inline const std::string GetFilePath() const { return m_FilePath.string(); };
+			inline const std::string& GetFileName() const { return m_FileName; }
+			inline const std::time_t& GetLastModifiedTime() const { return m_LastModifiedTime; }
 
 
 		private:

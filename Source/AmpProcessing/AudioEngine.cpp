@@ -8,9 +8,9 @@
 namespace AmpProcessing {
 	void AudioEngine::Init()
 	{
-		m_EffectProcessors.push_back(std::make_unique<Effects::AtanDistortion>());
-		m_EffectProcessors.push_back(std::make_unique<Effects::MesaCabinet>());
-		m_EffectProcessors.push_back(std::make_unique<Effects::HardClipper>());
+		AddEffectToChain<Effects::AtanDistortion>();
+		AddEffectToChain<Effects::MesaCabinet>();
+		AddEffectToChain<Effects::HardClipper>();
 
 		auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();
@@ -20,12 +20,14 @@ namespace AmpProcessing {
 
 	void AudioEngine::OnSampleReady(std::vector<float>& sample)
 	{
-		for (size_t i = 0; i < m_EffectProcessors.size(); i++)
+		auto& effects = m_EffectChainSystem->GetEffectChain();
+
+		for (size_t i = 0; i < effects.size(); i++)
 		{
-			if (!m_EffectProcessors[i]->GetCanProcess())
+			if (!effects[i]->GetCanProcess())
 				continue;
 
-			m_EffectProcessors[i]->Process(sample);
+			effects[i]->Process(sample);
 		}
 	}
 }

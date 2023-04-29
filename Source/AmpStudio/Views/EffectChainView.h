@@ -28,7 +28,7 @@ namespace AmpStudio {
 				m_NodeEditor.Begin();
 				const auto& settings = m_NodeEditor.GetEditorSettings();
 
-				auto& processors = m_AudioEngine.GetEffectsProcessors();
+				auto& processors = m_AudioEngine.GetCurrentEffectChain();
 				for (size_t i = 0; i < processors.size(); i++)
 				{
 					auto* current_processor = processors[i].get();
