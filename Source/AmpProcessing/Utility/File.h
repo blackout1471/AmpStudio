@@ -9,11 +9,15 @@ namespace AmpProcessing {
 			File(const std::string& filePath);
 			~File();
 
-			const std::string& ReadContent() const;
+			const std::string ReadContent() const;
+
+			const std::string GetFilePath() const { return m_FilePath.string(); };
+			const std::string& GetFileName() const { return m_FileName; }
+			const std::time_t& GetLastModifiedTime() const { return m_LastModifiedTime; }
 
 
 		private:
-			const std::string& ReadFileName() const;
+			const std::string ReadFileName() const;
 			const std::time_t ReadModifiedTime() const;
 
 		private:

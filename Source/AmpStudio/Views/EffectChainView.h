@@ -4,8 +4,6 @@
 #include <AudioEngine.h>
 #include <imgui-knobs.h>
 #include "Gui/NodeEditor.h"
-#include <Plugin/LuaFile.h>
-#include <Utility/File.h>
 
 
 namespace AmpStudio {
@@ -19,12 +17,6 @@ namespace AmpStudio {
 			inline virtual void OnInit() override
 			{
 				m_AudioEngine.Init();
-
-				/*auto filePath = "C:\\Repos\\resources\\reverb.lua";
-				auto content = AmpProcessing::Utility::File(filePath).ReadContent();
-				AmpProcessing::Plugin::LuaFile luaFile("fileName", content);
-				luaFile.Compile();
-				luaFile.CallLuaFunction("OnInit");*/
 			};
 
 			inline virtual void OnUpdate() override

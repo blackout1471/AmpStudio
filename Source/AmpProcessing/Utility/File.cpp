@@ -14,7 +14,7 @@ namespace AmpProcessing {
 		{
 		}
 
-		const std::string& File::ReadContent() const
+		const std::string File::ReadContent() const
 		{
 			auto filePath = m_FilePath.string();
 			std::ifstream file(filePath);
@@ -27,7 +27,7 @@ namespace AmpProcessing {
 			return content;
 		}
 
-		const std::string& File::ReadFileName() const
+		const std::string File::ReadFileName() const
 		{
 			return m_FilePath
 				.filename()

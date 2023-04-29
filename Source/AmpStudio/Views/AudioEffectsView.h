@@ -1,6 +1,10 @@
 #pragma once
 #include "Application/SubWindow.h"
 #include <imgui.h>
+#include <Systems/FileWatcherSystem.h>
+
+static AmpProcessing::Systems::FileWatcherSystem s_System =
+		AmpProcessing::Systems::FileWatcherSystem("C:\\Repos\\resources\\");
 
 namespace AmpStudio {
 	namespace Views {
@@ -13,6 +17,7 @@ namespace AmpStudio {
 
 			inline virtual void OnInit() override
 			{
+				s_System.GetNewFilesInDirectory();
 			};
 
 			inline virtual void OnUpdate() override
