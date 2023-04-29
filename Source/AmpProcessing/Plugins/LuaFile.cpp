@@ -2,7 +2,7 @@
 #include "LuaFile.h"
 
 namespace AmpProcessing {
-	namespace Plugin {
+	namespace Plugins {
 
 		LuaFile::LuaFile(const std::string& fileName, const std::string& fileContent) : m_LuaContext(luaL_newstate(), lua_close), m_FileName(fileName),
 			m_FileContent(fileContent)

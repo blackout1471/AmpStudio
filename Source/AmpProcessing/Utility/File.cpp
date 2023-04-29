@@ -6,8 +6,8 @@ namespace AmpProcessing {
 	namespace Utility {
 		File::File(const std::string& filePath) : m_FilePath(filePath), m_FileName(), m_LastModifiedTime()
 		{
-			/*m_FileName = ReadFileName();
-			m_LastModifiedTime = ReadModifiedTime();*/
+			m_FileName = ReadFileName();
+			m_LastModifiedTime = ReadModifiedTime();
 		}
 
 		File::~File()
