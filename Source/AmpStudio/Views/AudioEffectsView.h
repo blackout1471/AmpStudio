@@ -2,6 +2,8 @@
 #include "Application/SubWindow.h"
 #include <imgui.h>
 
+#include "Singleton.h"
+
 namespace AmpStudio {
 	namespace Views {
 		class AudioEffectsView : public Application::SubWindow {
@@ -21,6 +23,24 @@ namespace AmpStudio {
 
 			inline virtual void OnDraw() override
 			{
+				auto& effects = Singleton::getInstance().GetAudio()->GetAvailableEffects();
+
+				ImGui::Columns(2, nullptr, false);
+
+				for (size_t i = 0; i < effects.size(); i++)
+				{
+					if (i != 0 && i % 2 == 0)
+						ImGui::NextColumn();
+
+					auto& name = effects[i]->GetName();
+					auto label = name + "##" + std::to_string(i);
+					if (ImGui::Button(label.c_str(), { 100, 25 }))
+						Singleton::getInstance().GetAudio()->AddEffectToChain(name);
+
+				}
+
+				ImGui::Columns();
+
 				DrawDistortionMenu();
 
 				DrawReverbsMenu();

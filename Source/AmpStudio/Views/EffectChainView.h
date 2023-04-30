@@ -1,22 +1,22 @@
 #pragma once
 #include "Application/SubWindow.h"
 #include <imgui.h>
-#include <AudioEngine.h>
 #include <imgui-knobs.h>
 #include "Gui/NodeEditor.h"
+
+#include "Singleton.h"
 
 
 namespace AmpStudio {
 	namespace Views {
 		class EffectChainView : public Application::SubWindow {
 		public:
-			EffectChainView() : Application::SubWindow({ "Effect chain" }), m_AudioEngine() {}
+			EffectChainView() : Application::SubWindow({ "Effect chain" }) {}
 			~EffectChainView() {};
 
 		protected:
 			inline virtual void OnInit() override
 			{
-				m_AudioEngine.Init();
 			};
 
 			inline virtual void OnUpdate() override
@@ -28,10 +28,10 @@ namespace AmpStudio {
 				m_NodeEditor.Begin();
 				const auto& settings = m_NodeEditor.GetEditorSettings();
 
-				auto& processors = m_AudioEngine.GetCurrentEffectChain();
+				auto& processors = Singleton::getInstance().GetAudio()->GetCurrentEffectChain();
 				for (size_t i = 0; i < processors.size(); i++)
 				{
-					auto* current_processor = processors[i].get();
+					auto* current_processor = processors[i];
 					auto& parameters = current_processor->GetParameters();
 
 					m_NodeEditor.BeginNode(current_processor);
@@ -66,7 +66,6 @@ namespace AmpStudio {
 				m_NodeEditor.End();
 			}
 		private:
-			AmpProcessing::AudioEngine m_AudioEngine;
 			Gui::NodeEditor m_NodeEditor;
 		};
 	}

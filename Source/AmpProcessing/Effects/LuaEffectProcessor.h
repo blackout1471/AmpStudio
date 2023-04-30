@@ -14,7 +14,7 @@ namespace AmpProcessing {
 			virtual void Process(std::vector<float>& sample) override;
 
 		private:
-			std::unique_ptr<Plugins::LuaFile> m_LuaFile;
+			Plugins::LuaFile m_LuaFile;
 		};
 	}
 }

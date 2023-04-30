@@ -14,14 +14,14 @@ namespace AmpProcessing {
 
 		void Init();
 
-		const std::vector<std::unique_ptr<Effects::IEffectProcessor>>& GetCurrentEffectChain() const { return m_EffectChainSystem->GetEffectChain(); }
-		template<typename T, typename... Args>
-		inline void AddEffectToChain(Args&&... args) {
-			m_EffectChainSystem->AddEffect<T>(std::forward<Args>(args)...);
-		};
+		const std::vector<Effects::IEffectProcessor*>& GetCurrentEffectChain() const { return m_EffectChainSystem->GetEffectChain(); }
+		void AddEffectToChain(const std::string& name);
+
+		const std::vector<std::unique_ptr<Effects::IEffectProcessor>>& GetAvailableEffects() const { return m_EffectChainSystem->GetAvailableEffects(); }
 
 	private:
 		void OnSampleReady(std::vector<float>& sample);
+		void OnFileHasChanged(const Utility::File& file, const Systems::FileStateChanged state);
 	private:
 		std::unique_ptr<Devices::IAudioDevice> m_AudioDevice;
 		std::unique_ptr<Systems::EffectChainSystem> m_EffectChainSystem;

@@ -19,36 +19,24 @@ namespace AmpProcessing {
 
 	void AudioEngine::Init()
 	{
-		m_FileWatcher->SetFileStateChangedCallback([&](const Utility::File& file, const Systems::FileStateChanged state) {
-
-			switch (state)
-			{
-			case Systems::FileStateChanged::New:
-			{
-				m_EffectChainSystem->AddEffect<Effects::LuaEffectProcessor>(file);
-				break;
-			}
-			case Systems::FileStateChanged::Changed:
-			{
-				if (m_EffectChainSystem->RemoveEffect(file.GetFileName()))
-					m_EffectChainSystem->AddEffect<Effects::LuaEffectProcessor>(file);
-				break;
-			}
-			default:
-				break;
-			};
-		});
+		m_FileWatcher->SetFileStateChangedCallback(std::bind(&AudioEngine::OnFileHasChanged, this, std::placeholders::_1, std::placeholders::_2));	
 		m_FileWatcher->Start();
 
-		AddEffectToChain<Effects::AtanDistortion>();
-		AddEffectToChain<Effects::MesaCabinet>();
-		AddEffectToChain<Effects::ReverbTest>();
-		AddEffectToChain<Effects::HardClipper>();
+		m_EffectChainSystem->AddAvailableEffect<Effects::AtanDistortion>();
+		m_EffectChainSystem->AddAvailableEffect<Effects::MesaCabinet>();
+		m_EffectChainSystem->AddAvailableEffect<Effects::ReverbTest>();
+		m_EffectChainSystem->AddAvailableEffect<Effects::HardClipper>();
 
 		auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();
 		m_AudioDevice->Open(names.front());
 		m_AudioDevice->SetSampleReadyCallback(std::bind(&AudioEngine::OnSampleReady, this, std::placeholders::_1));
+	}
+
+	void AudioEngine::AddEffectToChain(const std::string& name)
+	{
+		if (!m_EffectChainSystem->AddEffect(name))
+			LOG_INFO("Could not add effect {} to the chain", name);
 	}
 
 	void AudioEngine::OnSampleReady(std::vector<float>& sample)
@@ -62,5 +50,27 @@ namespace AmpProcessing {
 
 			effects[i]->Process(sample);
 		}
+	}
+
+	void AudioEngine::OnFileHasChanged(const Utility::File& file, const Systems::FileStateChanged state)
+	{
+		switch (state)
+		{
+		case Systems::FileStateChanged::New:
+		{
+			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(file);
+			break;
+		}
+		case Systems::FileStateChanged::Changed:
+		{
+			m_EffectChainSystem->RemoveEffect(file.GetFileName());
+			m_EffectChainSystem->RemoveEffectFromAvailable(file.GetFileName());
+
+			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(file);
+			m_EffectChainSystem->AddEffect(file.GetFileName());
+		}
+		default:
+			break;
+		};
 	}
 }
