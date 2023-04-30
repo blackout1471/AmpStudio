@@ -15,6 +15,7 @@ namespace AmpProcessing {
 			~LuaFile();
 
 			bool Compile();
+			bool Compile(const std::string& content);
 
 			void CallLuaFunction(const std::string& functionName);
 

@@ -16,8 +16,14 @@ namespace AmpProcessing {
 			FileWatcherSystem(const std::string pluginPath);
 			~FileWatcherSystem();
 
+			void Start();
+
 			void GetNewFilesInDirectory();
 			void GetChangesForFiles();
+
+			inline void SetFileStateChangedCallback(const std::function<void(const Utility::File& file, const FileStateChanged state)>& callback) {
+				m_FileStateChangedEvent = callback;
+			};
 
 		private:
 			void NewFileFound(const Utility::File& file);
@@ -29,8 +35,10 @@ namespace AmpProcessing {
 		private:
 			std::vector<Utility::File> m_Files;
 			std::string m_PluginPath;
+			bool m_RunningThread;
+			std::unique_ptr<std::thread> m_WatchThread;
 
-			std::function<void(const Utility::File&, const FileStateChanged state)> m_FileStateChangedCallback;
+			std::function<void(const Utility::File&, const FileStateChanged state)> m_FileStateChangedEvent;
 		};
 	}
 }

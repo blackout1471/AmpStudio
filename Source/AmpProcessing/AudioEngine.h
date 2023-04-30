@@ -1,14 +1,16 @@
 #pragma once
 #include "Devices/AsioAudioDevice.h"
-#include <Systems/EffectChainSystem.h>
+#include "Systems/EffectChainSystem.h"
+#include "Systems/FileWatcherSystem.h"
+
+#include "Plugins/LuaFile.h"
 
 namespace AmpProcessing {
 	class AudioEngine
 	{
 	public:
-		AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()), 
-			m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()) {};
-		~AudioEngine() {};
+		AudioEngine(); 
+		~AudioEngine();
 
 		void Init();
 
@@ -23,6 +25,7 @@ namespace AmpProcessing {
 	private:
 		std::unique_ptr<Devices::IAudioDevice> m_AudioDevice;
 		std::unique_ptr<Systems::EffectChainSystem> m_EffectChainSystem;
+		std::unique_ptr<Systems::FileWatcherSystem> m_FileWatcher;
 	};
 }
 

@@ -4,12 +4,31 @@
 namespace AmpProcessing {
 	namespace Systems {
 
-		FileWatcherSystem::FileWatcherSystem(const std::string pluginPath) : m_PluginPath(pluginPath), m_Files(), m_FileStateChangedCallback()
+		FileWatcherSystem::FileWatcherSystem(const std::string pluginPath) : m_PluginPath(pluginPath), m_Files(), m_FileStateChangedEvent(),
+			m_RunningThread(false), m_WatchThread()
 		{
 		}
 
 		FileWatcherSystem::~FileWatcherSystem()
 		{
+			m_RunningThread = false;
+			m_WatchThread->join();
+		}
+
+		void FileWatcherSystem::Start()
+		{
+			m_RunningThread = true;
+
+			GetNewFilesInDirectory();
+
+			m_WatchThread = std::make_unique<std::thread>([&]() {
+				while (m_RunningThread) {
+					Sleep(1000);
+
+					GetNewFilesInDirectory();
+					GetChangesForFiles();
+				};
+			});
 		}
 
 		void FileWatcherSystem::GetNewFilesInDirectory()
@@ -30,23 +49,23 @@ namespace AmpProcessing {
 		{
 			for (size_t i = 0; i < m_Files.size(); i++)
 				if (m_Files[i].HasModifiedChanged())
-					FileModifiedFound(m_Files[0]);
+					FileModifiedFound(m_Files[i]);
 		}
 
 		void FileWatcherSystem::NewFileFound(const Utility::File& file)
 		{
 			LOG_INFO("[FileWatcher] new file found {}", file.GetFilePath());
 
-			if (m_FileStateChangedCallback)
-				m_FileStateChangedCallback(file, FileStateChanged::New);
+			if (m_FileStateChangedEvent)
+				m_FileStateChangedEvent(file, FileStateChanged::New);
 		}
 
 		void FileWatcherSystem::FileModifiedFound(const Utility::File& file)
 		{
 			LOG_INFO("[FileWatcher] file has been modified {}", file.GetFilePath());
 
-			if (m_FileStateChangedCallback)
-				m_FileStateChangedCallback(file, FileStateChanged::Changed);
+			if (m_FileStateChangedEvent)
+				m_FileStateChangedEvent(file, FileStateChanged::Changed);
 		}
 
 		const std::vector<Utility::File> FileWatcherSystem::GetDistinctionFromFiles(std::vector<Utility::File>& files)

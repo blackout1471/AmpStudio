@@ -23,6 +23,12 @@ namespace AmpProcessing {
 			return success;
 		}
 
+		bool LuaFile::Compile(const std::string& content)
+		{
+			m_FileContent = content;
+			return Compile();
+		}
+
 		void LuaFile::CallLuaFunction(const std::string& functionName)
 		{
 			auto* context = m_LuaContext.get();

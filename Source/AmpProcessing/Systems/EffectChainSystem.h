@@ -16,6 +16,8 @@ namespace AmpProcessing {
 				return effect.get();
 			};
 
+			bool RemoveEffect(const std::string& name);
+
 			inline std::vector<std::unique_ptr<Effects::IEffectProcessor>>& GetEffectChain() { return m_EffectProcessors; }
 
 		private:
