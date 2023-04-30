@@ -10,7 +10,7 @@
 namespace AmpProcessing {
 	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()),
 		m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()),
-		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("C:\\Repos\\resources\\"))
+		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins"))
 	{}
 
 	AudioEngine::~AudioEngine()
@@ -63,11 +63,12 @@ namespace AmpProcessing {
 		}
 		case Systems::FileStateChanged::Changed:
 		{
-			m_EffectChainSystem->RemoveEffect(file.GetFileName());
+			auto wasInEffectChain = m_EffectChainSystem->RemoveEffect(file.GetFileName());
 			m_EffectChainSystem->RemoveEffectFromAvailable(file.GetFileName());
 
 			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(file);
-			m_EffectChainSystem->AddEffect(file.GetFileName());
+			if (wasInEffectChain)
+				m_EffectChainSystem->AddEffect(file.GetFileName());
 		}
 		default:
 			break;

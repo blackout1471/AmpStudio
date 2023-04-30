@@ -3,8 +3,6 @@
 #include "Systems/EffectChainSystem.h"
 #include "Systems/FileWatcherSystem.h"
 
-#include "Plugins/LuaFile.h"
-
 namespace AmpProcessing {
 	class AudioEngine
 	{

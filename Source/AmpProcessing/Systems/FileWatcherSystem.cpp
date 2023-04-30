@@ -85,7 +85,17 @@ namespace AmpProcessing {
 		{
 			std::vector<std::filesystem::path> paths;
 
-			for (const auto& entry : std::filesystem::directory_iterator(path)) {
+// This is a hard code trick when debuggin only works for windows.
+#if _DEBUG
+			auto root = std::filesystem::current_path().parent_path().parent_path();
+			auto workingDir = root / "bin" / "Debug-windows-x86_64" / "AmpStudio";//std::filesystem::relative(std::filesystem::path("bin/Debug-windows-x86_64/AmpStudio"), root);
+			auto relative_folder = workingDir / path;
+#else
+			auto workingDir = std::filesystem::current_path();
+			auto relative_folder = std::filesystem::relative(path, std::filesystem::current_path());
+#endif
+
+			for (const auto& entry : std::filesystem::directory_iterator(relative_folder)) {
 				if (std::filesystem::is_directory(entry))
 					GetAllFilesInDirectory(entry.path().string(), extension);
 				else if (entry.path().extension() == extension)
