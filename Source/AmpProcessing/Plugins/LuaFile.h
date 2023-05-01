@@ -17,10 +17,12 @@ namespace AmpProcessing {
 			bool Compile();
 			bool Compile(const std::string& content);
 
-			void CallLuaFunction(const std::string& functionName);
+			void CallLuaFunction(const std::string& functionName) const;
+
+			inline const std::string& GetFileName() const { return m_FileName; }
 
 		private:
-			bool CheckLua(lua_State* L, int r);
+			bool CheckLua(lua_State* L, int r) const;
 
 		private:
 			std::unique_ptr<lua_State, decltype(&lua_close)> m_LuaContext;

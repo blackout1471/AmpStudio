@@ -4,14 +4,15 @@
 
 namespace AmpProcessing {
 	namespace Systems {
-		enum FileStateChanged {
-			New,
-			Changed,
-			Deleted
-		};
 
 		class FileWatcherSystem
 		{
+		public:
+			enum FileStateChanged {
+				New,
+				Changed,
+				Deleted
+			};
 		public:
 			FileWatcherSystem(const std::string pluginPath);
 			~FileWatcherSystem();

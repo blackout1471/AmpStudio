@@ -10,7 +10,8 @@
 namespace AmpProcessing {
 	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()),
 		m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()),
-		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins"))
+		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins")),
+		m_LuaSystem(std::make_unique<Systems::LuaSystem>())
 	{}
 
 	AudioEngine::~AudioEngine()
@@ -19,6 +20,8 @@ namespace AmpProcessing {
 
 	void AudioEngine::Init()
 	{
+		//m_LuaSystem->SetStateChangedCallback()
+
 		m_FileWatcher->SetFileStateChangedCallback(std::bind(&AudioEngine::OnFileHasChanged, this, std::placeholders::_1, std::placeholders::_2));	
 		m_FileWatcher->Start();
 
@@ -52,16 +55,16 @@ namespace AmpProcessing {
 		}
 	}
 
-	void AudioEngine::OnFileHasChanged(const Utility::File& file, const Systems::FileStateChanged state)
+	void AudioEngine::OnFileHasChanged(const Utility::File& file, const Systems::FileWatcherSystem::FileStateChanged state)
 	{
 		switch (state)
 		{
-		case Systems::FileStateChanged::New:
+		case Systems::FileWatcherSystem::FileStateChanged::New:
 		{
 			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(file);
 			break;
 		}
-		case Systems::FileStateChanged::Changed:
+		case Systems::FileWatcherSystem::FileStateChanged::Changed:
 		{
 			auto wasInEffectChain = m_EffectChainSystem->RemoveEffect(file.GetFileName());
 			m_EffectChainSystem->RemoveEffectFromAvailable(file.GetFileName());
@@ -73,5 +76,10 @@ namespace AmpProcessing {
 		default:
 			break;
 		};
+	}
+
+	void AudioEngine::OnLuaFileHasChanged(Plugins::LuaFile* const lua, const Systems::LuaSystem::StateChanged state)
+	{
+
 	}
 }

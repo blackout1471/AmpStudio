@@ -29,7 +29,7 @@ namespace AmpProcessing {
 			return Compile();
 		}
 
-		void LuaFile::CallLuaFunction(const std::string& functionName)
+		void LuaFile::CallLuaFunction(const std::string& functionName) const
 		{
 			auto* context = m_LuaContext.get();
 			lua_getglobal(context, functionName.c_str());
@@ -43,7 +43,7 @@ namespace AmpProcessing {
 			CheckLua(context, lua_pcall(context, 0, 1, 0));
 		}
 
-		bool LuaFile::CheckLua(lua_State* L, int r)
+		bool LuaFile::CheckLua(lua_State* L, int r) const
 		{
 			if (r != LUA_OK)
 			{
