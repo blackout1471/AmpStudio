@@ -26,7 +26,7 @@ namespace AmpProcessing {
 			Plugins::LuaFile* GetLuaByFileName(const std::string& name);
 
 		private:
-			std::vector<Plugins::LuaFile> m_LuaFiles;
+			std::vector<std::unique_ptr<Plugins::LuaFile>> m_LuaFiles;
 			std::function<void(Plugins::LuaFile* const lua, const LuaSystem::StateChanged state)> m_LuaStateChangedEvent;
 
 		};
