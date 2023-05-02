@@ -37,7 +37,7 @@ namespace AmpProcessing {
 			std::vector<Utility::File> m_Files;
 			std::string m_PluginPath;
 			bool m_RunningThread;
-			std::unique_ptr<std::thread> m_WatchThread;
+			std::unique_ptr<std::thread> m_WatchThread; // TODO:: assign from threadpool instead of creating
 
 			std::function<void(const Utility::File&, const FileStateChanged state)> m_FileStateChangedEvent;
 		};

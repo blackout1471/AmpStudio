@@ -6,10 +6,17 @@ namespace AmpProcessing {
 		LuaEffectProcessor::LuaEffectProcessor(const Plugins::LuaFile* luaFile) : IEffectProcessor(luaFile->GetFileName()),
 			m_LuaFile(luaFile)
 		{
+			ValidateFile();
 		}
 
 		LuaEffectProcessor::~LuaEffectProcessor()
 		{
+		}
+
+		void LuaEffectProcessor::ValidateFile() 
+		{
+			if (!m_LuaFile->IsFunction("OnInit"))
+				LOG_ERROR("[LuaEffectProcessor] OnInit not exists for {}", m_LuaFile->GetFileName());
 		}
 
 		void LuaEffectProcessor::Process(std::vector<float>& sample)

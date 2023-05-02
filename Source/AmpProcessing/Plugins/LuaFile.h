@@ -18,6 +18,7 @@ namespace AmpProcessing {
 			bool Compile(const std::string& content);
 
 			void CallLuaFunction(const std::string& functionName) const;
+			const bool IsFunction(const std::string& functionName) const;
 
 			inline const std::string& GetFileName() const { return m_FileName; }
 
