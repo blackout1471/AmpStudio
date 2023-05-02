@@ -3,7 +3,7 @@
 
 namespace AmpProcessing {
 	namespace Systems {
-		LuaSystem::LuaSystem() : m_LuaFiles()
+		LuaSystem::LuaSystem() : m_LuaFiles(), m_LuaStateChangedEvent()
 		{
 		}
 
@@ -29,6 +29,9 @@ namespace AmpProcessing {
 				return false;
 
 			lua->Compile(file.ReadContent());
+
+			LOG_INFO("[LuaSystem] New lua file changed & compiled {}", file.GetFileName());
+
 			if (m_LuaStateChangedEvent)
 				m_LuaStateChangedEvent(lua, StateChanged::Changed);
 
@@ -40,9 +43,10 @@ namespace AmpProcessing {
 			auto lua = std::make_unique<Plugins::LuaFile>(file.GetFileName(), file.ReadContent());
 			lua->Compile();
 			m_LuaFiles.push_back(std::move(lua));
+			LOG_INFO("[LuaSystem] Added new lua file and compiled it {}", file.GetFileName());
 
 			if (m_LuaStateChangedEvent)
-				m_LuaStateChangedEvent(lua.get(), StateChanged::New);
+				m_LuaStateChangedEvent(m_LuaFiles.back().get(), StateChanged::New);
 
 			return true;
 		}

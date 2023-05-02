@@ -3,10 +3,9 @@
 
 namespace AmpProcessing {
 	namespace Effects {
-		LuaEffectProcessor::LuaEffectProcessor(const Utility::File& file) : IEffectProcessor(file.GetFileName()), 
-			m_LuaFile(Plugins::LuaFile(file.GetFileName(), file.ReadContent()))
+		LuaEffectProcessor::LuaEffectProcessor(const Plugins::LuaFile* luaFile) : IEffectProcessor(luaFile->GetFileName()),
+			m_LuaFile(luaFile)
 		{
-			m_LuaFile.Compile();
 		}
 
 		LuaEffectProcessor::~LuaEffectProcessor()
@@ -15,7 +14,7 @@ namespace AmpProcessing {
 
 		void LuaEffectProcessor::Process(std::vector<float>& sample)
 		{
-			m_LuaFile.CallLuaFunction("OnInit");
+			m_LuaFile->CallLuaFunction("OnInit");
 		}
 	}
 }

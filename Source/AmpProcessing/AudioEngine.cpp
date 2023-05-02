@@ -61,17 +61,13 @@ namespace AmpProcessing {
 		{
 		case Systems::FileWatcherSystem::FileStateChanged::New:
 		{
-			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(file);
+			m_LuaSystem->AddLuaFile(file);
 			break;
 		}
 		case Systems::FileWatcherSystem::FileStateChanged::Changed:
 		{
-			auto wasInEffectChain = m_EffectChainSystem->RemoveEffect(file.GetFileName());
-			m_EffectChainSystem->RemoveEffectFromAvailable(file.GetFileName());
-
-			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(file);
-			if (wasInEffectChain)
-				m_EffectChainSystem->AddEffect(file.GetFileName());
+			m_LuaSystem->AddLuaFile(file);
+			break;
 		}
 		default:
 			break;
@@ -80,6 +76,23 @@ namespace AmpProcessing {
 
 	void AudioEngine::OnLuaFileHasChanged(Plugins::LuaFile* const lua, const Systems::LuaSystem::StateChanged state)
 	{
+		switch (state)
+		{
+		case Systems::LuaSystem::New:
+			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(lua);
+			break;
+		case Systems::LuaSystem::Changed:
+		{
+			auto wasInEffectChain = m_EffectChainSystem->RemoveEffect(lua->GetFileName());
+			m_EffectChainSystem->RemoveEffectFromAvailable(lua->GetFileName());
 
+			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(lua);
+			if (wasInEffectChain)
+				m_EffectChainSystem->AddEffect(lua->GetFileName());
+			break;
+		}
+		default:
+			break;
+		}
 	}
 }

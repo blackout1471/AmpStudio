@@ -8,13 +8,13 @@ namespace AmpProcessing {
 		class LuaEffectProcessor : public IEffectProcessor
 		{
 		public:
-			LuaEffectProcessor(const Utility::File& file);
+			LuaEffectProcessor(const Plugins::LuaFile* luaFile);
 			~LuaEffectProcessor();
 
 			virtual void Process(std::vector<float>& sample) override;
 
 		private:
-			Plugins::LuaFile m_LuaFile;
+			const Plugins::LuaFile* m_LuaFile;
 		};
 	}
 }
