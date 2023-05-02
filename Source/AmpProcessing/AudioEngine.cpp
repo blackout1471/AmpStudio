@@ -20,7 +20,7 @@ namespace AmpProcessing {
 
 	void AudioEngine::Init()
 	{
-		//m_LuaSystem->SetStateChangedCallback()
+		m_LuaSystem->SetStateChangedCallback(std::bind(&AudioEngine::OnLuaFileHasChanged, this, std::placeholders::_1, std::placeholders::_2));
 
 		m_FileWatcher->SetFileStateChangedCallback(std::bind(&AudioEngine::OnFileHasChanged, this, std::placeholders::_1, std::placeholders::_2));	
 		m_FileWatcher->Start();
@@ -79,16 +79,12 @@ namespace AmpProcessing {
 		switch (state)
 		{
 		case Systems::LuaSystem::New:
+		{
 			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(lua);
 			break;
+		}
 		case Systems::LuaSystem::Changed:
 		{
-			auto wasInEffectChain = m_EffectChainSystem->RemoveEffect(lua->GetFileName());
-			m_EffectChainSystem->RemoveEffectFromAvailable(lua->GetFileName());
-
-			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(lua);
-			if (wasInEffectChain)
-				m_EffectChainSystem->AddEffect(lua->GetFileName());
 			break;
 		}
 		default:
