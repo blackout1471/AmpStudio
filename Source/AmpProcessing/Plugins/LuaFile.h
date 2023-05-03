@@ -22,6 +22,10 @@ namespace AmpProcessing {
 
 			inline const std::string& GetFileName() const { return m_FileName; }
 
+			// TODO:: remove context and re-write methods to not be dependent,
+			// This is only for developing phase.
+			inline lua_State* GetState() const { return m_LuaContext.get(); }; 
+
 		private:
 			bool CheckLua(lua_State* L, int r) const;
 

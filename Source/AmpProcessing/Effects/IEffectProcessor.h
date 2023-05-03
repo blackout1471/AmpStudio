@@ -26,6 +26,11 @@ namespace AmpProcessing {
 				return parameter;
 			}
 
+		protected:
+			inline void SetCanProcess(bool value) {
+				m_CanProcess = value;
+			}
+
 		private:
 			std::vector<std::shared_ptr<Controls::EffectParameter>> m_Parameters;
 			std::string m_Name;

@@ -15,8 +15,14 @@ namespace AmpProcessing {
 
 		private:
 			void ValidateFile();
+
+			void InitializeEffect();
+
 		private:
 			const Plugins::LuaFile* m_LuaFile;
+		private:
+			const char* c_OnInitFunctionName = "OnInit";
+			const char* c_SampleReadyFunctionName = "OnReadySample";
 		};
 	}
 }
