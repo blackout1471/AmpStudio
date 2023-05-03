@@ -63,9 +63,22 @@ namespace AmpProcessing {
 			return 1;
 		}
 
+		static int SampleNewIndex(lua_State* state) {
+			// get the userdata object
+			SampleData* userdata = static_cast<SampleData*>(lua_touserdata(state, -3));
+			// get the index key
+			int key = lua_tointeger(state, -2);
+			// get the new value
+			float value = lua_tonumber(state, -1);
+			// set the value in the vector
+			(*userdata->data)[key - 1] = value;
+
+			return 0;
+		}
+
 		static const luaL_Reg kSampleMetadataTable[] = {
 			//{"__index", nullptr},
-			//{"__newindex", nullptr},
+			{"__newindex", SampleNewIndex},
 			{"__len", SampleLength},
 			{nullptr, nullptr}
 		};
