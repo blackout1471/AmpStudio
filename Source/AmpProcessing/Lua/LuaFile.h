@@ -7,7 +7,7 @@ extern "C" {
 }
 
 namespace AmpProcessing {
-	namespace Plugins {
+	namespace Lua {
 		class LuaFile
 		{
 		public:

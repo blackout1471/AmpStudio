@@ -21,7 +21,7 @@ namespace AmpProcessing {
 	private:
 		void OnSampleReady(std::vector<float>& sample);
 		void OnFileHasChanged(const Utility::File& file, const Systems::FileWatcherSystem::FileStateChanged state);
-		void OnLuaFileHasChanged(Plugins::LuaFile* const lua, const Systems::LuaSystem::StateChanged state);
+		void OnLuaFileHasChanged(Lua::LuaFile* const lua, const Systems::LuaSystem::StateChanged state);
 	private:
 		std::unique_ptr<Devices::IAudioDevice> m_AudioDevice;
 		std::unique_ptr<Systems::EffectChainSystem> m_EffectChainSystem;

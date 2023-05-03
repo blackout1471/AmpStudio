@@ -40,7 +40,7 @@ namespace AmpProcessing {
 
 		bool LuaSystem::LuaFileNew(const Utility::File& file)
 		{
-			auto lua = std::make_unique<Plugins::LuaFile>(file.GetFileName(), file.ReadContent());
+			auto lua = std::make_unique<Lua::LuaFile>(file.GetFileName(), file.ReadContent());
 			lua->Compile();
 			m_LuaFiles.push_back(std::move(lua));
 			LOG_INFO("[LuaSystem] Added new lua file and compiled it {}", file.GetFileName());
@@ -51,9 +51,9 @@ namespace AmpProcessing {
 			return true;
 		}
 
-		Plugins::LuaFile* LuaSystem::GetLuaByFileName(const std::string& name)
+		Lua::LuaFile* LuaSystem::GetLuaByFileName(const std::string& name)
 		{
-			auto it = std::find_if(m_LuaFiles.begin(), m_LuaFiles.end(), [&](const std::unique_ptr<Plugins::LuaFile>& lua) { return lua->GetFileName() == name; });
+			auto it = std::find_if(m_LuaFiles.begin(), m_LuaFiles.end(), [&](const std::unique_ptr<Lua::LuaFile>& lua) { return lua->GetFileName() == name; });
 			if (it != m_LuaFiles.end())
 				return it->get();
 

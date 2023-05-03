@@ -84,7 +84,7 @@ namespace AmpProcessing {
 		};
 
 
-		LuaEffectProcessor::LuaEffectProcessor(const Plugins::LuaFile* luaFile) : IEffectProcessor(luaFile->GetFileName()),
+		LuaEffectProcessor::LuaEffectProcessor(const Lua::LuaFile* luaFile) : IEffectProcessor(luaFile->GetFileName()),
 			m_LuaFile(luaFile)
 		{
 			ValidateFile();

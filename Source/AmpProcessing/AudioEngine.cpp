@@ -10,7 +10,7 @@
 #include "Effects/LuaEffectProcessor.h"
 
 namespace AmpProcessing {
-	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::SimpleDebugDevice>()),
+	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()),
 		m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()),
 		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins")),
 		m_LuaSystem(std::make_unique<Systems::LuaSystem>())
@@ -76,7 +76,7 @@ namespace AmpProcessing {
 		};
 	}
 
-	void AudioEngine::OnLuaFileHasChanged(Plugins::LuaFile* const lua, const Systems::LuaSystem::StateChanged state)
+	void AudioEngine::OnLuaFileHasChanged(Lua::LuaFile* const lua, const Systems::LuaSystem::StateChanged state)
 	{
 		switch (state)
 		{
