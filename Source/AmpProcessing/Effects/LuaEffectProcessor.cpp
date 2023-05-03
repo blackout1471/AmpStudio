@@ -1,5 +1,6 @@
 #include "amppch.h"
 #include "LuaEffectProcessor.h"
+#include "Lua/LuaSample.h"
 
 namespace AmpProcessing {
 	namespace Effects {
@@ -16,73 +17,6 @@ namespace AmpProcessing {
 			return true;
 		}
 
-		static void PrintStack(lua_State* L) {
-			int top = lua_gettop(L);
-
-			std::string str = "From top to bottom, the lua stack is \n";
-			for (unsigned index = top; index > 0; index--)
-			{
-				int type = lua_type(L, index);
-				switch (type)
-				{
-					// booleans
-				case LUA_TBOOLEAN:
-					str = str + (lua_toboolean(L, index) ? "true" : "false") + "\n";
-					break;
-
-					// numbers
-				case LUA_TNUMBER:
-					str = str + std::to_string(lua_tonumber(L, index)) + "\n";
-					break;
-
-					// strings
-				case LUA_TSTRING:
-					str = str + lua_tostring(L, index) + "\n";
-					break;
-
-					// other
-				default:
-					str = str + lua_typename(L, type) + "\n";
-					break;
-				}
-			}
-
-			str = str + "\n";
-			LOG_INFO(str);
-		}
-
-		const char* kSampleMetadataTableName = "sample_userdata_metatable";
-
-		struct SampleData {
-			std::vector<float>* data;
-		};
-
-		static int SampleLength(lua_State* state) {
-			auto* userdata = static_cast<SampleData*>(lua_touserdata(state, -1));
-			lua_pushinteger(state, userdata->data->size());
-			return 1;
-		}
-
-		static int SampleNewIndex(lua_State* state) {
-			// get the userdata object
-			SampleData* userdata = static_cast<SampleData*>(lua_touserdata(state, -3));
-			// get the index key
-			int key = lua_tointeger(state, -2);
-			// get the new value
-			float value = lua_tonumber(state, -1);
-			// set the value in the vector
-			(*userdata->data)[key - 1] = value;
-
-			return 0;
-		}
-
-		static const luaL_Reg kSampleMetadataTable[] = {
-			//{"__index", nullptr},
-			{"__newindex", SampleNewIndex},
-			{"__len", SampleLength},
-			{nullptr, nullptr}
-		};
-
 
 		LuaEffectProcessor::LuaEffectProcessor(const Lua::LuaFile* luaFile) : IEffectProcessor(luaFile->GetFileName()),
 			m_LuaFile(luaFile)
@@ -91,12 +25,7 @@ namespace AmpProcessing {
 
 			auto* L = m_LuaFile->GetState();
 
-			// create the metatable for the sample userdata object
-			luaL_newmetatable(L, kSampleMetadataTableName);
-			// register the metamethods for the metatable
-			luaL_setfuncs(L, kSampleMetadataTable, 0);
-
-			lua_pop(L, 1);
+			Lua::SampleRegister(L);
 		}
 
 		LuaEffectProcessor::~LuaEffectProcessor()
@@ -128,11 +57,11 @@ namespace AmpProcessing {
 			auto* L = m_LuaFile->GetState();
 
 			// create a new userdata object that references the sample vector
-			auto* userdata = static_cast<SampleData*>(lua_newuserdata(L, sizeof(SampleData)));
+			auto* userdata = static_cast<Lua::SampleData*>(lua_newuserdata(L, sizeof(Lua::SampleData)));
 			userdata->data = &sample;
 
 			// set the metatable for the userdata object
-			luaL_getmetatable(L, kSampleMetadataTableName);
+			luaL_getmetatable(L, Lua::s_SampleMetaName);
 			lua_setmetatable(L, -2);
 
 			// push the Lua function onto the stack
