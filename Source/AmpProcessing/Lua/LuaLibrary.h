@@ -8,12 +8,16 @@ extern "C" {
 
 namespace AmpProcessing {
 	namespace Lua {
+		struct SampleUserdata {
+			std::vector<float>* Data;
+		};
+
 		class LuaLibrary
 		{
 		public:
 			static void OpenLibs(lua_State* L);
 
-			static std::vector<float>* CreateSampleUserData(lua_State* L);
+			static SampleUserdata* CreateSampleUserData(lua_State* L);
 
 		private:
 			static int SampleNewIndex(lua_State* L);

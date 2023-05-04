@@ -17,6 +17,32 @@ namespace AmpProcessing {
 			return true;
 		}
 
+		static int NewParameter(lua_State* L) {
+
+			auto* gClass = (LuaEffectProcessor*)lua_touserdata(L, lua_upvalueindex(1));
+
+			auto parameter = gClass->AddParameter(Controls::EffectParameter{ "Test", 1.0f, 0.f, 0.1f });
+			lua_pushlightuserdata(L, parameter.get());
+
+			return 1;
+		}
+
+		static int GetParameterValue(lua_State* L) {
+
+			Lua::LuaFile::PrintStack(L);
+			auto* gClass = (Controls::EffectParameter*)lua_touserdata(L, lua_upvalueindex(1));
+
+			auto value = gClass->Value;
+			lua_pushnumber(L, value);
+
+			return 1;
+		}
+
+		static const struct luaL_Reg parameterLib[] = {
+			{"add", NewParameter},
+			{"getValue", GetParameterValue},
+			{NULL, NULL }
+		};
 
 		LuaEffectProcessor::LuaEffectProcessor(const Lua::LuaFile* luaFile) : IEffectProcessor(luaFile->GetFileName()),
 			m_LuaFile(luaFile)
@@ -26,6 +52,13 @@ namespace AmpProcessing {
 			auto* L = m_LuaFile->GetState();
 
 			Lua::LuaLibrary::OpenLibs(L);
+			
+			luaL_newmetatable(L, "parameter");
+			lua_pushlightuserdata(L, this);
+			luaL_setfuncs(L, parameterLib, 1);
+			lua_setglobal(L, "parameter");
+
+			InitializeEffect();
 		}
 
 		LuaEffectProcessor::~LuaEffectProcessor()
@@ -47,7 +80,11 @@ namespace AmpProcessing {
 
 		void LuaEffectProcessor::InitializeEffect()
 		{
-			m_LuaFile->CallLuaFunction(c_OnInitFunctionName);
+			auto* L = m_LuaFile->GetState();
+			
+			lua_getglobal(L, c_OnInitFunctionName);
+
+			CheckLua(L, lua_pcall(L, 0, 0, 0));
 		}
 
 		void LuaEffectProcessor::Process(std::vector<float>& sample)
@@ -55,21 +92,12 @@ namespace AmpProcessing {
 			auto* L = m_LuaFile->GetState();
 
 			auto* userdata = Lua::LuaLibrary::CreateSampleUserData(L);
-			userdata = &sample;
+			userdata->Data = &sample;
+			
+			m_LuaFile->CallLuaFunctionWithArgument(c_SampleReadyFunctionName);
 
-			// push the Lua function onto the stack
-			lua_getglobal(L, c_SampleReadyFunctionName);
-
-			// push the userdata object onto the stack as an argument to the function
-			lua_pushvalue(L, -2);
-
-			// call the function with 1 argument and 0 return values
-			CheckLua(L, lua_pcall(L, 1, 0, 0));
-
-			// remove the userdata object and function from the stack
+			// remove the userdata object
 			lua_pop(L, 1);
 		}
-
-		
 	}
 }

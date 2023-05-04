@@ -16,9 +16,9 @@ namespace AmpProcessing {
 			SampleRegister(L);
 		}
 
-		std::vector<float>* LuaLibrary::CreateSampleUserData(lua_State* L)
+		SampleUserdata* LuaLibrary::CreateSampleUserData(lua_State* L)
 		{
-			auto* userdata = static_cast<std::vector<float>*>(lua_newuserdata(L, sizeof(std::vector<float>)));
+			auto* userdata = static_cast<SampleUserdata*>(lua_newuserdata(L, sizeof(SampleUserdata)));
 			luaL_getmetatable(L, s_SampleMetaTableName);
 			lua_setmetatable(L, -2);
 
@@ -36,8 +36,8 @@ namespace AmpProcessing {
 
 		int LuaLibrary::SampleLength(lua_State* L)
 		{
-			auto* userdata = static_cast<std::vector<float>*>(lua_touserdata(L, -1));
-			lua_pushinteger(L, userdata->size());
+			auto* userdata = static_cast<SampleUserdata*>(lua_touserdata(L, -1));
+			lua_pushinteger(L, userdata->Data->size());
 			return 1;
 		}
 
