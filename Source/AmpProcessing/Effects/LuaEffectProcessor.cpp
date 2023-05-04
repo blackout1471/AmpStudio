@@ -1,7 +1,5 @@
 #include "amppch.h"
 #include "LuaEffectProcessor.h"
-#include "Lua/LuaSample.h"
-
 #include "Lua/LuaLibrary.h"
 
 namespace AmpProcessing {
