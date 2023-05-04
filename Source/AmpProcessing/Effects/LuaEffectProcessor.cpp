@@ -2,6 +2,8 @@
 #include "LuaEffectProcessor.h"
 #include "Lua/LuaSample.h"
 
+#include "Lua/LuaLibrary.h"
+
 namespace AmpProcessing {
 	namespace Effects {
 
@@ -25,7 +27,7 @@ namespace AmpProcessing {
 
 			auto* L = m_LuaFile->GetState();
 
-			Lua::SampleRegister(L);
+			Lua::LuaLibrary::OpenLibs(L);
 		}
 
 		LuaEffectProcessor::~LuaEffectProcessor()
@@ -36,13 +38,11 @@ namespace AmpProcessing {
 		{
 			if (!m_LuaFile->IsFunction(c_OnInitFunctionName))
 			{
-
 				LOG_ERROR("[LuaEffectProcessor] {} not exists for {}", c_OnInitFunctionName, m_LuaFile->GetFileName());
 			}
 
 			if (!m_LuaFile->IsFunction(c_SampleReadyFunctionName))
 			{
-
 				LOG_ERROR("[LuaEffectProcessor] {} not exists for {}", c_SampleReadyFunctionName, m_LuaFile->GetFileName());
 			}
 		}
@@ -56,16 +56,12 @@ namespace AmpProcessing {
 		{
 			auto* L = m_LuaFile->GetState();
 
-			// create a new userdata object that references the sample vector
-			auto* userdata = static_cast<Lua::SampleData*>(lua_newuserdata(L, sizeof(Lua::SampleData)));
-			userdata->data = &sample;
-
-			// set the metatable for the userdata object
-			luaL_getmetatable(L, Lua::s_SampleMetaName);
-			lua_setmetatable(L, -2);
+			auto* userdata = Lua::LuaLibrary::CreateSampleUserData(L);
+			userdata = &sample;
 
 			// push the Lua function onto the stack
 			lua_getglobal(L, c_SampleReadyFunctionName);
+
 			// push the userdata object onto the stack as an argument to the function
 			lua_pushvalue(L, -2);
 
