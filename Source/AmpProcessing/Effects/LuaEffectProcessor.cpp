@@ -18,10 +18,13 @@ namespace AmpProcessing {
 		}
 
 		static int NewParameter(lua_State* L) {
-
 			auto* gClass = (LuaEffectProcessor*)lua_touserdata(L, lua_upvalueindex(1));
 
-			auto parameter = gClass->AddParameter(Controls::EffectParameter{ "Test", 1.0f, 0.f, 0.1f });
+			std::string name = lua_tostring(L, 1);
+			float max = lua_tonumber(L, 2);
+			float min = lua_tonumber(L, 3);
+			float step = lua_tonumber(L, 4);
+			auto parameter = gClass->AddParameter(Controls::EffectParameter{ name, max, min, step });
 			lua_pushlightuserdata(L, parameter.get());
 
 			return 1;
@@ -29,8 +32,7 @@ namespace AmpProcessing {
 
 		static int GetParameterValue(lua_State* L) {
 
-			Lua::LuaFile::PrintStack(L);
-			auto* gClass = (Controls::EffectParameter*)lua_touserdata(L, lua_upvalueindex(1));
+			auto* gClass = (Controls::EffectParameter*)lua_touserdata(L, 1);
 
 			auto value = gClass->Value;
 			lua_pushnumber(L, value);
@@ -80,6 +82,7 @@ namespace AmpProcessing {
 
 		void LuaEffectProcessor::InitializeEffect()
 		{
+
 			auto* L = m_LuaFile->GetState();
 			
 			lua_getglobal(L, c_OnInitFunctionName);

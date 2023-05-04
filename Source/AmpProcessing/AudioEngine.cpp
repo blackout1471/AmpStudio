@@ -87,6 +87,12 @@ namespace AmpProcessing {
 		}
 		case Systems::LuaSystem::Changed:
 		{
+			auto existsInChain = m_EffectChainSystem->RemoveEffect(lua->GetFileName());
+			m_EffectChainSystem->RemoveEffectFromAvailable(lua->GetFileName());
+			m_EffectChainSystem->AddAvailableEffect<Effects::LuaEffectProcessor>(lua);
+			if (existsInChain)
+				m_EffectChainSystem->AddEffect(lua->GetFileName());
+
 			break;
 		}
 		default:

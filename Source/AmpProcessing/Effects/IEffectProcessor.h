@@ -24,7 +24,7 @@ namespace AmpProcessing {
 				auto parameter = std::make_shared<Controls::EffectParameter>(std::forward<Args>(args)...);
 				m_Parameters.push_back(parameter);
 				return parameter;
-			}
+			};
 
 		protected:
 			inline void SetCanProcess(bool value) {

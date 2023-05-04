@@ -12,11 +12,12 @@ namespace AmpProcessing {
 			~LuaEffectProcessor();
 
 			virtual void Process(std::vector<float>& sample) override;
+			
 
 		private:
 			void ValidateFile();
-
 			void InitializeEffect();
+
 
 		private:
 			const Lua::LuaFile* m_LuaFile;
