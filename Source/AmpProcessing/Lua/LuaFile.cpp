@@ -33,33 +33,33 @@ namespace AmpProcessing {
 
 		void LuaFile::CallGlobalFunction(const std::string& functionName) const
 		{
-			auto* context = m_LuaContext.get();
-			lua_getglobal(context, functionName.c_str());
+			auto* L = m_LuaContext.get();
+			lua_getglobal(L, functionName.c_str());
 
-			if (!lua_isfunction(context, -1))
+			if (!lua_isfunction(L, -1))
 			{
 				LOG_WARN("[LUA] {} was not found in file {}", functionName, m_FileName);
 				return;
 			}
 
-			CheckLua(lua_pcall(context, 0, 0, 0));
+			CheckLua(lua_pcall(L, 0, 0, 0));
 		}
 
 		const bool LuaFile::IsFunction(const std::string& functionName) const
 		{
-			auto* context = m_LuaContext.get();
-			lua_getglobal(context, functionName.c_str());
-			if (!lua_isfunction(context, -1))
+			auto* L = m_LuaContext.get();
+			lua_getglobal(L, functionName.c_str());
+			if (!lua_isfunction(L, -1))
 			{
 				LOG_WARN("[LUA] {} was not found in file {}", functionName, m_FileName);
 				return false;
 			}
-			lua_pop(context, 1);
+			lua_pop(L, 1);
 
 			return true;
 		}
 
-		bool LuaFile::CheckLua( int r) const
+		bool LuaFile::CheckLua(int r) const
 		{
 			if (r != LUA_OK)
 			{
