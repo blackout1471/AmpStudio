@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include <Effects/IEffectProcessor.h>
 
-static const ImVec2& operator+(const ImVec2& v1, const ImVec2& v2) {
+static const ImVec2 operator+(const ImVec2& v1, const ImVec2& v2) {
 	return ImVec2{ v1.x + v2.x, v1.y + v2.y };
 }
 
