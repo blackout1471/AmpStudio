@@ -1,12 +1,14 @@
 # AmpStudio
+AmpStudio includes an amp simulator that allows you to create custom guitar amplifier models. The simulator is based on simple digital signal processing.
+
+To create a custom amp model, you can use the Lua plugin system to define the DSP algorithm for your model. You can use any Lua library or function to implement the algorithm, and can define the parameters that control the behavior of the amp model.
+
+Once you've defined your Lua plugin, you can load it into AmpStudio by placing it in the plugin folder in the root of the application.
+
+AmpStudio is still under development and is not yet a stable release. As such, the software may contain bugs, performance issues, or other unexpected behavior.
 
 ## Images
 ![Alt text](git-resources/preview-1.png "Connected device and plugin window")
-
-## About
-Audio processing software host which is targeting guitar.
-
-The goal is to be able to write plugins with lua, and be cross platform. To be able to build amps, effect pedals with modern looking gui from any device.
 
 ## Getting started
 Get source by ```git clone --recursive https://github.com/blackout1471/AmpStudio.git```
