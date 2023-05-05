@@ -33,6 +33,8 @@ namespace AmpProcessing {
 			const std::vector<Utility::File> GetDistinctionFromFiles(std::vector<Utility::File>& files);
 			const std::vector<std::filesystem::path> GetAllFilesInDirectory(const std::string& path, const std::string& extension) const;
 
+			const std::filesystem::path GetWorkingDirectory(const std::string& path) const;
+
 		private:
 			std::vector<Utility::File> m_Files;
 			std::string m_PluginPath;

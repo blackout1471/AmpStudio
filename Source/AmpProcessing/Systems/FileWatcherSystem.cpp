@@ -54,7 +54,7 @@ namespace AmpProcessing {
 
 		void FileWatcherSystem::NewFileFound(const Utility::File& file)
 		{
-			LOG_INFO("[FileWatcher] new file found {}", file.GetFilePath());
+			LOG_INFO("[FileWatcher] new file found {}", file.GetFilePath().string());
 
 			if (m_FileStateChangedEvent)
 				m_FileStateChangedEvent(file, FileStateChanged::New);
@@ -62,7 +62,7 @@ namespace AmpProcessing {
 
 		void FileWatcherSystem::FileModifiedFound(const Utility::File& file)
 		{
-			LOG_INFO("[FileWatcher] file has been modified {}", file.GetFilePath());
+			LOG_INFO("[FileWatcher] file has been modified {}", file.GetFilePath().string());
 
 			if (m_FileStateChangedEvent)
 				m_FileStateChangedEvent(file, FileStateChanged::Changed);
@@ -85,24 +85,31 @@ namespace AmpProcessing {
 		{
 			std::vector<std::filesystem::path> paths;
 
-// This is a hard code trick when debuggin only works for windows.
-#if _DEBUG
-			auto root = std::filesystem::current_path().parent_path().parent_path();
-			auto workingDir = root / "bin" / "Debug-windows-x86_64" / "AmpStudio";//std::filesystem::relative(std::filesystem::path("bin/Debug-windows-x86_64/AmpStudio"), root);
-			auto relative_folder = workingDir / path;
-#else
-			auto workingDir = std::filesystem::current_path();
-			auto relative_folder = std::filesystem::relative(path, std::filesystem::current_path());
-#endif
+			const auto relative_folder = GetWorkingDirectory(path);
 
 			for (const auto& entry : std::filesystem::directory_iterator(relative_folder)) {
 				if (std::filesystem::is_directory(entry))
 					GetAllFilesInDirectory(entry.path().string(), extension);
 				else if (entry.path().extension() == extension)
 					paths.push_back(entry.path());
-			}
+			};
 
 			return paths;
+		}
+
+		const std::filesystem::path FileWatcherSystem::GetWorkingDirectory(const std::string& path) const
+		{
+			// This is a hard code trick when debugging only works for windows.
+#if _DEBUG
+			auto root = std::filesystem::current_path().parent_path().parent_path();
+			auto workingDir = root / "bin" / "Debug-windows-x86_64" / "AmpStudio";
+			auto relative_folder = workingDir / path;
+			return relative_folder;
+#else
+			auto workingDir = std::filesystem::current_path();
+			auto relative_folder = std::filesystem::relative(path, std::filesystem::current_path());
+			return relative_folder;
+#endif
 		}
 	}
 }

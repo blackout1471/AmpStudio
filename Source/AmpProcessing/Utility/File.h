@@ -12,7 +12,7 @@ namespace AmpProcessing {
 			const std::string ReadContent() const;
 			bool HasModifiedChanged();
 
-			inline const std::string GetFilePath() const { return m_FilePath.string(); };
+			inline const std::filesystem::path& GetFilePath() const { return m_FilePath; };
 			inline const std::string& GetFileName() const { return m_FileName; }
 			inline const std::time_t& GetLastModifiedTime() const { return m_LastModifiedTime; }
 
