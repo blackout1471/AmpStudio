@@ -1,31 +1,31 @@
 #include "amppch.h"
-#include "LuaLibrary.h"
+#include "SampleLibrary.h"
 
 namespace AmpProcessing {
 	namespace Lua {
-		const char* LuaLibrary::s_SampleMetaTableName = "SampleMetaTable";
+		const char* SampleLibrary::s_SampleMetaTableName = "SampleMetaTable";
 
-		const luaL_Reg LuaLibrary::s_SampleMetaTable[] = {
-			{"__len", LuaLibrary::SampleLength},
-			{"__newindex", LuaLibrary::SampleNewIndex},
+		const luaL_Reg SampleLibrary::s_SampleMetaTable[] = {
+			{"__len", SampleLibrary::SampleLength},
+			{"__newindex", SampleLibrary::SampleNewIndex},
 			{nullptr, nullptr}
 		};
 
-		void LuaLibrary::OpenLibs(lua_State* L)
+		void SampleLibrary::OpenLibs(lua_State* L)
 		{
 			SampleRegister(L);
 		}
 
-		SampleUserdata* LuaLibrary::CreateSampleUserData(lua_State* L)
+		SampleUserdata* SampleLibrary::CreateSampleUserData(lua_State* L, int stackPlace)
 		{
 			auto* userdata = static_cast<SampleUserdata*>(lua_newuserdata(L, sizeof(SampleUserdata)));
 			luaL_getmetatable(L, s_SampleMetaTableName);
-			lua_setmetatable(L, -2);
+			lua_setmetatable(L, stackPlace);
 
 			return userdata;
 		}
 
-		void LuaLibrary::SampleRegister(lua_State* L)
+		void SampleLibrary::SampleRegister(lua_State* L)
 		{
 			luaL_newmetatable(L, s_SampleMetaTableName);
 
@@ -34,7 +34,7 @@ namespace AmpProcessing {
 			lua_pop(L, 1);
 		}
 
-		int LuaLibrary::SampleLength(lua_State* L)
+		int SampleLibrary::SampleLength(lua_State* L)
 		{
 			auto* userdata = static_cast<SampleUserdata*>(lua_touserdata(L, -1));
 			lua_pushinteger(L, userdata->Data->size());
@@ -42,7 +42,7 @@ namespace AmpProcessing {
 		}
 
 
-		int LuaLibrary::SampleNewIndex(lua_State* L)
+		int SampleLibrary::SampleNewIndex(lua_State* L)
 		{
 			auto* userdata = static_cast<std::vector<float>*>(lua_touserdata(L, -3));
 

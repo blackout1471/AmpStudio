@@ -20,7 +20,7 @@ namespace AmpProcessing {
 		{
 			LOG_INFO("[LUA] Compiled the file {}", m_FileName);
 			int success = luaL_dostring(m_LuaContext.get(), m_FileContent.c_str());
-			CheckLua(m_LuaContext.get(), success);
+			CheckLua(success);
 
 			return success;
 		}
@@ -31,7 +31,7 @@ namespace AmpProcessing {
 			return Compile();
 		}
 
-		void LuaFile::CallLuaFunction(const std::string& functionName) const
+		void LuaFile::CallGlobalFunction(const std::string& functionName) const
 		{
 			auto* context = m_LuaContext.get();
 			lua_getglobal(context, functionName.c_str());
@@ -42,23 +42,7 @@ namespace AmpProcessing {
 				return;
 			}
 
-			CheckLua(context, lua_pcall(context, 0, 1, 0));
-		}
-
-		void LuaFile::CallLuaFunctionWithArgument(const std::string& functionName) const
-		{
-			auto* context = m_LuaContext.get();
-			lua_getglobal(context, functionName.c_str());
-
-			if (!lua_isfunction(context, -1))
-			{
-				LOG_WARN("[LUA] {} was not found in file {}", functionName, m_FileName);
-				return;
-			}
-
-			lua_pushvalue(context, -2);
-
-			CheckLua(context, lua_pcall(context, 1, 0, 0));
+			CheckLua(lua_pcall(context, 0, 0, 0));
 		}
 
 		const bool LuaFile::IsFunction(const std::string& functionName) const
@@ -75,11 +59,11 @@ namespace AmpProcessing {
 			return true;
 		}
 
-		bool LuaFile::CheckLua(lua_State* L, int r) const
+		bool LuaFile::CheckLua( int r) const
 		{
 			if (r != LUA_OK)
 			{
-				std::string errormsg = lua_tostring(L, -1);
+				std::string errormsg = lua_tostring(m_LuaContext.get(), -1);
 				LOG_ERROR("[LUA] {}", errormsg);
 
 				return false;
@@ -87,9 +71,10 @@ namespace AmpProcessing {
 			return true;
 		}
 
-		void LuaFile::PrintStack(lua_State* L)
+		void LuaFile::PrintStack()
 		{
 			std::ostringstream ss;
+			auto* L = m_LuaContext.get();
 			int top = lua_gettop(L);
 			if (top == 0)
 			{

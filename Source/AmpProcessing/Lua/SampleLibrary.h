@@ -12,22 +12,23 @@ namespace AmpProcessing {
 			std::vector<float>* Data;
 		};
 
-		class LuaLibrary
+		class SampleLibrary
 		{
 		public:
-			static void OpenLibs(lua_State* L);
+			SampleLibrary() {};
+			~SampleLibrary() {};
 
-			static SampleUserdata* CreateSampleUserData(lua_State* L);
+			void OpenLibs(lua_State* L);
+			SampleUserdata* CreateSampleUserData(lua_State* L, int stackPlace);
 
 		private:
 			static int SampleNewIndex(lua_State* L);
 			static int SampleLength(lua_State* L);
 			static void SampleRegister(lua_State* L);
+		
+		private:
 			static const luaL_Reg s_SampleMetaTable[];
 			static const char* s_SampleMetaTableName;
-		private:
-			LuaLibrary() {};
-			~LuaLibrary() {};
 		};
 	}
 }

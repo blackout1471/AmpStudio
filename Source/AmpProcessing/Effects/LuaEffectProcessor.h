@@ -2,6 +2,8 @@
 #include "IEffectProcessor.h"
 #include "Utility/File.h"
 #include "Lua/LuaFile.h"
+#include "Lua/EffectParameterLibrary.h"
+#include "Lua/SampleLibrary.h"
 
 namespace AmpProcessing {
 	namespace Effects {
@@ -18,9 +20,10 @@ namespace AmpProcessing {
 			void ValidateFile();
 			void InitializeEffect();
 
-
 		private:
 			const Lua::LuaFile* m_LuaFile;
+			Lua::EffectParameterLibrary m_EffectParameterLibrary;
+			Lua::SampleLibrary m_SampleLibrary;
 		private:
 			const char* c_OnInitFunctionName = "OnInit";
 			const char* c_SampleReadyFunctionName = "OnReadySample";
