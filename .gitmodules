@@ -14,3 +14,6 @@
 [submodule "Vendor/imgui-knobs"]
 	path = Vendor/imgui-knobs
 	url = https://github.com/altschuler/imgui-knobs.git
+[submodule "Vendor/lua"]
+	path = Vendor/lua
+	url = https://github.com/lua/lua.git

@@ -15,6 +15,8 @@ namespace AmpStudio {
 		{
 			// Setup application data
 			AmpProcessing::Logger::Logger::Get().Init();
+
+
 			LOG_ASSERT(Application::s_ApplicationNotCreated, "Application already exists");
 			Application::s_ApplicationNotCreated = true;
 
@@ -24,8 +26,11 @@ namespace AmpStudio {
 			AddWindow(new Views::EffectChainView());
 			AddWindow(new Views::AudioControlView());
 
+			
 			// Init
 			Window::Init();
+			
+			AmpStudio::Singleton::getInstance().GetAudio()->Init();
 		}
 
 		Application::~Application()

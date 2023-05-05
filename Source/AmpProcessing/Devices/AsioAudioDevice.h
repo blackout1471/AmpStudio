@@ -8,6 +8,9 @@
 
 namespace AmpProcessing {
 	namespace Devices {
+		/// <summary>
+		/// Class have functionlity for how to load in an asio audio driver device.
+		/// </summary>
 		class AsioAudioDevice : public IAudioDevice
 		{
 		public:
