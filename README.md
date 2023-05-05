@@ -12,7 +12,7 @@ AmpStudio is still under development and is not yet a stable release. As such, t
 
 ## Getting started
 Get source by ```git clone --recursive https://github.com/blackout1471/AmpStudio.git```
-Run the GenerateSolution.bat to generate solution for guitarblade.
+Run the GenerateSolution.bat to generate solution for amp studio.
 
 ## Lua Documentation
 ### Audio effects plugins
