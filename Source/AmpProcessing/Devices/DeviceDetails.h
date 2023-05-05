@@ -2,6 +2,10 @@
 #include <string>
 namespace AmpProcessing {
 	namespace Devices {
+
+		/// <summary>
+		/// Type to use for the devices details.
+		/// </summary>
 		struct DeviceDetails {
 			std::string name;
 
