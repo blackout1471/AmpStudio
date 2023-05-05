@@ -3,6 +3,9 @@
 
 namespace AmpProcessing {
 	namespace Converters {
+		/// <summary>
+		/// Converts int 32 lsb to and from iee float.
+		/// </summary>
 		class Int32LsbAudioConverter : public IAudioConverter
 		{
 		public:
