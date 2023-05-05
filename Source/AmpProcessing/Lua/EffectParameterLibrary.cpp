@@ -26,7 +26,7 @@ namespace AmpProcessing {
 		{
 			luaL_newmetatable(L, "parameter");
 			lua_pushlightuserdata(L, effectProcessor);
-			luaL_setfuncs(L, s_MetaTable, 1);
+			luaL_setfuncs(L, s_MetaTable, 1); // TODO:: nups are hardcoded, maybe find a way to not :)
 			lua_setglobal(L, "parameter");
 		}
 
