@@ -53,7 +53,7 @@ The plan is to get it to build for Windows, Linux, ARM and mac os.
 In the future i would like the application to be able to have a browse section where users can upload their effect plugins and be able download other created plugins.
 
 ## Contribute
-We welcome contributions to AmpStudio! If you'd like to contribute, please follow these steps:
+I welcome contributions to AmpStudio! If you'd like to contribute, please follow these steps:
 
 Fork the repository and create a new branch for your feature or bug fix.
 Make your changes and test them thoroughly.
@@ -66,4 +66,4 @@ If you're unsure about anything, feel free to open an issue to discuss it.
 If you encounter a bug in AmpStudio, please open an issue on the GitHub repository with a detailed description of the bug and steps to reproduce it. Please include any relevant error messages or logs.
 
 ## Feature Requests
-If you have an idea for a new feature or improvement to AmpStudio, please open an issue on the GitHub repository with a detailed description of the feature and its use case. We'll review the request and let you know if it's something we can add to the project.
+If you have an idea for a new feature or improvement to AmpStudio, please open an issue on the GitHub repository with a detailed description of the feature and its use case. I will review the request and let you know if it's something we can add to the project.
