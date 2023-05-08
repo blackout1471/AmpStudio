@@ -6,7 +6,8 @@ namespace AmpStudio {
 	namespace Views {
 		class AudioControlView : public Application::SubWindow {
 		public:
-			AudioControlView() : Application::SubWindow({ "Audio control" }) {}
+			AudioControlView() : Application::SubWindow({ "Audio control" }), m_CurrentInputValue(0), m_CurrentOutputValue(0)
+			{}
 			~AudioControlView() {};
 
 		protected:
@@ -22,7 +23,31 @@ namespace AmpStudio {
 
 			inline virtual void OnDraw() override
 			{
+				ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Resizable 
+					 | ImGuiTableFlags_BordersV | ImGuiTableFlags_ContextMenuInBody;
+
+				ImGui::BeginTable("table1", 2, flags);
+
+				ImGui::TableNextRow();
+
+				ImGui::TableSetColumnIndex(0);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Input volume");
+				ImGui::PushItemWidth(-FLT_MIN);
+				ImGui::SliderInt("##input_slider", &m_CurrentInputValue, -60, 6);
+
+				ImGui::TableSetColumnIndex(1);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Output volume");
+				ImGui::PushItemWidth(-FLT_MIN);
+				ImGui::SliderInt("##output_sluder", &m_CurrentOutputValue, -60, 6);
+
+				ImGui::EndTable();
 			}
+
+		private:
+			int m_CurrentInputValue;
+			int m_CurrentOutputValue;
 		};
 	}
 }
