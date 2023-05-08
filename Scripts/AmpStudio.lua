@@ -7,6 +7,8 @@ project "AmpStudio"
 	cppdialect "C++17"
 	staticruntime "on"
 
+	debugdir("../bin/" .. outputdir .. "/%{prj.name}")
+
 	targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
