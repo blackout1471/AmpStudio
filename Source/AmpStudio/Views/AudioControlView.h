@@ -6,7 +6,8 @@ namespace AmpStudio {
 	namespace Views {
 		class AudioControlView : public Application::SubWindow {
 		public:
-			AudioControlView() : Application::SubWindow({ "Audio control" }), m_CurrentInputValue(0), m_CurrentOutputValue(0)
+			AudioControlView() : Application::SubWindow({ "Audio control" }), m_CurrentInputValue(0), m_CurrentOutputValue(0),
+				m_CurrentInputDecibel(0.f), m_CurrentOutputDecibel(0)
 			{}
 			~AudioControlView() {};
 
@@ -44,7 +45,7 @@ namespace AmpStudio {
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Output volume");
 				ImGui::PushItemWidth(-FLT_MIN);
-				ImGui::ProgressBar(1.f);
+				ImGui::ProgressBar(m_CurrentInputDecibel);
 				ImGui::SliderInt("##output_sluder", &m_CurrentOutputValue, -60, 6);
 				ImGui::PopItemWidth();
 			}
@@ -54,7 +55,7 @@ namespace AmpStudio {
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Input volume");
 				ImGui::PushItemWidth(-FLT_MIN);
-				ImGui::ProgressBar(1.f);
+				ImGui::ProgressBar(m_CurrentInputValue);
 				ImGui::SliderInt("##input_slider", &m_CurrentInputValue, -60, 6);
 				ImGui::PopItemWidth();
 			}
