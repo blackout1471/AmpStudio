@@ -5,8 +5,6 @@
 
 #include "Effects/AtanDistortion.h"
 #include "Effects/MesaCabinet.h"
-#include "Effects/HardClipper.h"
-#include "Effects/ReverbTest.h"
 #include "Effects/LuaEffectProcessor.h"
 
 #include "Utility/AudioUtility.h"
@@ -32,8 +30,6 @@ namespace AmpProcessing {
 
 		m_EffectChainSystem->AddAvailableEffect<Effects::AtanDistortion>();
 		m_EffectChainSystem->AddAvailableEffect<Effects::MesaCabinet>();
-		//m_EffectChainSystem->AddAvailableEffect<Effects::ReverbTest>();
-		m_EffectChainSystem->AddAvailableEffect<Effects::HardClipper>();
 
 		auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();

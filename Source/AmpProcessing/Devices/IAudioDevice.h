@@ -17,13 +17,13 @@ namespace AmpProcessing {
 			/// Opens the device with the specific name given.
 			/// </summary>
 			/// <param name="deviceName">- The name of the device to use for input / output.</param>
-			/// <returns>- Whether the device could be opened</returns>
+			/// <returns>Whether the device could be opened</returns>
 			virtual bool Open(const std::string& deviceName) = 0;
 
 			/// <summary>
 			/// Closes the current device.
 			/// </summary>
-			/// <returns>- Whether the device could be cloed.</returns>
+			/// <returns>Whether the device could be closed.</returns>
 			virtual bool Close() = 0;
 
 
