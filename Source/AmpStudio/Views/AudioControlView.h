@@ -39,7 +39,7 @@ namespace AmpStudio {
 				ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Resizable 
 					 | ImGuiTableFlags_BordersV | ImGuiTableFlags_ContextMenuInBody;
 
-				ImGui::BeginTable("table1", 2, flags);
+				ImGui::BeginTable("audioTable", 2, flags);
 
 				ImGui::TableNextRow();
 
@@ -54,21 +54,29 @@ namespace AmpStudio {
 
 			void DrawInputSection()
 			{
+				auto* engine = Singleton::getInstance().GetAudio();
+
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Input volume");
 				ImGui::PushItemWidth(-FLT_MIN);
 				ImGui::ProgressBar(m_CurrentDbInputValue, {-FLT_MIN, 0}, "");
-				ImGui::SliderInt("##input_slider", &m_CurrentInputValue, -60, 6);
+				if (ImGui::SliderInt("##input_slider", &m_CurrentInputValue, -60, 6))
+					engine->SetDesiredInputDbLevel(m_CurrentInputValue);
+
 				ImGui::PopItemWidth();
 			}
 
 			void DrawOutputSection()
 			{
+				auto* engine = Singleton::getInstance().GetAudio();
+
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Output volume");
 				ImGui::PushItemWidth(-FLT_MIN);
 				ImGui::ProgressBar(m_CurrentDbOutputValue, {-FLT_MIN, 0}, "");
-				ImGui::SliderInt("##output_sluder", &m_CurrentOutputValue, -60, 6);
+				if (ImGui::SliderInt("##output_slider", &m_CurrentOutputValue, -60, 6))
+					engine->SetDesiredOutputDbLevel(m_CurrentOutputValue);
+
 				ImGui::PopItemWidth();
 			}
 

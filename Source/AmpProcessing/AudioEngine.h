@@ -21,6 +21,9 @@ namespace AmpProcessing {
 		inline const float GetInputDbLevel() const { return m_InputDbLevel; }
 		inline const float GetOutputDbLevel() const { return m_OutputDbLevel; }
 
+		inline void SetDesiredInputDbLevel(int desiredLevel) { m_DesiredInputDbLevel = desiredLevel; }
+		inline void SetDesiredOutputDbLevel(int desiredLevel) { m_DesiredOutputDbLevel = desiredLevel; }
+
 	private:
 		void OnSampleReady(std::vector<float>& sample);
 		void OnFileHasChanged(const Utility::File& file, const Systems::FileWatcherSystem::FileStateChanged state);
@@ -33,6 +36,9 @@ namespace AmpProcessing {
 
 		float m_InputDbLevel;
 		float m_OutputDbLevel;
+
+		int m_DesiredInputDbLevel;
+		int m_DesiredOutputDbLevel;
 	};
 }
 

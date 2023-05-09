@@ -20,6 +20,14 @@ namespace AmpProcessing {
 				return dbLevel;
 			};
 
+			inline static void AdjustToDecibelLevel(int dbLevel, std::vector<float>& sample) {
+				float gainFactor = std::pow(10.0f, dbLevel / 20.0f);
+
+				for (size_t i = 0; i < sample.size(); ++i) {
+					sample[i] *= gainFactor;
+				};
+			};
+
 		private:
 			inline AudioUtility() {};
 			inline ~AudioUtility() {};

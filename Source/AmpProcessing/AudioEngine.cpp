@@ -15,7 +15,8 @@ namespace AmpProcessing {
 	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()),
 		m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()),
 		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins")),
-		m_LuaSystem(std::make_unique<Systems::LuaSystem>()), m_InputDbLevel(-60), m_OutputDbLevel(-60)
+		m_LuaSystem(std::make_unique<Systems::LuaSystem>()), 
+		m_InputDbLevel(-60), m_OutputDbLevel(-60), m_DesiredInputDbLevel(0), m_DesiredOutputDbLevel(0)
 	{}
 
 	AudioEngine::~AudioEngine()
@@ -50,6 +51,7 @@ namespace AmpProcessing {
 	{
 		auto& effects = m_EffectChainSystem->GetEffectChain();
 
+		Utility::AudioUtility::AdjustToDecibelLevel(m_DesiredInputDbLevel, sample);
 		m_InputDbLevel = Utility::AudioUtility::CalculateDecibelLevel(sample);
 
 		for (size_t i = 0; i < effects.size(); i++)
@@ -60,6 +62,7 @@ namespace AmpProcessing {
 			effects[i]->Process(sample);
 		}
 
+		Utility::AudioUtility::AdjustToDecibelLevel(m_DesiredOutputDbLevel, sample);
 		m_OutputDbLevel = Utility::AudioUtility::CalculateDecibelLevel(sample);
 	}
 
