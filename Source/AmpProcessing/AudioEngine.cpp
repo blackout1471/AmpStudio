@@ -9,11 +9,13 @@
 #include "Effects/ReverbTest.h"
 #include "Effects/LuaEffectProcessor.h"
 
+#include "Utility/AudioUtility.h"
+
 namespace AmpProcessing {
 	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()),
 		m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()),
 		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins")),
-		m_LuaSystem(std::make_unique<Systems::LuaSystem>())
+		m_LuaSystem(std::make_unique<Systems::LuaSystem>()), m_InputDbLevel(-60), m_OutputDbLevel(-60)
 	{}
 
 	AudioEngine::~AudioEngine()
@@ -48,6 +50,8 @@ namespace AmpProcessing {
 	{
 		auto& effects = m_EffectChainSystem->GetEffectChain();
 
+		m_InputDbLevel = Utility::AudioUtility::CalculateDecibelLevel(sample);
+
 		for (size_t i = 0; i < effects.size(); i++)
 		{
 			if (!effects[i]->GetCanProcess())
@@ -55,6 +59,8 @@ namespace AmpProcessing {
 
 			effects[i]->Process(sample);
 		}
+
+		m_OutputDbLevel = Utility::AudioUtility::CalculateDecibelLevel(sample);
 	}
 
 	void AudioEngine::OnFileHasChanged(const Utility::File& file, const Systems::FileWatcherSystem::FileStateChanged state)

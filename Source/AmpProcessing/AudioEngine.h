@@ -18,6 +18,9 @@ namespace AmpProcessing {
 
 		const std::vector<std::unique_ptr<Effects::IEffectProcessor>>& GetAvailableEffects() const { return m_EffectChainSystem->GetAvailableEffects(); }
 
+		inline const float GetInputDbLevel() const { return m_InputDbLevel; }
+		inline const float GetOutputDbLevel() const { return m_OutputDbLevel; }
+
 	private:
 		void OnSampleReady(std::vector<float>& sample);
 		void OnFileHasChanged(const Utility::File& file, const Systems::FileWatcherSystem::FileStateChanged state);
@@ -27,6 +30,9 @@ namespace AmpProcessing {
 		std::unique_ptr<Systems::EffectChainSystem> m_EffectChainSystem;
 		std::unique_ptr<Systems::FileWatcherSystem> m_FileWatcher;
 		std::unique_ptr<Systems::LuaSystem> m_LuaSystem;
+
+		float m_InputDbLevel;
+		float m_OutputDbLevel;
 	};
 }
 
