@@ -15,7 +15,8 @@ namespace AmpStudio {
 
 			inline virtual void OnInit() override
 			{
-
+				m_AudioEngine = Singleton::getInstance().GetAudio();
+				m_DeviceNames = m_AudioEngine->GetAvailableDevices();
 			};
 
 			inline static float deltaTime = 0.f;
@@ -34,12 +35,14 @@ namespace AmpStudio {
 				m_CurrentDbOutputValue = (engine->GetOutputDbLevel() + 60.f) / 60.f;
 			};
 
+			inline static int currentIndex = 0;
+
 			inline virtual void OnDraw() override
 			{
 				ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Resizable 
 					 | ImGuiTableFlags_BordersV | ImGuiTableFlags_ContextMenuInBody;
 
-				ImGui::BeginTable("audioTable", 2, flags);
+				ImGui::BeginTable("audioTable", 3, flags);
 
 				ImGui::TableNextRow();
 
@@ -47,6 +50,21 @@ namespace AmpStudio {
 				DrawInputSection();
 
 				ImGui::TableSetColumnIndex(1);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Audio device");
+				if (ImGui::BeginCombo("", m_DeviceNames[currentIndex].c_str())) {
+					for (int i = 0; i < m_DeviceNames.size(); ++i) {
+						const bool isSelected = (currentIndex == i);
+						if (ImGui::Selectable(m_DeviceNames[i].c_str(), isSelected))
+							currentIndex = i;
+
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+
+				ImGui::TableSetColumnIndex(2);
 				DrawOutputSection();
 
 				ImGui::EndTable();
@@ -54,7 +72,7 @@ namespace AmpStudio {
 
 			void DrawInputSection()
 			{
-				auto* engine = Singleton::getInstance().GetAudio();
+				auto* engine = m_AudioEngine;
 
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Input volume");
@@ -68,7 +86,7 @@ namespace AmpStudio {
 
 			void DrawOutputSection()
 			{
-				auto* engine = Singleton::getInstance().GetAudio();
+				auto* engine = m_AudioEngine;
 
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Output volume");
@@ -81,6 +99,10 @@ namespace AmpStudio {
 			}
 
 		private:
+			AmpProcessing::AudioEngine* m_AudioEngine;
+
+			std::vector<std::string> m_DeviceNames;
+
 			int m_CurrentInputValue;
 			float m_CurrentDbInputValue;
 
