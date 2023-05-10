@@ -40,7 +40,8 @@ namespace AmpProcessing {
 			bool LoadDeviceDetails();
 			bool SetupBuffers();
 			bool LoadChannelInformation();
-			bool SetupDeviceCallbacks();
+			bool SetupDeviceCallbacks();	
+			bool CreateBuffers(uint32_t bufferSize);
 
 			long OnAsioMessage(long selector, long value, void* message, double* opt);
 			void OnAsioBufferSwitch(long doubleBufferIndex, ASIOBool& process);

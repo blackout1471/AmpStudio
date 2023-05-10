@@ -28,6 +28,7 @@ namespace AmpProcessing {
 		inline const Devices::DeviceDetails& GetDeviceDetails() const { return m_AudioDevice->GetDetails(); }
 
 		inline bool SetSampleRate(uint32_t sampleRate) { return m_AudioDevice->SetSampleRate(sampleRate); }
+		inline bool SetBufferSize(uint32_t bufferSize) { return m_AudioDevice->SetBufferSize(bufferSize); }
 
 	private:
 		void OnSampleReady(std::vector<float>& sample);

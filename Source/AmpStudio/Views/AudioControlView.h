@@ -86,12 +86,13 @@ namespace AmpStudio {
 				ImGui::Text("Audio device");
 
 				ImGui::Combo("##device_names", &m_CurrentDeviceIndex, &StringGetter, &m_DeviceNames, m_DeviceNames.size());
-				ImGui::Combo("##buffer_sizes", &m_CurrentBufferSizeIndex, &StringGetter, &m_BufferSizes, m_BufferSizes.size());
+				
+				
+				if (ImGui::Combo("##buffer_sizes", &m_CurrentBufferSizeIndex, &StringGetter, &m_BufferSizes, m_BufferSizes.size()))
+					m_AudioEngine->SetBufferSize(std::stoul(m_BufferSizes[m_CurrentBufferSizeIndex]));
+
 				if (ImGui::Combo("##sample_rates", &m_CurrentSampleRateIndex, &StringGetter, &m_SampleRates, m_SampleRates.size()))
-				{
-					auto val = std::stoul(m_SampleRates[m_CurrentSampleRateIndex]);
-					m_AudioEngine->SetSampleRate(val);
-				}
+					m_AudioEngine->SetSampleRate(std::stoul(m_SampleRates[m_CurrentSampleRateIndex]));
 			}
 
 

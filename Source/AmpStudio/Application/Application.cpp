@@ -30,7 +30,6 @@ namespace AmpStudio {
 			// Init
 			AmpStudio::Singleton::getInstance().GetAudio()->Init();
 			Window::Init();
-			
 		}
 
 		Application::~Application()
