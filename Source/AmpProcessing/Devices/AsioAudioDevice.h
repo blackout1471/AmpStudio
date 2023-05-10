@@ -20,9 +20,9 @@ namespace AmpProcessing {
 			bool Open(const std::string& deviceName) override;
 			bool Close() override;
 
-		public:
+			inline virtual const DeviceDetails& GetDetails() const override { return m_DeviceDetails; };
+
 			const std::vector<std::string> GetDeviceNames() override;
-			const uint32_t GetSampleRate() const { return m_DeviceDetails.sampleRate; }
 
 		private:
 			bool LoadDriver(const std::string& driverName);
@@ -48,6 +48,7 @@ namespace AmpProcessing {
 
 		private:
 			static AsioAudioDevice* s_CurrentContext;
+
 		};
 	}
 }

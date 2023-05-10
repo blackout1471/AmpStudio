@@ -30,6 +30,9 @@ namespace AmpProcessing {
 			/// <returns>The available devices.</returns>
 			virtual const std::vector<std::string> GetDeviceNames() = 0;
 
+			/// <returns>Returns the details about the device current state.</returns>
+			virtual const DeviceDetails& GetDetails() const = 0;
+
 			/// <summary>
 			/// Sets the callback for when a new sample is ready to be processed.
 			/// </summary>
