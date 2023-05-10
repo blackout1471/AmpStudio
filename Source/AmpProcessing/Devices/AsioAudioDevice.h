@@ -16,12 +16,17 @@ namespace AmpProcessing {
 		public:
 			AsioAudioDevice();
 			~AsioAudioDevice();
-
+			
+			/// <inheritdoc />
 			bool Open(const std::string& deviceName) override;
+
+			/// <inheritdoc />
 			bool Close() override;
 
+			/// <inheritdoc />
 			inline virtual const DeviceDetails& GetDetails() const override { return m_DeviceDetails; };
 
+			/// <inheritdoc />
 			const std::vector<std::string> GetDeviceNames() override;
 
 		private:
