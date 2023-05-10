@@ -7,7 +7,8 @@ namespace AmpStudio {
 		class AudioControlView : public Application::SubWindow {
 		public:
 			AudioControlView() : Application::SubWindow({ "Audio control" }), m_CurrentInputValue(0), m_CurrentOutputValue(0),
-				m_CurrentDbInputValue(-60), m_CurrentDbOutputValue(-60)
+				m_CurrentDbInputValue(-60), m_CurrentDbOutputValue(-60), m_DeviceNames(), m_CurrentDeviceIndex(0), m_CurrentBufferSizeIndex(0),
+				m_BufferSizes({ "16", "32", "64", "128", "256", "512" }), m_CurrentSampleRateIndex(0), m_SampleRates({ "44100", "48000" })
 			{}
 			~AudioControlView() {};
 
@@ -35,8 +36,6 @@ namespace AmpStudio {
 				m_CurrentDbOutputValue = (engine->GetOutputDbLevel() + 60.f) / 60.f;
 			};
 
-			inline static int currentIndex = 0;
-
 			inline virtual void OnDraw() override
 			{
 				ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Resizable 
@@ -50,25 +49,23 @@ namespace AmpStudio {
 				DrawInputSection();
 
 				ImGui::TableSetColumnIndex(1);
-				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Audio device");
-				if (ImGui::BeginCombo("", m_DeviceNames[currentIndex].c_str())) {
-					for (int i = 0; i < m_DeviceNames.size(); ++i) {
-						const bool isSelected = (currentIndex == i);
-						if (ImGui::Selectable(m_DeviceNames[i].c_str(), isSelected))
-							currentIndex = i;
-
-						if (isSelected)
-							ImGui::SetItemDefaultFocus();
-					}
-					ImGui::EndCombo();
-				}
+				DrawDeviceSection();
 
 				ImGui::TableSetColumnIndex(2);
 				DrawOutputSection();
 
 				ImGui::EndTable();
 			}
+
+			void DrawDeviceSection()
+			{
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Audio device");
+				DrawComboBox(m_DeviceNames, m_CurrentDeviceIndex, "##device_names");
+				DrawComboBox(m_BufferSizes, m_CurrentBufferSizeIndex, "##buffer_sizes");
+				DrawComboBox(m_SampleRates, m_CurrentSampleRateIndex, "##sample_rates");
+			}
+
 
 			void DrawInputSection()
 			{
@@ -98,10 +95,32 @@ namespace AmpStudio {
 				ImGui::PopItemWidth();
 			}
 
+			void DrawComboBox(const std::vector<std::string>& items, int& index, const char* label = 0)
+			{
+				if (ImGui::BeginCombo(label, items[index].c_str())) {
+					for (int i = 0; i < items.size(); ++i) {
+						const bool isSelected = (index == i);
+						if (ImGui::Selectable(items[i].c_str(), isSelected))
+							index = i;
+
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+			}
+
 		private:
 			AmpProcessing::AudioEngine* m_AudioEngine;
 
+			int m_CurrentDeviceIndex;
 			std::vector<std::string> m_DeviceNames;
+
+			int m_CurrentBufferSizeIndex;
+			std::vector<std::string> m_BufferSizes;
+
+			int m_CurrentSampleRateIndex;
+			std::vector<std::string> m_SampleRates;
 
 			int m_CurrentInputValue;
 			float m_CurrentDbInputValue;
