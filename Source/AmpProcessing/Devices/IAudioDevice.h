@@ -33,6 +33,20 @@ namespace AmpProcessing {
 			virtual const DeviceDetails& GetDetails() const = 0;
 
 			/// <summary>
+			/// Sets a new sample rate for the device
+			/// </summary>
+			/// <param name="sampleRate">- The new samplerate</param>
+			/// <returns>If new sample rate could be set.</returns>
+			virtual bool SetSampleRate(uint32_t sampleRate) = 0;
+
+			/// <summary>
+			/// Sets a new buffer size for the device
+			/// </summary>
+			/// <param name="sampleRate">- The new buffer size</param>
+			/// <returns>If new buffer size could be set.</returns>
+			virtual bool SetBufferSize(uint32_t bufferSize) = 0;
+
+			/// <summary>
 			/// Sets the callback for when a new sample is ready to be processed.
 			/// </summary>
 			/// <param name="callback">- The callback to attach.</param>

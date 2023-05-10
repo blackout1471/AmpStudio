@@ -25,8 +25,9 @@ namespace AmpProcessing {
 		inline void SetDesiredOutputDbLevel(int desiredLevel) { m_DesiredOutputDbLevel = desiredLevel; }
 
 		inline const std::vector<std::string> GetAvailableDevices() const { return m_AudioDevice->GetDeviceNames(); }
-
 		inline const Devices::DeviceDetails& GetDeviceDetails() const { return m_AudioDevice->GetDetails(); }
+
+		inline bool SetSampleRate(uint32_t sampleRate) { return m_AudioDevice->SetSampleRate(sampleRate); }
 
 	private:
 		void OnSampleReady(std::vector<float>& sample);
@@ -38,7 +39,7 @@ namespace AmpProcessing {
 		std::unique_ptr<Systems::FileWatcherSystem> m_FileWatcher;
 		std::unique_ptr<Systems::LuaSystem> m_LuaSystem;
 
-		// TODO: Move db calculation & getters into device
+		// TODO: Move db calculation & getters into an equalizer or smth :)
 		float m_InputDbLevel;
 		float m_OutputDbLevel;
 

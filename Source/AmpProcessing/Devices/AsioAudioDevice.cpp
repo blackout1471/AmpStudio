@@ -258,5 +258,19 @@ namespace AmpProcessing {
 		{
 			
 		}
+
+		bool AsioAudioDevice::SetSampleRate(uint32_t sampleRate)
+		{
+			int code = ASIOSetSampleRate(sampleRate);
+			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not set sample rate for device", code);
+			m_DeviceDetails.sampleRate = sampleRate;
+
+			return true;
+		}
+
+		bool AsioAudioDevice::SetBufferSize(uint32_t bufferSize)
+		{
+			return true;
+		}
 	}
 }

@@ -29,6 +29,12 @@ namespace AmpProcessing {
 			/// <inheritdoc />
 			const std::vector<std::string> GetDeviceNames() override;
 
+			/// <inheritdoc />
+			virtual bool SetSampleRate(uint32_t sampleRate) override;
+
+			/// <inheritdoc />
+			virtual bool SetBufferSize(uint32_t bufferSize) override;
+
 		private:
 			bool LoadDriver(const std::string& driverName);
 			bool LoadDeviceDetails();
@@ -53,7 +59,6 @@ namespace AmpProcessing {
 
 		private:
 			static AsioAudioDevice* s_CurrentContext;
-
 		};
 	}
 }
