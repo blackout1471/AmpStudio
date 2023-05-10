@@ -1,6 +1,5 @@
 #pragma once
-#include <vector>
-#include <string>
+#include "DeviceDetails.h"
 
 namespace AmpProcessing {
 	namespace Devices {

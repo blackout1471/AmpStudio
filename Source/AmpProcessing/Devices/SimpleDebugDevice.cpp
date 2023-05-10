@@ -47,5 +47,10 @@ namespace AmpProcessing {
         {
             return std::vector<std::string> { "DebugFakeDevice" };
         }
+
+        const DeviceDetails& SimpleDebugDevice::GetDetails() const
+        {
+            return {};
+        }
     }
 }

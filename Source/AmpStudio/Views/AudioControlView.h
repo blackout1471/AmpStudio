@@ -8,16 +8,37 @@ namespace AmpStudio {
 		public:
 			AudioControlView() : Application::SubWindow({ "Audio control" }), m_CurrentInputValue(0), m_CurrentOutputValue(0),
 				m_CurrentDbInputValue(-60), m_CurrentDbOutputValue(-60), m_DeviceNames(), m_CurrentDeviceIndex(0), m_CurrentBufferSizeIndex(0),
-				m_BufferSizes({ "16", "32", "64", "128", "256", "512" }), m_CurrentSampleRateIndex(0), m_SampleRates({ "44100", "48000" })
+				m_BufferSizes({ "16", "32", "64", "128", "256", "512"}), m_CurrentSampleRateIndex(0), m_SampleRates({ "44100", "48000"})
 			{}
 			~AudioControlView() {};
 
 		protected:
+			inline static bool StringGetter(void* data, int index, const char** out_str) {
+
+				*out_str = (*static_cast<std::vector<std::string>*>(data))[index].c_str();
+
+				return true;
+			}
+
+			inline static int32_t GetIndex(const std::vector<std::string>& vec, int value) {
+				auto str = std::to_string(value);
+
+				auto iter = std::find(vec.begin(), vec.end(), str);
+				if (iter != vec.end())
+					return std::distance(vec.begin(), iter);
+
+				return -1;
+			};
 
 			inline virtual void OnInit() override
 			{
 				m_AudioEngine = Singleton::getInstance().GetAudio();
 				m_DeviceNames = m_AudioEngine->GetAvailableDevices();
+
+				const auto& details = m_AudioEngine->GetDeviceDetails();
+
+				m_CurrentSampleRateIndex = GetIndex(m_SampleRates, (int)details.sampleRate);
+				m_CurrentBufferSizeIndex = GetIndex(m_BufferSizes, details.prefferedBufferSize);
 			};
 
 			inline static float deltaTime = 0.f;
@@ -57,13 +78,16 @@ namespace AmpStudio {
 				ImGui::EndTable();
 			}
 
+			
+
 			void DrawDeviceSection()
 			{
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Audio device");
-				DrawComboBox(m_DeviceNames, m_CurrentDeviceIndex, "##device_names");
-				DrawComboBox(m_BufferSizes, m_CurrentBufferSizeIndex, "##buffer_sizes");
-				DrawComboBox(m_SampleRates, m_CurrentSampleRateIndex, "##sample_rates");
+
+				ImGui::Combo("##device_names", &m_CurrentDeviceIndex, &StringGetter, &m_DeviceNames, m_DeviceNames.size());
+				ImGui::Combo("##buffer_sizes", &m_CurrentBufferSizeIndex, &StringGetter, &m_BufferSizes, m_BufferSizes.size());
+				ImGui::Combo("##sample_rates", &m_CurrentSampleRateIndex, &StringGetter, &m_SampleRates, m_SampleRates.size());
 			}
 
 
@@ -88,26 +112,11 @@ namespace AmpStudio {
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Output volume");
 				ImGui::PushItemWidth(-FLT_MIN);
-				ImGui::ProgressBar(m_CurrentDbOutputValue, {-FLT_MIN, 0}, "");
+				ImGui::ProgressBar(m_CurrentDbOutputValue, { -FLT_MIN, 0 }, "");
 				if (ImGui::SliderInt("##output_slider", &m_CurrentOutputValue, -60, 6))
 					engine->SetDesiredOutputDbLevel(m_CurrentOutputValue);
 
 				ImGui::PopItemWidth();
-			}
-
-			void DrawComboBox(const std::vector<std::string>& items, int& index, const char* label = 0)
-			{
-				if (ImGui::BeginCombo(label, items[index].c_str())) {
-					for (int i = 0; i < items.size(); ++i) {
-						const bool isSelected = (index == i);
-						if (ImGui::Selectable(items[i].c_str(), isSelected))
-							index = i;
-
-						if (isSelected)
-							ImGui::SetItemDefaultFocus();
-					}
-					ImGui::EndCombo();
-				}
 			}
 
 		private:

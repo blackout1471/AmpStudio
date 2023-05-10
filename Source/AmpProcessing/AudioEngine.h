@@ -26,6 +26,8 @@ namespace AmpProcessing {
 
 		inline const std::vector<std::string> GetAvailableDevices() const { return m_AudioDevice->GetDeviceNames(); }
 
+		inline const Devices::DeviceDetails& GetDeviceDetails() const { return m_AudioDevice->GetDetails(); }
+
 	private:
 		void OnSampleReady(std::vector<float>& sample);
 		void OnFileHasChanged(const Utility::File& file, const Systems::FileWatcherSystem::FileStateChanged state);

@@ -28,9 +28,9 @@ namespace AmpStudio {
 
 			
 			// Init
+			AmpStudio::Singleton::getInstance().GetAudio()->Init();
 			Window::Init();
 			
-			AmpStudio::Singleton::getInstance().GetAudio()->Init();
 		}
 
 		Application::~Application()
