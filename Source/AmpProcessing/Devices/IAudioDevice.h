@@ -1,6 +1,5 @@
 #pragma once
-#include <vector>
-#include <string>
+#include "DeviceDetails.h"
 
 namespace AmpProcessing {
 	namespace Devices {
@@ -11,24 +10,41 @@ namespace AmpProcessing {
 		class IAudioDevice {
 		public:
 			IAudioDevice() = default;
-			~IAudioDevice() = default;
+			virtual ~IAudioDevice() = default;
 
 			/// <summary>
 			/// Opens the device with the specific name given.
 			/// </summary>
 			/// <param name="deviceName">- The name of the device to use for input / output.</param>
-			/// <returns>- Whether the device could be opened</returns>
+			/// <returns>Whether the device could be opened</returns>
 			virtual bool Open(const std::string& deviceName) = 0;
 
 			/// <summary>
 			/// Closes the current device.
 			/// </summary>
-			/// <returns>- Whether the device could be cloed.</returns>
+			/// <returns>Whether the device could be closed.</returns>
 			virtual bool Close() = 0;
 
 
 			/// <returns>The available devices.</returns>
 			virtual const std::vector<std::string> GetDeviceNames() = 0;
+
+			/// <returns>Returns the details about the device current state.</returns>
+			virtual const DeviceDetails& GetDetails() const = 0;
+
+			/// <summary>
+			/// Sets a new sample rate for the device
+			/// </summary>
+			/// <param name="sampleRate">- The new samplerate</param>
+			/// <returns>If new sample rate could be set.</returns>
+			virtual bool SetSampleRate(uint32_t sampleRate) = 0;
+
+			/// <summary>
+			/// Sets a new buffer size for the device
+			/// </summary>
+			/// <param name="sampleRate">- The new buffer size</param>
+			/// <returns>If new buffer size could be set.</returns>
+			virtual bool SetBufferSize(uint32_t bufferSize) = 0;
 
 			/// <summary>
 			/// Sets the callback for when a new sample is ready to be processed.

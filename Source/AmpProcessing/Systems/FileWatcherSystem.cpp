@@ -99,17 +99,9 @@ namespace AmpProcessing {
 
 		const std::filesystem::path FileWatcherSystem::GetWorkingDirectory(const std::string& path) const
 		{
-			// This is a hard code trick when debugging only works for windows.
-#if _DEBUG
-			auto root = std::filesystem::current_path().parent_path().parent_path();
-			auto workingDir = root / "bin" / "Debug-windows-x86_64" / "AmpStudio";
-			auto relative_folder = workingDir / path;
-			return relative_folder;
-#else
 			auto workingDir = std::filesystem::current_path();
 			auto relative_folder = std::filesystem::relative(path, std::filesystem::current_path());
 			return relative_folder;
-#endif
 		}
 	}
 }

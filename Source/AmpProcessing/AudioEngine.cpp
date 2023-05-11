@@ -5,15 +5,16 @@
 
 #include "Effects/AtanDistortion.h"
 #include "Effects/MesaCabinet.h"
-#include "Effects/HardClipper.h"
-#include "Effects/ReverbTest.h"
 #include "Effects/LuaEffectProcessor.h"
+
+#include "Utility/AudioUtility.h"
 
 namespace AmpProcessing {
 	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()),
 		m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()),
 		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins")),
-		m_LuaSystem(std::make_unique<Systems::LuaSystem>())
+		m_LuaSystem(std::make_unique<Systems::LuaSystem>()), 
+		m_InputDbLevel(-60), m_OutputDbLevel(-60), m_DesiredInputDbLevel(0), m_DesiredOutputDbLevel(0)
 	{}
 
 	AudioEngine::~AudioEngine()
@@ -29,12 +30,15 @@ namespace AmpProcessing {
 
 		m_EffectChainSystem->AddAvailableEffect<Effects::AtanDistortion>();
 		m_EffectChainSystem->AddAvailableEffect<Effects::MesaCabinet>();
-		//m_EffectChainSystem->AddAvailableEffect<Effects::ReverbTest>();
-		m_EffectChainSystem->AddAvailableEffect<Effects::HardClipper>();
 
 		auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();
-		m_AudioDevice->Open(names.front());
+		SetupDevice(names.front());
+	}
+
+	void AudioEngine::SetupDevice(const std::string& name)
+	{
+		m_AudioDevice->Open(name);
 		m_AudioDevice->SetSampleReadyCallback(std::bind(&AudioEngine::OnSampleReady, this, std::placeholders::_1));
 	}
 
@@ -44,9 +48,21 @@ namespace AmpProcessing {
 			LOG_INFO("Could not add effect {} to the chain", name);
 	}
 
+	bool AudioEngine::SetNewDevice(const std::string& name)
+	{
+		m_AudioDevice.reset();
+		m_AudioDevice = std::make_unique<Devices::AsioAudioDevice>();
+		SetupDevice(name);
+
+		return true;
+	}
+
 	void AudioEngine::OnSampleReady(std::vector<float>& sample)
 	{
 		auto& effects = m_EffectChainSystem->GetEffectChain();
+
+		Utility::AudioUtility::AdjustToDecibelLevel(m_DesiredInputDbLevel, sample);
+		m_InputDbLevel = Utility::AudioUtility::CalculateDecibelLevel(sample);
 
 		for (size_t i = 0; i < effects.size(); i++)
 		{
@@ -55,6 +71,9 @@ namespace AmpProcessing {
 
 			effects[i]->Process(sample);
 		}
+
+		Utility::AudioUtility::AdjustToDecibelLevel(m_DesiredOutputDbLevel, sample);
+		m_OutputDbLevel = Utility::AudioUtility::CalculateDecibelLevel(sample);
 	}
 
 	void AudioEngine::OnFileHasChanged(const Utility::File& file, const Systems::FileWatcherSystem::FileStateChanged state)

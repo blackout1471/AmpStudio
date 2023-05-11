@@ -10,11 +10,13 @@ namespace AmpProcessing {
 
 		// This is stupid, to be able to get the current context for callbacks.
 		// We have to store the object which should be used for function binding.
+		// It would be better to have a mapping of instances if we in the future will need more devices.
 		AsioAudioDevice* AsioAudioDevice::s_CurrentContext = nullptr;
 
 		AsioAudioDevice::AsioAudioDevice() : m_Buffers(), m_Callbacks(), m_Channels(), m_DriverInformation(), 
-			m_AudioConverter(), m_HasBeenStopped(true)
+			m_AudioConverter(), m_HasBeenStopped(true), m_SampleBuffer()
 		{
+			// TODO: Determine at runtime
 			m_AudioConverter = std::make_unique<Converters::Int32LsbAudioConverter>();
 		}
 
@@ -52,8 +54,6 @@ namespace AmpProcessing {
 			LOG_ASSERT(ASIOStop() == 0, "Could not stop ASIO");
 
 			LOG_ASSERT(ASIODisposeBuffers() == 0, "Could not dispose of asio buffers");
-
-			LOG_ASSERT(ASIOExit() == 0, "Could not exit ASIO");
 
 			m_HasBeenStopped = true;
 
@@ -119,10 +119,8 @@ namespace AmpProcessing {
 			ASIOSampleRate sampleRate;
 			code = ASIOGetSampleRate(&sampleRate);
 			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not get sample rate for asio device", code);
-			m_DeviceDetails.sampleRate = (float)sampleRate;
 
-			code = ASIOSetSampleRate(sampleRate);
-			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not set sample rate for asio device", code);
+			SetSampleRate(sampleRate);
 
 			return code == 0;
 		}
@@ -169,8 +167,6 @@ namespace AmpProcessing {
 			return true;
 		}
 
-		static auto input_vector = std::vector<float>();
-
 		bool AsioAudioDevice::SetupDeviceCallbacks()
 		{
 			s_CurrentContext = this;
@@ -191,12 +187,21 @@ namespace AmpProcessing {
 				s_CurrentContext->OnAsioSampleRateDidChange(sRate);
 			};
 
-			int code = ASIOCreateBuffers(m_Buffers.get(), m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels, m_DeviceDetails.prefferedBufferSize, &m_Callbacks);
+			return CreateBuffers(m_DeviceDetails.prefferedBufferSize);
+		}
+
+		bool AsioAudioDevice::CreateBuffers(uint32_t bufferSize) {
+
+			if (!m_HasBeenStopped)
+				ASIODisposeBuffers();
+
+			int code = ASIOCreateBuffers(m_Buffers.get(), m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels, bufferSize, &m_Callbacks);
 			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not create buffers for device", code);
+			LOG_INFO("[ASIO] Buffers created with size: {}", bufferSize);
 
-			input_vector.resize(m_DeviceDetails.prefferedBufferSize);
-
-			return code == 0;
+			m_SampleBuffer.resize(bufferSize);
+			
+			return true;
 		}
 
 		long AsioAudioDevice::OnAsioMessage(long selector, long value, void* message, double* opt)
@@ -221,7 +226,7 @@ namespace AmpProcessing {
 		ASIOTime* AsioAudioDevice::OnAsioBufferSwitchTimeInfo(ASIOTime* params, long doubleBufferIndex, ASIOBool& directProcess)
 		{
 			auto buffersCount = m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels;
-			auto buffersize = m_DeviceDetails.prefferedBufferSize;
+			auto buffersize = m_SampleBuffer.size();
 
 			// TODO: support double buffers etc...
 
@@ -232,9 +237,9 @@ namespace AmpProcessing {
 
 				void* asio_input_buffer = m_Buffers[i].buffers[doubleBufferIndex];
 
-				m_AudioConverter->ConvertToFloat(asio_input_buffer, input_vector, buffersize);
+				m_AudioConverter->ConvertToFloat(asio_input_buffer, m_SampleBuffer, buffersize);
 
-				InvokeSampleReady(input_vector);
+				InvokeSampleReady(m_SampleBuffer);
 
 				break;
 			}
@@ -246,7 +251,7 @@ namespace AmpProcessing {
 
 				void* bufferOut = m_Buffers[i].buffers[doubleBufferIndex];
 
-				m_AudioConverter->ConvertFromFloat(input_vector, bufferOut);
+				m_AudioConverter->ConvertFromFloat(m_SampleBuffer, bufferOut);
 			}
 
 			ASIOOutputReady();
@@ -257,6 +262,26 @@ namespace AmpProcessing {
 		void AsioAudioDevice::OnAsioSampleRateDidChange(ASIOSampleRate& sRate)
 		{
 			
+		}
+
+		bool AsioAudioDevice::SetSampleRate(uint32_t sampleRate)
+		{
+			int code = ASIOSetSampleRate(sampleRate);
+			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not set sample rate for device", code);
+			m_DeviceDetails.sampleRate = sampleRate;
+			LOG_INFO("[ASIO] Sample rate was changed to: {}", sampleRate);
+
+			return true;
+		}
+
+		bool AsioAudioDevice::SetBufferSize(uint32_t bufferSize)
+		{
+			if (!CreateBuffers(bufferSize))
+				return false;
+
+			LOG_ASSERT(ASIOStart() == 0, "Could not start asio");
+			
+			return true;
 		}
 	}
 }

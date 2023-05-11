@@ -13,6 +13,8 @@ namespace AmpProcessing {
 			virtual bool Open(const std::string& deviceName) override;
 			virtual bool Close() override;
 			virtual const std::vector<std::string> GetDeviceNames() override;
+			
+			virtual const DeviceDetails& GetDetails() const override;
 
 		private:
 			std::unique_ptr<std::thread> m_SampleThread;

@@ -16,20 +16,32 @@ namespace AmpProcessing {
 		public:
 			AsioAudioDevice();
 			~AsioAudioDevice();
-
+			
+			/// <inheritdoc />
 			bool Open(const std::string& deviceName) override;
+
+			/// <inheritdoc />
 			bool Close() override;
 
-		public:
+			/// <inheritdoc />
+			inline virtual const DeviceDetails& GetDetails() const override { return m_DeviceDetails; };
+
+			/// <inheritdoc />
 			const std::vector<std::string> GetDeviceNames() override;
-			const uint32_t GetSampleRate() const { return m_DeviceDetails.sampleRate; }
+
+			/// <inheritdoc />
+			virtual bool SetSampleRate(uint32_t sampleRate) override;
+
+			/// <inheritdoc />
+			virtual bool SetBufferSize(uint32_t bufferSize) override;
 
 		private:
 			bool LoadDriver(const std::string& driverName);
 			bool LoadDeviceDetails();
 			bool SetupBuffers();
 			bool LoadChannelInformation();
-			bool SetupDeviceCallbacks();
+			bool SetupDeviceCallbacks();	
+			bool CreateBuffers(uint32_t bufferSize);
 
 			long OnAsioMessage(long selector, long value, void* message, double* opt);
 			void OnAsioBufferSwitch(long doubleBufferIndex, ASIOBool& process);
@@ -45,6 +57,8 @@ namespace AmpProcessing {
 			std::unique_ptr<ASIOBufferInfo[]> m_Buffers;
 			std::unique_ptr<Converters::IAudioConverter> m_AudioConverter;
 			bool m_HasBeenStopped;
+
+			std::vector<float> m_SampleBuffer;
 
 		private:
 			static AsioAudioDevice* s_CurrentContext;
