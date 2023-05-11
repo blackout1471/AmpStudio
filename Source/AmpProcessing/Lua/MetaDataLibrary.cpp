@@ -73,10 +73,21 @@ namespace AmpProcessing {
 
 		int MetaDataLibrary::MetaTable_NewIndex(lua_State* L)
 		{
-			PrintStack(L);
 			auto** userData = static_cast<Effects::EffectProcessorMetaData**>(lua_touserdata(L, 1));
+			auto caller = std::string(luaL_checkstring(L, 2));
+			if (caller == "name")
+			{
+				(*userData)->Name = luaL_checkstring(L, 3);
+				return 0;
+			}
 
-			(*userData)->Name = "Hulla bulla";
+			if (caller == "category")
+			{
+				(*userData)->Category = static_cast<Effects::EffectCategory>((int)luaL_checknumber(L, 3));
+				return 0;
+			}
+
+			LOG_ERROR("[LUA] '{}' is not an valid property for meta table", caller);
 
 			return 0;
 		}
