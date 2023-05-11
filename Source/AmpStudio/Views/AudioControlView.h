@@ -41,15 +41,14 @@ namespace AmpStudio {
 				m_CurrentBufferSizeIndex = GetIndex(m_BufferSizes, details.prefferedBufferSize);
 			};
 
-			inline static float deltaTime = 0.f;
 
 			inline virtual void OnUpdate() override
 			{
-				deltaTime += ImGui::GetIO().DeltaTime;
+				m_DeltaTime += ImGui::GetIO().DeltaTime;
 
-				if (deltaTime < 0.03f) return;
+				if (m_DeltaTime < 0.03f) return;
 
-				deltaTime = 0.f;
+				m_DeltaTime = 0.f;
 
 				auto* engine = Singleton::getInstance().GetAudio();
 
@@ -146,6 +145,8 @@ namespace AmpStudio {
 
 			int m_CurrentOutputValue;
 			float m_CurrentDbOutputValue;
+
+			float m_DeltaTime = 0.f;
 		};
 	}
 }

@@ -21,7 +21,7 @@ namespace AmpProcessing {
 
 					sample[i] *= m_Drive->Value * m_Range->Value;
 
-					sample[i] = (((2.f / M_PI) * atan(sample[i]) * m_Blend->Value) + (cleanValue * (1.f - m_Blend->Value)) / 2.f) * m_Volume->Value;
+					sample[i] = (((2.f / AMPSTUDIO_PI) * atan(sample[i]) * m_Blend->Value) + (cleanValue * (1.f - m_Blend->Value)) / 2.f) * m_Volume->Value;
 				}
 			};
 		private:
