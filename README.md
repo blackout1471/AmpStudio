@@ -21,13 +21,20 @@ The audio buffers range goes from -1.0f -> 1.0f
 Lua plugins has be placed in plugin folder in root of exe to be loaded.
 The lua files has to have the functions
 ```lua
-function OnInit()
+-- Meta data arguments is a table where data such as name & category can be set.
+function OnInit(metaData)
 end
 
 -- The sample argument is the buffer for the audio
 -- and works like a normal array object in lua
 function OnBufferUpdate(sample)
 end
+```
+### Meta data
+The effects meta data can be set in the OnInit by using the first argument.
+```lua
+metaData.name = "Super effect name"
+metaData.category = 2 -- This is the reverb one
 ```
 
 ### Gui
@@ -39,6 +46,24 @@ parameter.getValue(param) -- Get the current value of the effect parameter.
 ```
 ### Audio
 [TBC]
+
+### Simple sample
+```lua
+function OnInit(metaData)
+    metaData.name = "Super gain" -- Name of plugin
+    metaData.category = 0 -- Unknown category
+
+    knob = parameter.add("gain", 1.0, 0, 0.1) -- effect parameter can be queried later for value
+    parameter.getValue(knob)
+end
+
+function OnReadySample(sample)
+    gain = parameter.getValue(knob) -- Get effect parameter gain value
+    for i=0,#sample-1 do -- Loop samples
+        sample[i] = sample[i] * gain -- Set every sample multiplied by gain
+    end
+end
+```
 
 ## Supported platforms
 As of right now the application supports: Windows
