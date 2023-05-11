@@ -58,7 +58,7 @@ namespace AmpProcessing {
 			/// <summary>
 			/// Prints the current lua stack.
 			/// </summary>
-			void PrintStack();
+			void PrintStack() const;
 
 		private:
 			std::unique_ptr<lua_State, decltype(&lua_close)> m_LuaContext;

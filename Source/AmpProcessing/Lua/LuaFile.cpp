@@ -71,7 +71,7 @@ namespace AmpProcessing {
 			return true;
 		}
 
-		void LuaFile::PrintStack()
+		void LuaFile::PrintStack() const
 		{
 			std::ostringstream ss;
 			auto* L = m_LuaContext.get();
