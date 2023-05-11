@@ -279,11 +279,10 @@ namespace AmpProcessing {
 
 		bool AsioAudioDevice::SetBufferSize(uint32_t bufferSize)
 		{
-			// TODO: When setting buffer size, can't invoke buffer switch time info.
 			if (!CreateBuffers(bufferSize))
 				return false;
-			
-			ASIOFuture(kAsioResetRequest, NULL);
+
+			LOG_ASSERT(ASIOStart() == 0, "Could not start asio");
 			
 			return true;
 		}
