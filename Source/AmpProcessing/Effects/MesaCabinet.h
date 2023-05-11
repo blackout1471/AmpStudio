@@ -7,7 +7,7 @@ namespace AmpProcessing {
 	namespace Effects {
 		class MesaCabinet : public IEffectProcessor {
 		public:
-			MesaCabinet() : IEffectProcessor("Mesa Cabinet"), m_ProcessBuffer(128), m_SampleConvolver(std::make_unique<DSP::FFTSampleConvolver>()),
+			MesaCabinet() : IEffectProcessor("Mesa Cabinet", EffectCategory::Cabinet), m_ProcessBuffer(128), m_SampleConvolver(std::make_unique<DSP::FFTSampleConvolver>()),
 				m_Wet(AddParameter(Controls::EffectParameter{ "Wet", 1.0f, 0.f, 0.1f })),
 				m_Dry(AddParameter(Controls::EffectParameter{ "Dry", 1.0f, 0.f, 0.1f }))
 			{

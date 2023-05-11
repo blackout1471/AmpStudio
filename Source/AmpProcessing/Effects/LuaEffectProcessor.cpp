@@ -4,8 +4,9 @@
 namespace AmpProcessing {
 	namespace Effects {
 
+
 		LuaEffectProcessor::LuaEffectProcessor(const Lua::LuaFile* luaFile) : IEffectProcessor(luaFile->GetFileName()),
-			m_LuaFile(luaFile), m_EffectParameterLibrary(), m_SampleLibrary()
+			m_LuaFile(luaFile), m_EffectParameterLibrary(), m_SampleLibrary(), m_MetaDataLibrary()
 		{
 			ValidateFile();
 
@@ -13,6 +14,7 @@ namespace AmpProcessing {
 
 			m_SampleLibrary.OpenLibs(L);
 			m_EffectParameterLibrary.OpenLibs(L, this);
+			m_MetaDataLibrary.OpenLibs(L);
 
 			InitializeEffect();
 		}
@@ -36,7 +38,16 @@ namespace AmpProcessing {
 
 		void LuaEffectProcessor::InitializeEffect()
 		{
-			m_LuaFile->CallGlobalFunction(c_OnInitFunctionName);
+			auto* L = m_LuaFile->GetState();
+
+			auto** metaUserData = m_MetaDataLibrary.CreateMetaUserData(L, -2);
+			*metaUserData = &GetMetaData();
+
+			lua_getglobal(L, c_OnInitFunctionName);
+			lua_pushvalue(L, -2);
+			m_LuaFile->CheckLua(lua_pcall(L, 1, 0, 0));
+
+			lua_pop(L, 1);
 		}
 
 		void LuaEffectProcessor::Process(std::vector<float>& sample)
@@ -52,7 +63,6 @@ namespace AmpProcessing {
 
 			m_LuaFile->CheckLua(lua_pcall(L, 1, 0, 0));
 
-			// remove the userdata object
 			lua_pop(L, 1);
 		}
 	}
