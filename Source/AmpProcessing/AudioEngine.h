@@ -13,6 +13,7 @@ namespace AmpProcessing {
 
 		void Init();
 
+
 		const std::vector<Effects::IEffectProcessor*>& GetCurrentEffectChain() const { return m_EffectChainSystem->GetEffectChain(); }
 		void AddEffectToChain(const std::string& name);
 
@@ -29,11 +30,13 @@ namespace AmpProcessing {
 
 		inline bool SetSampleRate(uint32_t sampleRate) { return m_AudioDevice->SetSampleRate(sampleRate); }
 		inline bool SetBufferSize(uint32_t bufferSize) { return m_AudioDevice->SetBufferSize(bufferSize); }
+		bool SetNewDevice(const std::string& name);
 
 	private:
 		void OnSampleReady(std::vector<float>& sample);
 		void OnFileHasChanged(const Utility::File& file, const Systems::FileWatcherSystem::FileStateChanged state);
 		void OnLuaFileHasChanged(Lua::LuaFile* const lua, const Systems::LuaSystem::StateChanged state);
+		void SetupDevice(const std::string& name);
 	private:
 		std::unique_ptr<Devices::IAudioDevice> m_AudioDevice;
 		std::unique_ptr<Systems::EffectChainSystem> m_EffectChainSystem;

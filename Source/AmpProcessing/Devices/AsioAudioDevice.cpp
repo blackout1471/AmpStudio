@@ -10,10 +10,11 @@ namespace AmpProcessing {
 
 		// This is stupid, to be able to get the current context for callbacks.
 		// We have to store the object which should be used for function binding.
+		// It would be better to have a mapping of instances if we in the future will need more devices.
 		AsioAudioDevice* AsioAudioDevice::s_CurrentContext = nullptr;
 
 		AsioAudioDevice::AsioAudioDevice() : m_Buffers(), m_Callbacks(), m_Channels(), m_DriverInformation(), 
-			m_AudioConverter(), m_HasBeenStopped(true)
+			m_AudioConverter(), m_HasBeenStopped(true), m_SampleBuffer()
 		{
 			// TODO: Determine at runtime
 			m_AudioConverter = std::make_unique<Converters::Int32LsbAudioConverter>();
@@ -53,8 +54,6 @@ namespace AmpProcessing {
 			LOG_ASSERT(ASIOStop() == 0, "Could not stop ASIO");
 
 			LOG_ASSERT(ASIODisposeBuffers() == 0, "Could not dispose of asio buffers");
-
-			LOG_ASSERT(ASIOExit() == 0, "Could not exit ASIO");
 
 			m_HasBeenStopped = true;
 
@@ -168,8 +167,6 @@ namespace AmpProcessing {
 			return true;
 		}
 
-		static auto input_vector = std::vector<float>();
-
 		bool AsioAudioDevice::SetupDeviceCallbacks()
 		{
 			s_CurrentContext = this;
@@ -202,7 +199,7 @@ namespace AmpProcessing {
 			LOG_ASSERT(code == 0, "[ASIO] ({}): Could not create buffers for device", code);
 			LOG_INFO("[ASIO] Buffers created with size: {}", bufferSize);
 
-			input_vector.resize(bufferSize);
+			m_SampleBuffer.resize(bufferSize);
 			
 			return true;
 		}
@@ -229,7 +226,7 @@ namespace AmpProcessing {
 		ASIOTime* AsioAudioDevice::OnAsioBufferSwitchTimeInfo(ASIOTime* params, long doubleBufferIndex, ASIOBool& directProcess)
 		{
 			auto buffersCount = m_DeviceDetails.inputChannels + m_DeviceDetails.outputChannels;
-			auto buffersize = input_vector.size();
+			auto buffersize = m_SampleBuffer.size();
 
 			// TODO: support double buffers etc...
 
@@ -240,9 +237,9 @@ namespace AmpProcessing {
 
 				void* asio_input_buffer = m_Buffers[i].buffers[doubleBufferIndex];
 
-				m_AudioConverter->ConvertToFloat(asio_input_buffer, input_vector, buffersize);
+				m_AudioConverter->ConvertToFloat(asio_input_buffer, m_SampleBuffer, buffersize);
 
-				InvokeSampleReady(input_vector);
+				InvokeSampleReady(m_SampleBuffer);
 
 				break;
 			}
@@ -254,7 +251,7 @@ namespace AmpProcessing {
 
 				void* bufferOut = m_Buffers[i].buffers[doubleBufferIndex];
 
-				m_AudioConverter->ConvertFromFloat(input_vector, bufferOut);
+				m_AudioConverter->ConvertFromFloat(m_SampleBuffer, bufferOut);
 			}
 
 			ASIOOutputReady();

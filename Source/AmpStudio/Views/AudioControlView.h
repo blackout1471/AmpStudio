@@ -85,7 +85,8 @@ namespace AmpStudio {
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Audio device");
 
-				ImGui::Combo("##device_names", &m_CurrentDeviceIndex, &StringGetter, &m_DeviceNames, m_DeviceNames.size());
+				if (ImGui::Combo("##device_names", &m_CurrentDeviceIndex, &StringGetter, &m_DeviceNames, m_DeviceNames.size()))
+					m_AudioEngine->SetNewDevice(m_DeviceNames[m_CurrentDeviceIndex]);
 				
 				
 				if (ImGui::Combo("##buffer_sizes", &m_CurrentBufferSizeIndex, &StringGetter, &m_BufferSizes, m_BufferSizes.size()))

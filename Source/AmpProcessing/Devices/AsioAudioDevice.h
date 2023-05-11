@@ -58,6 +58,8 @@ namespace AmpProcessing {
 			std::unique_ptr<Converters::IAudioConverter> m_AudioConverter;
 			bool m_HasBeenStopped;
 
+			std::vector<float> m_SampleBuffer;
+
 		private:
 			static AsioAudioDevice* s_CurrentContext;
 		};

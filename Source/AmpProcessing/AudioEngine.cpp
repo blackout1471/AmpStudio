@@ -33,7 +33,12 @@ namespace AmpProcessing {
 
 		auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();
-		m_AudioDevice->Open(names.front());
+		SetupDevice(names.front());
+	}
+
+	void AudioEngine::SetupDevice(const std::string& name)
+	{
+		m_AudioDevice->Open(name);
 		m_AudioDevice->SetSampleReadyCallback(std::bind(&AudioEngine::OnSampleReady, this, std::placeholders::_1));
 	}
 
@@ -41,6 +46,15 @@ namespace AmpProcessing {
 	{
 		if (!m_EffectChainSystem->AddEffect(name))
 			LOG_INFO("Could not add effect {} to the chain", name);
+	}
+
+	bool AudioEngine::SetNewDevice(const std::string& name)
+	{
+		m_AudioDevice.reset();
+		m_AudioDevice = std::make_unique<Devices::AsioAudioDevice>();
+		SetupDevice(name);
+
+		return true;
 	}
 
 	void AudioEngine::OnSampleReady(std::vector<float>& sample)

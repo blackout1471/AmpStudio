@@ -10,7 +10,7 @@ namespace AmpProcessing {
 		class IAudioDevice {
 		public:
 			IAudioDevice() = default;
-			~IAudioDevice() = default;
+			virtual ~IAudioDevice() = default;
 
 			/// <summary>
 			/// Opens the device with the specific name given.
