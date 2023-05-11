@@ -47,7 +47,7 @@ namespace AmpStudio {
 			{
 				deltaTime += ImGui::GetIO().DeltaTime;
 
-				if (deltaTime < 0.05f) return;
+				if (deltaTime < 0.03f) return;
 
 				deltaTime = 0.f;
 
@@ -85,6 +85,8 @@ namespace AmpStudio {
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Audio device");
 
+				ImGui::PushItemWidth(-FLT_MIN);
+
 				if (ImGui::Combo("##device_names", &m_CurrentDeviceIndex, &StringGetter, &m_DeviceNames, m_DeviceNames.size()))
 					m_AudioEngine->SetNewDevice(m_DeviceNames[m_CurrentDeviceIndex]);
 				
@@ -94,6 +96,8 @@ namespace AmpStudio {
 
 				if (ImGui::Combo("##sample_rates", &m_CurrentSampleRateIndex, &StringGetter, &m_SampleRates, m_SampleRates.size()))
 					m_AudioEngine->SetSampleRate(std::stoul(m_SampleRates[m_CurrentSampleRateIndex]));
+
+				ImGui::PopItemWidth();
 			}
 
 
@@ -105,7 +109,7 @@ namespace AmpStudio {
 				ImGui::Text("Input volume");
 				ImGui::PushItemWidth(-FLT_MIN);
 				ImGui::ProgressBar(m_CurrentDbInputValue, {-FLT_MIN, 0}, "");
-				if (ImGui::SliderInt("##input_slider", &m_CurrentInputValue, -60, 6))
+				if (ImGui::SliderInt("##input_slider", &m_CurrentInputValue, -60, 6, "%d db"))
 					engine->SetDesiredInputDbLevel(m_CurrentInputValue);
 
 				ImGui::PopItemWidth();
@@ -119,7 +123,7 @@ namespace AmpStudio {
 				ImGui::Text("Output volume");
 				ImGui::PushItemWidth(-FLT_MIN);
 				ImGui::ProgressBar(m_CurrentDbOutputValue, { -FLT_MIN, 0 }, "");
-				if (ImGui::SliderInt("##output_slider", &m_CurrentOutputValue, -60, 6))
+				if (ImGui::SliderInt("##output_slider", &m_CurrentOutputValue, -60, 6, "%d db"))
 					engine->SetDesiredOutputDbLevel(m_CurrentOutputValue);
 
 				ImGui::PopItemWidth();
