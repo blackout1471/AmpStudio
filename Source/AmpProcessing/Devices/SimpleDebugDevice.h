@@ -16,10 +16,13 @@ namespace AmpProcessing {
 			
 			virtual const DeviceDetails& GetDetails() const override;
 
+			virtual bool SetSampleRate(uint32_t sampleRate) override;
+			virtual bool SetBufferSize(uint32_t bufferSize) override;
 		private:
 			std::unique_ptr<std::thread> m_SampleThread;
 			std::vector<float> m_DebugSample;
 			bool m_Running;
+			DeviceDetails m_DeviceDetails;
 		};
 	}
 }

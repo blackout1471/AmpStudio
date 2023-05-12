@@ -4,7 +4,8 @@
 namespace AmpProcessing {
 
     namespace Devices {
-        SimpleDebugDevice::SimpleDebugDevice() : m_SampleThread(nullptr), m_Running(false), m_DebugSample(128)
+        SimpleDebugDevice::SimpleDebugDevice() : m_SampleThread(nullptr), m_Running(false), m_DebugSample(128),
+            m_DeviceDetails(DeviceDetails {"Debug device", 0, 1, 128, 1024, 128, 64, 44100.f})
         {
         }
 
@@ -50,7 +51,21 @@ namespace AmpProcessing {
 
         const DeviceDetails& SimpleDebugDevice::GetDetails() const
         {
-            return {};
+            return m_DeviceDetails;
+        }
+
+        bool SimpleDebugDevice::SetSampleRate(uint32_t sampleRate)
+        {
+            m_DeviceDetails.sampleRate = sampleRate;
+
+            return true;
+        }
+
+        bool SimpleDebugDevice::SetBufferSize(uint32_t bufferSize)
+        {
+            m_DebugSample.resize(bufferSize);
+
+            return true;
         }
     }
 }
