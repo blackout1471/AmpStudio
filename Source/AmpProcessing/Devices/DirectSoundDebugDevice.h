@@ -21,7 +21,7 @@ namespace AmpProcessing {
 				m_Playing(false), m_CurrentBufferSize()
 			{
 				AudioFile<float> audioFile;
-				audioFile.load("C:\\Repos\\resources\\guitar-dry.wav");
+				audioFile.load("Resources/WAVE/debug_sample.wav");
 				m_RawAudioData = audioFile.samples[0];
 			};
 			inline ~DirectSoundDebugDevice() 
@@ -109,7 +109,7 @@ namespace AmpProcessing {
 				CreateNewXAudioBuffers(5, m_CurrentBufferSize);
 				return true; 
 			};
-			virtual const std::vector<std::string> GetDeviceNames() override { return { "DirectSoundDebug" }; };
+			virtual const std::vector<std::string> GetDeviceNames() override { return { "DirectSoundLooper" }; };
 
 		private:
 			inline void CreateNewXAudioBuffers(int amount, uint32_t bufferSize) {
