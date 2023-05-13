@@ -98,14 +98,17 @@ namespace AmpProcessing {
 			};
 
 			virtual const DeviceDetails& GetDetails() const override { return m_DeviceDetails; };
-			virtual bool SetSampleRate(uint32_t sampleRate) override { return true; };
+			virtual bool SetSampleRate(uint32_t sampleRate) override 
+			{ 
+				// TODO: Be able to set new sample rate.
+				return true; 
+			};
 			virtual bool SetBufferSize(uint32_t bufferSize) override 
 			{ 
 				m_CurrentBufferSize = bufferSize;
 				CreateNewXAudioBuffers(5, m_CurrentBufferSize);
 				return true; 
 			};
-			
 			virtual const std::vector<std::string> GetDeviceNames() override { return { "DirectSoundDebug" }; };
 
 		private:
@@ -120,7 +123,6 @@ namespace AmpProcessing {
 					m_XAudioBuffers.push_back({ xaudio, std::vector<float>()});
 				}
 			}
-
 			inline std::vector<float> GetNextSample() {
 				auto bufferSize = m_CurrentBufferSize;
 				if (m_SampleCounter + bufferSize > m_RawAudioData.size())
@@ -131,7 +133,6 @@ namespace AmpProcessing {
 				m_SampleCounter += bufferSize;
 				return sample;
 			}
-
 			inline void CreateDevice() {
 				HRESULT hr;
 
