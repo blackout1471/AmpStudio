@@ -53,15 +53,7 @@ namespace AmpProcessing {
 				hr = pXAudio2->CreateSourceVoice(&pSourceVoice, &wfx, 0, XAUDIO2_DEFAULT_FREQ_RATIO, NULL, NULL, NULL);
 				LOG_ASSERT(!FAILED(hr), "Could not create source voice");
 
-				int internalBufferCount = 4;
-				std::vector<XAUDIO2_BUFFER> buffers;
-				for (size_t i = 0; i < internalBufferCount; i++)
-				{
-					XAUDIO2_BUFFER xaudio = { 0 };
-					xaudio.AudioBytes = m_DeviceDetails.prefferedBufferSize * sizeof(float);
-					xaudio.Flags = XAUDIO2_END_OF_STREAM;
-					buffers.push_back(xaudio);
-				}
+				CreateNewXAudioBuffers(4);
 
 				hr = pSourceVoice->Start(0, XAUDIO2_COMMIT_NOW);
 				LOG_ASSERT(!FAILED(hr), "Could not start voice");
@@ -72,16 +64,16 @@ namespace AmpProcessing {
 					XAUDIO2_VOICE_STATE state;
 					pSourceVoice->GetState(&state);
 
-					if (state.BuffersQueued < internalBufferCount)
+					if (state.BuffersQueued < m_XAudioBuffers.size())
 					{
 						auto sample = GetNextSample();
 						samples.push_back(sample);
-						buffers[currentBuffer].pAudioData = (BYTE*)&samples.back().front();
+						m_XAudioBuffers[currentBuffer].pAudioData = (BYTE*)&samples.back().front();
 						
-						hr = pSourceVoice->SubmitSourceBuffer(&buffers[currentBuffer]);
+						hr = pSourceVoice->SubmitSourceBuffer(&m_XAudioBuffers[currentBuffer]);
 						LOG_ASSERT(!FAILED(hr), "Could not submit buffer");
 
-						currentBuffer = (currentBuffer + 1) % internalBufferCount;
+						currentBuffer = (currentBuffer + 1) % m_XAudioBuffers.size();
 					}
 				}
 
@@ -95,6 +87,18 @@ namespace AmpProcessing {
 			virtual const std::vector<std::string> GetDeviceNames() override { return { "DirectSoundDebug" }; };
 
 		private:
+			void CreateNewXAudioBuffers(int amount) {
+				m_XAudioBuffers.clear();
+
+				for (size_t i = 0; i < amount; i++)
+				{
+					XAUDIO2_BUFFER xaudio = { 0 };
+					xaudio.AudioBytes = m_DeviceDetails.prefferedBufferSize * sizeof(float);
+					xaudio.Flags = XAUDIO2_END_OF_STREAM;
+					m_XAudioBuffers.push_back(xaudio);
+				}
+			}
+
 			std::vector<float> GetNextSample() {
 				auto bufferSize = m_DeviceDetails.prefferedBufferSize;
 				if (m_SampleCounter + bufferSize > m_RawAudioData.size())
@@ -109,6 +113,8 @@ namespace AmpProcessing {
 		private:
 			std::vector<float> m_RawAudioData;
 			int m_SampleCounter;
+
+			std::vector<XAUDIO2_BUFFER> m_XAudioBuffers;
 
 			DeviceDetails m_DeviceDetails;
 		};
