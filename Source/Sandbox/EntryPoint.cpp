@@ -7,7 +7,8 @@
 #include <queue>
 #include <Utility/FilterUtility.h>
 #include <DSP/Convolution/FFTSampleConvolver.h>
-#include "DebugDevice.h"
+
+#include <dsound.h>
 
 using namespace AmpProcessing;
 using namespace AmpProcessing::Devices;
@@ -108,10 +109,7 @@ void DoRealTimeConvolution() {
 }
 
 void DoDebugDeviceDemo() {
-	auto device = DebugDevice();
-
-	while (true)
-		Sleep(1000);
+	
 }
 
 int main() {
