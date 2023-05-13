@@ -7,6 +7,7 @@
 #include <queue>
 #include <Utility/FilterUtility.h>
 #include <DSP/Convolution/FFTSampleConvolver.h>
+#include "DebugDevice.h"
 
 using namespace AmpProcessing;
 using namespace AmpProcessing::Devices;
@@ -106,12 +107,20 @@ void DoRealTimeConvolution() {
 	}
 }
 
+void DoDebugDeviceDemo() {
+	auto device = DebugDevice();
+
+	while (true)
+		Sleep(1000);
+}
+
 int main() {
 	AmpProcessing::Logger::Logger::Get().Init();
 
 	LOG_INFO("Enter '1' for loopback demo");
 	LOG_INFO("Enter '2' for recording to wav file");
 	LOG_INFO("Enter '3' for realtime convolution");
+	LOG_INFO("Enter '4' for debug device");
 	std::string input;
 
 	std::cin >> input;
@@ -124,4 +133,7 @@ int main() {
 
 	if (input == "3")
 		DoRealTimeConvolution();
+
+	if (input == "4")
+		DoDebugDeviceDemo();
 }
