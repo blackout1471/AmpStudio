@@ -17,13 +17,18 @@ namespace AmpProcessing {
 			};
 
 		public:
-			inline DirectSoundDebugDevice() : m_RawAudioData(), m_SampleCounter(0), m_DeviceDetails({ "DirectSound", 1, 2, 128, 1024, 128, 1, 44100 })
+			inline DirectSoundDebugDevice() : m_RawAudioData(), m_SampleCounter(0), m_DeviceDetails({ "DirectSound", 1, 2, 128, 1024, 128, 1, 44100 }),
+				m_Playing(false), m_CurrentBufferSize()
 			{
 				AudioFile<float> audioFile;
 				audioFile.load("C:\\Repos\\resources\\guitar-dry.wav");
 				m_RawAudioData = audioFile.samples[0];
 			};
-			inline ~DirectSoundDebugDevice() {};
+			inline ~DirectSoundDebugDevice() 
+			{
+				Close();
+				m_SampleThread.join();
+			};
 
 			virtual bool Open(const std::string& deviceName) override
 			{
@@ -35,22 +40,25 @@ namespace AmpProcessing {
 					WAVEFORMATEX wfx;
 					wfx.wFormatTag = WAVE_FORMAT_IEEE_FLOAT; // simple, uncompressed format
 					wfx.nChannels = 1; // 1=mono, 2=stereo
-					wfx.nSamplesPerSec = 44100;
+					wfx.nSamplesPerSec = m_DeviceDetails.sampleRate;
 					wfx.wBitsPerSample = 32; // 16 for high quality, 8 for telephone-grade
 					wfx.nBlockAlign = wfx.nChannels * wfx.wBitsPerSample / 8;
 					wfx.nAvgBytesPerSec = (wfx.nSamplesPerSec) * (wfx.nChannels) * (wfx.wBitsPerSample) / 8;
 					wfx.cbSize = 0;
 
+					m_CurrentBufferSize = m_DeviceDetails.prefferedBufferSize;
+
 					hr = m_XAudio2->CreateSourceVoice(&m_SourceVoice, &wfx, 0, XAUDIO2_DEFAULT_FREQ_RATIO, NULL, NULL, NULL);
 					LOG_ASSERT(!FAILED(hr), "Could not create source voice");
 
-					CreateNewXAudioBuffers(5, m_DeviceDetails.prefferedBufferSize);
+					CreateNewXAudioBuffers(5, m_CurrentBufferSize);
 
 					hr = m_SourceVoice->Start(0, XAUDIO2_COMMIT_NOW);
 					LOG_ASSERT(!FAILED(hr), "Could not start voice");
+					m_Playing = true;
 
 					int currentBuffer = 0;
-					while (true) {
+					while (m_Playing) {
 						XAUDIO2_VOICE_STATE state;
 						m_SourceVoice->GetState(&state);
 
@@ -70,14 +78,33 @@ namespace AmpProcessing {
 							currentBuffer = (currentBuffer + 1) % m_XAudioBuffers.size();
 						}
 					}
+
+					CoUninitialize();
 				});
+
 
 				return true;
 			};
-			virtual bool Close() override { return true; };
+
+			virtual bool Close() override 
+			{ 
+				m_Playing = false;
+				m_SourceVoice->Stop(0);
+				m_SourceVoice->FlushSourceBuffers();
+				m_SourceVoice->DestroyVoice();
+				m_MasterVoice->DestroyVoice();
+				m_XAudio2->Release();
+				return true;
+			};
+
 			virtual const DeviceDetails& GetDetails() const override { return m_DeviceDetails; };
 			virtual bool SetSampleRate(uint32_t sampleRate) override { return true; };
-			virtual bool SetBufferSize(uint32_t bufferSize) override { return true; };
+			virtual bool SetBufferSize(uint32_t bufferSize) override 
+			{ 
+				m_CurrentBufferSize = bufferSize;
+				CreateNewXAudioBuffers(5, m_CurrentBufferSize);
+				return true; 
+			};
 			
 			virtual const std::vector<std::string> GetDeviceNames() override { return { "DirectSoundDebug" }; };
 
@@ -95,7 +122,7 @@ namespace AmpProcessing {
 			}
 
 			inline std::vector<float> GetNextSample() {
-				auto bufferSize = m_DeviceDetails.prefferedBufferSize;
+				auto bufferSize = m_CurrentBufferSize;
 				if (m_SampleCounter + bufferSize > m_RawAudioData.size())
 					m_SampleCounter = 0;
 
@@ -119,8 +146,10 @@ namespace AmpProcessing {
 			}
 
 		private:
+			bool m_Playing;
 			std::vector<float> m_RawAudioData;
 			int m_SampleCounter;
+			long m_CurrentBufferSize;
 
 			std::vector<XAudioBuffer> m_XAudioBuffers;
 			std::thread m_SampleThread;
