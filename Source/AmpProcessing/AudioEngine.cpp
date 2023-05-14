@@ -1,7 +1,7 @@
 #include "amppch.h"
 #include "AudioEngine.h"
 
-#include "Devices/SimpleDebugDevice.h"
+#include "Devices/DirectSoundDebugDevice.h"
 
 #include "Effects/AtanDistortion.h"
 #include "Effects/MesaCabinet.h"
@@ -10,7 +10,7 @@
 #include "Utility/AudioUtility.h"
 
 namespace AmpProcessing {
-	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()),
+	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::DirectSoundDebugDevice>()),
 		m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()),
 		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins")),
 		m_LuaSystem(std::make_unique<Systems::LuaSystem>()), 
