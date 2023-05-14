@@ -19,6 +19,9 @@ namespace AmpProcessing {
 		{
 			m_RunningThread = true;
 
+			if (!std::filesystem::exists(m_PluginPath))
+				std::filesystem::create_directories(m_PluginPath);
+
 			GetNewFilesInDirectory();
 
 			m_WatchThread = std::make_unique<std::thread>([&]() {
