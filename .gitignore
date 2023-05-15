@@ -357,8 +357,6 @@ Bin-int/
 
 # project files
 *.sln
-*.csproj
-**.vcxproj*
-
-# Ignore paths
-Vendor/FFTConvolver
+**.csproj
+**.vcxproj
+**.vcxproj.filters
