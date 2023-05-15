@@ -359,3 +359,6 @@ Bin-int/
 *.sln
 *.csproj
 **.vcxproj*
+
+# Ignore paths
+Vendor/FFTConvolver
