@@ -43,9 +43,15 @@ project "AmpStudio"
 		"ImGui",
 		"d3d9"
 	}
+	
+	resourceFolder = "../../bin/" .. outputdir .. "/%{prj.name}" .. "/Resources"
 
 	filter "system:windows"
 		systemversion "latest"
+		postbuildcommands {
+			'if not exist "%{resourceFolder}" {MKDIR} "%{resourceFolder}"',
+			'{COPY} ../../Resources "%{resourceFolder}"'
+		}
 		
 	filter "configurations:Debug"
 		defines "_DEBUG"
@@ -63,4 +69,6 @@ project "AmpStudio"
 		optimize "on"
 
 	filter "files:../vendor/imnodes/**.cpp"
-	flags {"NoPCH"}
+		flags {"NoPCH"}
+
+	

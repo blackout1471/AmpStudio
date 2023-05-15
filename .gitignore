@@ -353,6 +353,7 @@ MigrationBackup/
 Bin/
 Bin-int/
 *.wav
+!Resources/**
 
 # project files
 *.sln
