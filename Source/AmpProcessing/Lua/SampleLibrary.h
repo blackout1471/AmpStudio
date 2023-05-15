@@ -23,6 +23,7 @@ namespace AmpProcessing {
 
 		private:
 			static int SampleNewIndex(lua_State* L);
+			static int SampleIndex(lua_State* L);
 			static int SampleLength(lua_State* L);
 			static void SampleRegister(lua_State* L);
 		
