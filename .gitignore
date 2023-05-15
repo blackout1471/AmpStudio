@@ -360,6 +360,3 @@ Bin-int/
 **.csproj
 **.vcxproj
 **.vcxproj.filters
-
-# Ignore submodules
-Vendor/FFTConvolver
