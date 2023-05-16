@@ -357,5 +357,6 @@ Bin-int/
 
 # project files
 *.sln
-*.csproj
-**.vcxproj*
+**.csproj
+**.vcxproj
+**.vcxproj.filters

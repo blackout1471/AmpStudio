@@ -4,6 +4,7 @@
 #include "Lua/LuaFile.h"
 #include "Lua/EffectParameterLibrary.h"
 #include "Lua/SampleLibrary.h"
+#include "Lua/MetaDataLibrary.h"
 
 namespace AmpProcessing {
 	namespace Effects {
@@ -24,6 +25,7 @@ namespace AmpProcessing {
 			const Lua::LuaFile* m_LuaFile;
 			Lua::EffectParameterLibrary m_EffectParameterLibrary;
 			Lua::SampleLibrary m_SampleLibrary;
+			Lua::MetaDataLibrary m_MetaDataLibrary;
 		private:
 			const char* c_OnInitFunctionName = "OnInit";
 			const char* c_SampleReadyFunctionName = "OnReadySample";

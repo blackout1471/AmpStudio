@@ -5,7 +5,7 @@ namespace AmpProcessing {
 	namespace Effects {
 		class AtanDistortion : public IEffectProcessor {
 		public:
-			AtanDistortion() : IEffectProcessor("Atan Distortion"), 
+			AtanDistortion() : IEffectProcessor("Atan Distortion", EffectCategory::Distortion), 
 				m_Drive(AddParameter(Controls::EffectParameter{"Drive", 1.0f, 0.f, 1.f})),
 				m_Range(AddParameter(Controls::EffectParameter{"Range", 3000.0f, 0.f, 300.f})),
 				m_Volume(AddParameter(Controls::EffectParameter{ "Volume", 1.0f, 0.f, 0.7f })),
@@ -21,7 +21,7 @@ namespace AmpProcessing {
 
 					sample[i] *= m_Drive->Value * m_Range->Value;
 
-					sample[i] = (((2.f / M_PI) * atan(sample[i]) * m_Blend->Value) + (cleanValue * (1.f - m_Blend->Value)) / 2.f) * m_Volume->Value;
+					sample[i] = (((2.f / AMPSTUDIO_PI) * atan(sample[i]) * m_Blend->Value) + (cleanValue * (1.f - m_Blend->Value)) / 2.f) * m_Volume->Value;
 				}
 			};
 		private:

@@ -1,8 +1,9 @@
 #pragma once
 #include <vector>
 #include "Controls/EffectParameter.h"
+#include "EffectProcessorMetaData.h"
 
-#define M_PI 3.14159274101257324219f
+#define AMPSTUDIO_PI 3.14159274101257324219f
 
 namespace AmpProcessing {
 	namespace Effects {
@@ -11,8 +12,10 @@ namespace AmpProcessing {
 		/// </summary>
 		class IEffectProcessor {
 		public:
-			IEffectProcessor(const std::string& name) : m_Parameters(), m_Name(name), m_CanProcess(true) {};
-			~IEffectProcessor() {};
+			IEffectProcessor(const std::string& name, const EffectCategory category = EffectCategory::Unknown) : m_Parameters(), m_CanProcess(true), 
+				m_MetaData({ name, category }) {};
+
+			virtual ~IEffectProcessor() {};
 
 			/// <summary>
 			/// Callback method for when a sample has to be processed.
@@ -29,7 +32,10 @@ namespace AmpProcessing {
 			inline const bool GetCanProcess() const { return m_CanProcess; }
 
 			/// <returns>The name of the effect processor.</returns>
-			inline const std::string& GetName() const { return m_Name; }
+			inline const std::string& GetName() const { return m_MetaData.Name; }
+
+			/// <returns>The category of the effect</returns>
+			inline const EffectCategory GetCategory() const { return m_MetaData.Category; }
 
 			/// <returns>The parameters which the effect processor is currently using.</returns>
 			inline std::vector<std::shared_ptr<Controls::EffectParameter>>& GetParameters() { return m_Parameters; }
@@ -54,9 +60,14 @@ namespace AmpProcessing {
 				m_CanProcess = value;
 			};
 
+			/// <summary>
+			/// Getter for meta data, so it can be changed runtime.
+			/// </summary>
+			inline EffectProcessorMetaData& GetMetaData() { return m_MetaData; };
+
 		private:
 			std::vector<std::shared_ptr<Controls::EffectParameter>> m_Parameters;
-			std::string m_Name;
+			EffectProcessorMetaData m_MetaData;
 			bool m_CanProcess;
 		};
 	}

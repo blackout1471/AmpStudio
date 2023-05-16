@@ -8,6 +8,7 @@ namespace AmpProcessing {
 		const luaL_Reg SampleLibrary::s_SampleMetaTable[] = {
 			{"__len", SampleLibrary::SampleLength},
 			{"__newindex", SampleLibrary::SampleNewIndex},
+			{"__index", SampleLibrary::SampleIndex},
 			{nullptr, nullptr}
 		};
 
@@ -44,15 +45,25 @@ namespace AmpProcessing {
 
 		int SampleLibrary::SampleNewIndex(lua_State* L)
 		{
-			auto* userdata = static_cast<std::vector<float>*>(lua_touserdata(L, -3));
+			auto* userdata = static_cast<SampleUserdata*>(lua_touserdata(L, -3));
 
 			int key = lua_tointeger(L, -2);
 
 			float value = lua_tonumber(L, -1);
 
-			(*userdata)[key - 1] = value;
+			(*userdata->Data)[key - 1] = value;
 
 			return 0;
+		}
+
+		int SampleLibrary::SampleIndex(lua_State* L)
+		{
+			auto* userdata = static_cast<SampleUserdata*>(lua_touserdata(L, -2));
+			int key = lua_tointeger(L, -1);
+
+			lua_pushnumber(L, (*userdata->Data)[key - 1]);
+
+			return 1;
 		}
 	}
 }
