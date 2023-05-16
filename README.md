@@ -59,7 +59,7 @@ end
 
 function OnReadySample(sample)
     gain = parameter.getValue(knob) -- Get effect parameter gain value
-    for i=0,#sample-1 do -- Loop samples
+    for i=1,#sample do -- Loop samples, the range is 1 -> sample length
         sample[i] = sample[i] * gain -- Set every sample multiplied by gain
     end
 end
