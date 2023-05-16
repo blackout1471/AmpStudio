@@ -10,7 +10,7 @@
 #include "Utility/AudioUtility.h"
 
 namespace AmpProcessing {
-	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::DirectSoundDebugDevice>()),
+	AudioEngine::AudioEngine() : m_AudioDevice(std::make_unique<Devices::AsioAudioDevice>()),
 		m_EffectChainSystem(std::make_unique<Systems::EffectChainSystem>()),
 		m_FileWatcher(std::make_unique<Systems::FileWatcherSystem>("Plugins")),
 		m_LuaSystem(std::make_unique<Systems::LuaSystem>()), 
@@ -50,9 +50,22 @@ namespace AmpProcessing {
 
 	bool AudioEngine::SetNewDevice(const std::string& name)
 	{
+		auto selectedName = name;
 		m_AudioDevice.reset();
 		m_AudioDevice = std::make_unique<Devices::AsioAudioDevice>();
-		SetupDevice(name);
+		if (selectedName == "")
+			selectedName = m_AudioDevice->GetDeviceNames().front();
+
+		SetupDevice(selectedName);
+
+		return true;
+	}
+
+	bool AudioEngine::SetDebugDevice()
+	{
+		m_AudioDevice.reset();
+		m_AudioDevice = std::make_unique<Devices::DirectSoundDebugDevice>();
+		SetupDevice("");
 
 		return true;
 	}

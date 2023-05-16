@@ -8,7 +8,8 @@ namespace AmpStudio {
 		public:
 			AudioControlView() : Application::SubWindow({ "Audio control" }), m_CurrentInputValue(0), m_CurrentOutputValue(0),
 				m_CurrentDbInputValue(-60), m_CurrentDbOutputValue(-60), m_DeviceNames(), m_CurrentDeviceIndex(0), m_CurrentBufferSizeIndex(0),
-				m_BufferSizes({ "16", "32", "64", "128", "256", "512"}), m_CurrentSampleRateIndex(0), m_SampleRates({ "44100", "48000"})
+				m_BufferSizes({ "16", "32", "64", "128", "256", "512"}), m_CurrentSampleRateIndex(0), m_SampleRates({ "44100", "48000"}),
+				m_DebugDevice(false)
 			{}
 			~AudioControlView() {};
 
@@ -84,6 +85,20 @@ namespace AmpStudio {
 				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Audio device");
 
+				// TODO: Refactor this.
+				ImGui::SameLine();
+				if (ImGui::Checkbox("Debug device", &m_DebugDevice))
+				{
+					if (m_DebugDevice)
+						m_AudioEngine->SetDebugDevice();
+					else
+						m_AudioEngine->SetNewDevice("");
+
+					m_DeviceNames = m_AudioEngine->GetAvailableDevices();
+
+					const auto& details = m_AudioEngine->GetDeviceDetails();
+				}
+
 				ImGui::PushItemWidth(-FLT_MIN);
 
 				if (ImGui::Combo("##device_names", &m_CurrentDeviceIndex, &StringGetter, &m_DeviceNames, m_DeviceNames.size()))
@@ -145,6 +160,8 @@ namespace AmpStudio {
 
 			int m_CurrentOutputValue;
 			float m_CurrentDbOutputValue;
+
+			bool m_DebugDevice;
 
 			float m_DeltaTime = 0.f;
 		};
