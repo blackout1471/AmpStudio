@@ -24,10 +24,10 @@ namespace AmpProcessing {
 
 		void EffectParameterLibrary::OpenLibs(lua_State* L, void* effectProcessor) const
 		{
-			luaL_newmetatable(L, "parameter");
+			luaL_newmetatable(L, s_MetaTableName.c_str());
 			lua_pushlightuserdata(L, effectProcessor);
 			luaL_setfuncs(L, s_MetaTable, 1); // TODO:: nups are hardcoded, maybe find a way to not :)
-			lua_setglobal(L, "parameter");
+			lua_setglobal(L, s_MetaTableName.c_str());
 		}
 
 		int EffectParameterLibrary::NewParameter(lua_State* L) {

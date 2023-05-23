@@ -5,6 +5,7 @@
 #include "Lua/EffectParameterLibrary.h"
 #include "Lua/SampleLibrary.h"
 #include "Lua/MetaDataLibrary.h"
+#include "Lua/SampleConvolverLibrary.h"
 
 namespace AmpProcessing {
 	namespace Effects {
@@ -15,7 +16,6 @@ namespace AmpProcessing {
 			~LuaEffectProcessor();
 
 			virtual void Process(std::vector<float>& sample) override;
-			
 
 		private:
 			void ValidateFile();
@@ -26,6 +26,8 @@ namespace AmpProcessing {
 			Lua::EffectParameterLibrary m_EffectParameterLibrary;
 			Lua::SampleLibrary m_SampleLibrary;
 			Lua::MetaDataLibrary m_MetaDataLibrary;
+			Lua::SampleConvolverLibrary m_SampleConvolverLibrary;
+
 		private:
 			const char* c_OnInitFunctionName = "OnInit";
 			const char* c_SampleReadyFunctionName = "OnReadySample";

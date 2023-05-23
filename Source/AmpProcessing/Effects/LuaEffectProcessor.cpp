@@ -6,7 +6,7 @@ namespace AmpProcessing {
 
 
 		LuaEffectProcessor::LuaEffectProcessor(const Lua::LuaFile* luaFile) : IEffectProcessor(luaFile->GetFileName()),
-			m_LuaFile(luaFile), m_EffectParameterLibrary(), m_SampleLibrary(), m_MetaDataLibrary()
+			m_LuaFile(luaFile), m_EffectParameterLibrary(), m_SampleLibrary(), m_MetaDataLibrary(), m_SampleConvolverLibrary()
 		{
 			ValidateFile();
 
@@ -15,6 +15,7 @@ namespace AmpProcessing {
 			m_SampleLibrary.OpenLibs(L);
 			m_EffectParameterLibrary.OpenLibs(L, this);
 			m_MetaDataLibrary.OpenLibs(L);
+			m_SampleConvolverLibrary.OpenLibs(L);
 
 			InitializeEffect();
 		}
