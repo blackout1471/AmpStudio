@@ -31,9 +31,10 @@ namespace AmpProcessing {
 		m_EffectChainSystem->AddAvailableEffect<Effects::AtanDistortion>();
 		m_EffectChainSystem->AddAvailableEffect<Effects::MesaCabinet>();
 
-		auto device = m_AudioDevice.get();
+		/*auto device = m_AudioDevice.get();
 		auto names = m_AudioDevice->GetDeviceNames();
-		SetupDevice(names.front());
+		SetupDevice(names.front());*/
+		SetDebugDevice();
 	}
 
 	void AudioEngine::SetupDevice(const std::string& name)
