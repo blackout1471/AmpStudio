@@ -1,26 +1,24 @@
-processDir = "../Source/AmpProcessing/"
+wrapperDir = "../Source/AmpProcessingWrapper/"
 
-project "AmpProcessing"
-	location(processDir)
-	kind "StaticLib"
+project "AmpProcessingWrapper"
+	location(wrapperDir)
+	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
 
 	targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "amppch.h"
-	pchsource(processDir .. "amppch.cpp")
-
 	files
 	{
-		processDir .. "**.h",
-		processDir .. "**.cpp"
+		wrapperDir .. "**.h",
+		wrapperDir .. "**.cpp"
 	}
 
 	includedirs
 	{
-		processDir,
+		wrapperDir,
+		"%{IncludeDir.Process}",
 		"%{IncludeDir.Asio}",
 		"%{IncludeDir.FFTConvolver}",
 		"%{IncludeDir.SPDLOG}",
@@ -29,6 +27,7 @@ project "AmpProcessing"
 	
 	links
 	{
+		"AmpProcessing",
 		"Asio",
 		"FFTConvolver",
 		"Lua"

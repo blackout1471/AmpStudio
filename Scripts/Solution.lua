@@ -28,6 +28,7 @@ IncludeDir["Process"] = "../Source/AmpProcessing/"
 IncludeDir["Vendor"] = "../Vendor/"
 
 include "AmpProcessing.lua"
+include "AmpProcessingWrapper.lua"
 
 group "Dependencies"
 	include "Asio.lua"
