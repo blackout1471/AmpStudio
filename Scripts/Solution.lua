@@ -21,8 +21,6 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["Asio"] = "../Vendor/Asio/Include"
 IncludeDir["FFTConvolver"] = "../Vendor/FFTConvolver"
-IncludeDir["ImGui"] = "../Vendor/imgui/"
-IncludeDir["ImKnobs"] = "../Vendor/imgui-knobs/"
 
 IncludeDir["GTest"] = "../Vendor/googletest/googletest/"
 IncludeDir["SPDLOG"] = "../Vendor/spdlog/include"
@@ -34,7 +32,6 @@ include "AmpProcessing.lua"
 group "Dependencies"
 	include "Asio.lua"
 	include "FFTConvolver.lua"
-	include "ImGui.lua"
 	include "Lua.lua"
 group ""
 
