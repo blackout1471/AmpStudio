@@ -7,8 +7,12 @@ Once you've defined your Lua plugin, you can load it into AmpStudio by placing i
 
 AmpStudio is still under development and is not yet a stable release. As such, the software may contain bugs, performance issues, or other unexpected behavior.
 
+The server side of the application functions as the audio engine, responsible for processing and managing audio signals.
+This audio engine is accessible through HTTP, allowing the client interface to communicate with and control the server's audio engine. 
+Users can connect their instruments to the server audio engine, and the client interface provides a user-friendly means to configure and interact with the audio engine remotely.
+
 ## Images
-![Alt text](git-resources/preview-1.png "Connected device and plugin window")
+[TODO]
 
 ## Getting started
 Get source by ```git clone --recursive https://github.com/blackout1471/AmpStudio.git```
@@ -71,7 +75,6 @@ The plan is to get it to build for Windows, Linux, ARM and mac os.
 
 ## Libraries
 * Lua
-* ImGui
 * Asio (Window & Mac OS)
 * Spdlog
 * FFTConvolver -- plans to replace with own.
