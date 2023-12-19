@@ -7,6 +7,7 @@
 #include <queue>
 #include <Utility/FilterUtility.h>
 #include <DSP/Convolution/FFTSampleConvolver.h>
+#include <AudioEngine.h>
 
 #include <dsound.h>
 
@@ -109,7 +110,9 @@ void DoRealTimeConvolution() {
 }
 
 void DoDebugDeviceDemo() {
-	
+	auto engine = AmpProcessing::AudioEngine();
+	engine.Init();
+	auto details = engine.GetDeviceDetails();
 }
 
 int main() {

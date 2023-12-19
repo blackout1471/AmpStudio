@@ -35,3 +35,24 @@ API void SetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine, int dblevel
 {
 	return engine->SetDesiredOutputDbLevel(dblevel);
 }
+
+API VectorStringResult GetAvailableDevices(AmpProcessing::AudioEngine* engine)
+{
+	return ConvertToVectorString(engine->GetAvailableDevices());
+}
+
+API DeviceDetails GetDeviceDetails(AmpProcessing::AudioEngine* engine)
+{
+	auto& details = engine->GetDeviceDetails();
+
+	return {
+		ConvertToVectorString(details.name),
+		details.inputChannels,
+		details.outputChannels,
+		details.minBufferSize,
+		details.maxBufferSize,
+		details.prefferedBufferSize,
+		details.granularityBuffer,
+		details.sampleRate
+	};
+}

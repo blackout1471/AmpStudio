@@ -23,13 +23,15 @@ project "Sandbox"
 		"%{IncludeDir.Asio}",
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.FFTConvolver}",
+		"%{IncludeDir.Vendor}"
 	}
 	
 	links
 	{
 		"Asio",
 		"FFTConvolver",
-		"AmpProcessing"
+		"AmpProcessing",
+		"Lua"
 	}
 
 	filter "system:windows"
