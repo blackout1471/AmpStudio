@@ -6,7 +6,7 @@ project "AmpProcessingWrapper"
 	language "C++"
 	cppdialect "C++17"
 
-	targetdir ("../bin/" .. outputdir .. "/%{prj.name}")
+	targetdir ("../bin/" .. outputdir .. "/%{ProjectNames.AmpApi}")
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files

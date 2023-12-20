@@ -1,7 +1,7 @@
 workspace "AmpStudio"
 	location "..\\"
 	architecture "x86_64"
-	startproject "Sandbox"
+	startproject "AmpApi"
 
 	configurations
 	{
@@ -17,17 +17,23 @@ workspace "AmpStudio"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
--- Include directories relative to root folder (solution directory)
-IncludeDir = {}
-IncludeDir["Asio"] = "../Vendor/Asio/Include"
-IncludeDir["FFTConvolver"] = "../Vendor/FFTConvolver"
+ProjectNames = {
+	AmpProcessing = "AmpProcessing",
+	AmpProcessingWrapper = "AmpProcessingWrapper",
+	AmpApi = "AmpApi"
+}
 
-IncludeDir["GTest"] = "../Vendor/googletest/googletest/"
-IncludeDir["SPDLOG"] = "../Vendor/spdlog/include"
-IncludeDir["Process"] = "../Source/AmpProcessing/"
-IncludeDir["Vendor"] = "../Vendor/"
+IncludeDir = {
+	Asio = "../Vendor/Asio/Include",
+	FFTConvolver = "../Vendor/FFTConvolver",
+	GTest = "../Vendor/googletest/googletest/",
+	SPDLOG = "../Vendor/spdlog/include",
+	Process = "../Source/AmpProcessing/",
+	Vendor = "../Vendor/"
+}
 
 include "AmpProcessing.lua"
+include "AmpApi.lua"
 include "AmpProcessingWrapper.lua"
 
 group "Dependencies"
