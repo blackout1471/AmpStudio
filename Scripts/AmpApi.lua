@@ -59,5 +59,6 @@ project (ProjectNames.AmpApi)
 		{ 
 			"Swashbuckle.AspNetCore.Swagger:6.5.0",
 			"Swashbuckle.AspNetCore.SwaggerGen:6.5.0",
-			"Swashbuckle.AspNetCore.SwaggerUI:6.5.0"
+			"Swashbuckle.AspNetCore.SwaggerUI:6.5.0",
+			"Asp.Versioning.Mvc:8.0.0"
 		}

@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using AmpApi.Models;
 
-namespace AmpApi
+namespace AmpApi.Wrappers;
+
+public interface IAudioEngineWrapper
 {
-    public interface IAudioEngineWrapper
-    {
-        List<string> GetAvailableDevices();
-        AudioEngineWrapper.DeviceDetails GetDeviceDetails();
-        float GetInputDbLevel();
-        float GetOutputDbLevel();
-        void Init();
-        void SetInputDbLevel(int level);
-        void SetOutputDbLevel(int level);
-    }
+    List<string> GetAvailableDevices();
+    DeviceDetails GetDeviceDetails();
+    float GetInputDbLevel();
+    float GetOutputDbLevel();
+    void Init();
+    void SetDesiredInputDbLevel(int level);
+    void SetDesiredOutputDbLevel(int level);
+    int GetDesiredInputDbLevel();
+    int GetDesiredOutputDbLevel();
 }

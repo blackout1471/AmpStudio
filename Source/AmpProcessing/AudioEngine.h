@@ -25,6 +25,9 @@ namespace AmpProcessing {
 		inline void SetDesiredInputDbLevel(int desiredLevel) { m_DesiredInputDbLevel = desiredLevel; }
 		inline void SetDesiredOutputDbLevel(int desiredLevel) { m_DesiredOutputDbLevel = desiredLevel; }
 
+		inline const int GetDesiredInputDbLevel() { return m_DesiredInputDbLevel; }
+		inline const int GetDesiredOutputDbLevel() { return m_DesiredOutputDbLevel; }
+
 		inline const std::vector<std::string> GetAvailableDevices() const { return m_AudioDevice->GetDeviceNames(); }
 		inline const Devices::DeviceDetails& GetDeviceDetails() const { return m_AudioDevice->GetDetails(); }
 

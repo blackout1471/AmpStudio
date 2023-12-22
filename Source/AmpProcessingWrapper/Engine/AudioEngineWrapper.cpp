@@ -36,6 +36,16 @@ API void SetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine, int dblevel
 	return engine->SetDesiredOutputDbLevel(dblevel);
 }
 
+API float GetDesiredInputDbLevel(AmpProcessing::AudioEngine* engine)
+{
+	return engine->GetDesiredInputDbLevel();
+}
+
+API float GetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine)
+{
+	return engine->GetDesiredOutputDbLevel();
+}
+
 API VectorStringResult GetAvailableDevices(AmpProcessing::AudioEngine* engine)
 {
 	return ConvertToVectorString(engine->GetAvailableDevices());

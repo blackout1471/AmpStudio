@@ -11,8 +11,12 @@ extern "C" {
 
 	API float GetInputDbLevel(AmpProcessing::AudioEngine* engine);
 	API float GetOutputDbLevel(AmpProcessing::AudioEngine* engine);
+
 	API void SetDesiredInputDbLevel(AmpProcessing::AudioEngine* engine, int dblevel);
 	API void SetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine, int dblevel);
+
+	API float GetDesiredInputDbLevel(AmpProcessing::AudioEngine* engine);
+	API float GetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine);
 
 	API VectorStringResult GetAvailableDevices(AmpProcessing::AudioEngine* engine);
 	
