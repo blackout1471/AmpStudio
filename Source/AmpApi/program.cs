@@ -1,11 +1,12 @@
 using AmpApi.Middlewares;
+using AmpProcessingWrapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var engineTest = new ManagedAudioEngine();
+var engineTest = new AudioEngineWrapper();
 engineTest.Init();
 
 builder.Services.AddSingleton(engineTest);

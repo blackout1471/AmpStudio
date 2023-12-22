@@ -1,4 +1,4 @@
-﻿using AmpApi.Wrappers;
+﻿using AmpProcessingWrapper;
 using Asp.Versioning;
 
 namespace AmpApi.Controllers;
@@ -7,21 +7,21 @@ namespace AmpApi.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class DevicesController(IAudioEngineWrapper audioEngineWrapper) : ControllerBase
+public class DevicesController(AudioEngineWrapper audioEngineWrapper) : ControllerBase
 {
-    private readonly IAudioEngineWrapper _audioEngineWrapper = audioEngineWrapper;
+    private readonly AudioEngineWrapper _audioEngineWrapper = audioEngineWrapper;
 
     [HttpGet]
-    public ActionResult GetDevicesAvailable()
+    public ActionResult<IEnumerable<string>> GetDevicesAvailable()
     {
         return Ok(_audioEngineWrapper.GetAvailableDevices());
     }
 
-    [HttpGet("current")]
-    public ActionResult GetDeviceDetails()
-    {
-        return Ok(_audioEngineWrapper.GetDeviceDetails());
-    }
+    //[HttpGet("current")]
+    //public ActionResult GetDeviceDetails()
+    //{
+    //    return Ok(_audioEngineWrapper.GetDeviceDetails());
+    //}
 
 
 }

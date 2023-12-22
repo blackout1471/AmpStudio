@@ -1,29 +1,38 @@
 #pragma once
-#include "AudioEngine.h"
+#include <AudioEngine.h>
 
-#include "Vectors/VectorStringResult.h"
-#include "Vectors/VectorEffectProcessor.h"
-#include "Dtos/DeviceDetails.h"
+namespace AmpProcessingWrapper {
+	public ref class AudioEngineWrapper
+	{
+	private:
+		AmpProcessing::AudioEngine* m_NativeAudioEngine;
 
-extern "C" {
-	API AmpProcessing::AudioEngine* CreateAudioEngine();
-	API void DestroyAudioEngine(AmpProcessing::AudioEngine* engine);
-	API void InitializeAudioEngine(AmpProcessing::AudioEngine* engine);
+	public:
+		AudioEngineWrapper();
+		~AudioEngineWrapper();
+		!AudioEngineWrapper();
 
-	API float GetInputDbLevel(AmpProcessing::AudioEngine* engine);
-	API float GetOutputDbLevel(AmpProcessing::AudioEngine* engine);
+		void Init();
 
-	API void SetDesiredInputDbLevel(AmpProcessing::AudioEngine* engine, int dblevel);
-	API void SetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine, int dblevel);
+		property float InputDbLevel {
+			float get();
+		}
 
-	API float GetDesiredInputDbLevel(AmpProcessing::AudioEngine* engine);
-	API float GetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine);
+		property float OutputDbLevel {
+			float get();
+		}
 
-	API bool SetSampleRate(AmpProcessing::AudioEngine* engine, uint32_t sampleRate);
-	API bool SetBufferSize(AmpProcessing::AudioEngine* engine, uint32_t bufferSize);
+		property float DesiredInputDbLevel {
+			float get();
+		}
 
-	API VectorStringResult GetAvailableDevices(AmpProcessing::AudioEngine* engine);
-	API DeviceDetails GetDeviceDetails(AmpProcessing::AudioEngine* engine);
+		property float DesiredOutputDbLevel {
+			float get();
+		}
 
-	API VectorEffectProcessor GetAvailableEffects(AmpProcessing::AudioEngine* engine);
+		void SetDesiredInputDbLevel(int desiredLevel);
+		void SetDesiredOutputDbLevel(int desiredLevel);
+
+		System::Collections::Generic::List<System::String^>^ GetAvailableDevices();
+	};
 }

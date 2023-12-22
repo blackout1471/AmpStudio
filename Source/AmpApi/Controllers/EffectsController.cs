@@ -1,4 +1,4 @@
-﻿using AmpApi.Wrappers;
+﻿using AmpProcessingWrapper;
 using Asp.Versioning;
 
 namespace AmpApi.Controllers;
@@ -6,16 +6,16 @@ namespace AmpApi.Controllers;
 [ApiController]
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class EffectsController(IAudioEngineWrapper audioEngineWrapper) : ControllerBase
+public class EffectsController(AudioEngineWrapper audioEngineWrapper) : ControllerBase
 {
 
-    private readonly IAudioEngineWrapper _audioEngineWrapper = audioEngineWrapper;
+    private readonly AudioEngineWrapper _audioEngineWrapper = audioEngineWrapper;
 
-    [HttpGet("available")]
-    public ActionResult<IEnumerable<string>> GetEffectsAvailable()
-    {
-        var effects = _audioEngineWrapper.GetAvailableEffects();
+    //[HttpGet("available")]
+    //public ActionResult<IEnumerable<string>> GetEffectsAvailable()
+    //{
+    //    var effects = _audioEngineWrapper.GetAvailableEffects();
 
-        return Ok();
-    }
+    //    return Ok();
+    //}
 }

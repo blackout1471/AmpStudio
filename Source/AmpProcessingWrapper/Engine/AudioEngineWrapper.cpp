@@ -1,94 +1,73 @@
-#include "amppch.h"
 #include "AudioEngineWrapper.h"
+#include <msclr/marshal_cppstd.h>
+#include <string>
 
-API AmpProcessing::AudioEngine* CreateAudioEngine()
-{
-	return new AmpProcessing::AudioEngine();
-}
+namespace AmpProcessingWrapper {
 
-void DestroyAudioEngine(AmpProcessing::AudioEngine* engine)
-{
-	delete engine;
-}
+	AudioEngineWrapper::AudioEngineWrapper()
+	{
+		m_NativeAudioEngine = new AmpProcessing::AudioEngine();
+	}
 
-void InitializeAudioEngine(AmpProcessing::AudioEngine* engine)
-{
-	engine->Init();
-}
+	AudioEngineWrapper::~AudioEngineWrapper()
+	{
+		delete m_NativeAudioEngine;
+	}
 
-API float GetInputDbLevel(AmpProcessing::AudioEngine* engine)
-{
-	return engine->GetInputDbLevel();
-}
+	AudioEngineWrapper::!AudioEngineWrapper()
+	{
+		delete m_NativeAudioEngine;
+	}
 
-API float GetOutputDbLevel(AmpProcessing::AudioEngine* engine)
-{
-	return engine->GetOutputDbLevel();
-}
+	void AudioEngineWrapper::Init()
+	{
+		m_NativeAudioEngine->Init();
+	}
 
-API void SetDesiredInputDbLevel(AmpProcessing::AudioEngine* engine, int dblevel)
-{
-	return engine->SetDesiredInputDbLevel(dblevel);
-}
+	void AudioEngineWrapper::SetDesiredInputDbLevel(int desiredLevel)
+	{
+		m_NativeAudioEngine->SetDesiredInputDbLevel(desiredLevel);
+	}
 
-API void SetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine, int dblevel)
-{
-	return engine->SetDesiredOutputDbLevel(dblevel);
-}
+	void AudioEngineWrapper::SetDesiredOutputDbLevel(int desiredLevel)
+	{
+		m_NativeAudioEngine->SetDesiredOutputDbLevel(desiredLevel);
+	}
 
-API float GetDesiredInputDbLevel(AmpProcessing::AudioEngine* engine)
-{
-	return engine->GetDesiredInputDbLevel();
-}
+	System::Collections::Generic::List<System::String^>^ AudioEngineWrapper::GetAvailableDevices()
+	{
+		auto cliList = gcnew System::Collections::Generic::List<System::String^>();
 
-API float GetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine)
-{
-	return engine->GetDesiredOutputDbLevel();
-}
+		auto& devices = m_NativeAudioEngine->GetAvailableDevices();
 
-API bool SetSampleRate(AmpProcessing::AudioEngine* engine, uint32_t sampleRate)
-{
-	return engine->SetSampleRate(sampleRate);
-}
+		for each (const auto& device in devices)
+		{
+			auto cliString = msclr::interop::marshal_as<System::String^>(device);
 
-API bool SetBufferSize(AmpProcessing::AudioEngine* engine, uint32_t bufferSize)
-{
-	return engine->SetBufferSize(bufferSize);
-}
+			cliList->Add(cliString);
+		}
 
-API VectorStringResult GetAvailableDevices(AmpProcessing::AudioEngine* engine)
-{
-	return ConvertToVectorString(engine->GetAvailableDevices());
-}
+		return cliList;
+	}
 
-API DeviceDetails GetDeviceDetails(AmpProcessing::AudioEngine* engine)
-{
-	auto& details = engine->GetDeviceDetails();
+	float AudioEngineWrapper::InputDbLevel::get()
+	{
+		return m_NativeAudioEngine->GetInputDbLevel();
+	}
 
-	return {
-		ConvertToVectorString(details.name),
-		details.inputChannels,
-		details.outputChannels,
-		details.minBufferSize,
-		details.maxBufferSize,
-		details.prefferedBufferSize,
-		details.granularityBuffer,
-		details.sampleRate
-	};
-}
+	float AudioEngineWrapper::OutputDbLevel::get()
+	{
+		return m_NativeAudioEngine->GetOutputDbLevel();
+	}
 
-API VectorEffectProcessor GetAvailableEffects(AmpProcessing::AudioEngine* engine)
-{
-	auto& effects = engine->GetAvailableEffects();
+	float AudioEngineWrapper::DesiredInputDbLevel::get()
+	{
+		return m_NativeAudioEngine->GetDesiredInputDbLevel();
+	}
 
-	VectorEffectProcessor result{};
+	float AudioEngineWrapper::DesiredOutputDbLevel::get()
+	{
+		return m_NativeAudioEngine->GetDesiredOutputDbLevel();
+	}
 
-	result.count = static_cast<int>(effects.size());
-
-	result.effectProcessors = new AmpProcessing::Effects::IEffectProcessor* [result.count];
-
-	for (size_t i = 0; i < result.count; i++)
-		result.effectProcessors[i] = effects[i].get();
-
-	return result;
 }
