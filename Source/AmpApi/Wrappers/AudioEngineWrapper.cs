@@ -78,4 +78,15 @@ public partial class AudioEngineWrapper : IAudioEngineWrapper
     {
         return GetDesiredOutputDbLevel(enginePtr);
     }
+
+    public List<string> GetAvailableEffects()
+    {
+        var effects = GetAvailableEffects(enginePtr);
+
+
+
+        EffectProcessorsResultDto.FreeVectorEffectProcessor(effects);
+
+        return new List<string>();
+    }
 }

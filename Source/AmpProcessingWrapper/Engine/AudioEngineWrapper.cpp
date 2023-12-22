@@ -46,6 +46,16 @@ API float GetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine)
 	return engine->GetDesiredOutputDbLevel();
 }
 
+API bool SetSampleRate(AmpProcessing::AudioEngine* engine, uint32_t sampleRate)
+{
+	return engine->SetSampleRate(sampleRate);
+}
+
+API bool SetBufferSize(AmpProcessing::AudioEngine* engine, uint32_t bufferSize)
+{
+	return engine->SetBufferSize(bufferSize);
+}
+
 API VectorStringResult GetAvailableDevices(AmpProcessing::AudioEngine* engine)
 {
 	return ConvertToVectorString(engine->GetAvailableDevices());
@@ -65,4 +75,20 @@ API DeviceDetails GetDeviceDetails(AmpProcessing::AudioEngine* engine)
 		details.granularityBuffer,
 		details.sampleRate
 	};
+}
+
+API VectorEffectProcessor GetAvailableEffects(AmpProcessing::AudioEngine* engine)
+{
+	auto& effects = engine->GetAvailableEffects();
+
+	VectorEffectProcessor result{};
+
+	result.count = static_cast<int>(effects.size());
+
+	result.effectProcessors = new AmpProcessing::Effects::IEffectProcessor* [result.count];
+
+	for (size_t i = 0; i < result.count; i++)
+		result.effectProcessors[i] = effects[i].get();
+
+	return result;
 }

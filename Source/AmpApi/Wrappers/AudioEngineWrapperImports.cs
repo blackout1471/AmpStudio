@@ -30,4 +30,6 @@ public partial class AudioEngineWrapper
     private static extern void FreeVectorStringResult(StringVectorResult result);
     [DllImport(DLL_PATH)]
     private static extern DeviceDetailsDto GetDeviceDetails(nint engine);
+    [DllImport(DLL_PATH)]
+    private static extern EffectProcessorsResultDto GetAvailableEffects(nint engine);
 }

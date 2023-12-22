@@ -13,4 +13,5 @@ public interface IAudioEngineWrapper
     void SetDesiredOutputDbLevel(int level);
     int GetDesiredInputDbLevel();
     int GetDesiredOutputDbLevel();
+    List<string> GetAvailableEffects();
 }

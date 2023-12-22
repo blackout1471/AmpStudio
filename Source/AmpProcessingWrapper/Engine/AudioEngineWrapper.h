@@ -2,7 +2,8 @@
 #include "AudioEngine.h"
 
 #include "Vectors/VectorStringResult.h"
-#include <Dtos/DeviceDetails.h>
+#include "Vectors/VectorEffectProcessor.h"
+#include "Dtos/DeviceDetails.h"
 
 extern "C" {
 	API AmpProcessing::AudioEngine* CreateAudioEngine();
@@ -18,7 +19,11 @@ extern "C" {
 	API float GetDesiredInputDbLevel(AmpProcessing::AudioEngine* engine);
 	API float GetDesiredOutputDbLevel(AmpProcessing::AudioEngine* engine);
 
+	API bool SetSampleRate(AmpProcessing::AudioEngine* engine, uint32_t sampleRate);
+	API bool SetBufferSize(AmpProcessing::AudioEngine* engine, uint32_t bufferSize);
+
 	API VectorStringResult GetAvailableDevices(AmpProcessing::AudioEngine* engine);
-	
 	API DeviceDetails GetDeviceDetails(AmpProcessing::AudioEngine* engine);
+
+	API VectorEffectProcessor GetAvailableEffects(AmpProcessing::AudioEngine* engine);
 }
