@@ -34,6 +34,7 @@ project (ProjectNames.AmpApi)
    objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
 
    files { ampApiDir .. "**.cs" }
+   links { "AmpProcessingWrapper" }
 
    filter "system:windows"
 	systemversion "latest"

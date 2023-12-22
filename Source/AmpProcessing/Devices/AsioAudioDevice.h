@@ -5,6 +5,7 @@
 #include "DeviceDetails.h"
 #include "Converters/IAudioConverter.h"
 #include "IAudioDevice.h"
+#include <memory>
 
 namespace AmpProcessing {
 	namespace Devices {

@@ -1,5 +1,6 @@
 #pragma once
 #include "DeviceDetails.h"
+#include <functional>
 
 namespace AmpProcessing {
 	namespace Devices {

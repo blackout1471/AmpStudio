@@ -1,4 +1,5 @@
 #include "amppch.h"
+#include <Windows.h>
 #include "FileWatcherSystem.h"
 
 namespace AmpProcessing {

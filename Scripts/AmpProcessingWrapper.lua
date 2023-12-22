@@ -5,6 +5,7 @@ project "AmpProcessingWrapper"
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
+	clr "NetCore"
 
 	targetdir ("../bin/" .. outputdir .. "/%{ProjectNames.AmpApi}")
 	objdir ("../bin-int/" .. outputdir .. "/%{prj.name}")
@@ -35,7 +36,7 @@ project "AmpProcessingWrapper"
 
 	filter "system:windows"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "off"
 		
 	filter "configurations:Debug"
 		defines "_DEBUG"
