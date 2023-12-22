@@ -34,6 +34,16 @@ namespace AmpProcessingWrapper {
 		m_NativeAudioEngine->SetDesiredOutputDbLevel(desiredLevel);
 	}
 
+	bool AudioEngineWrapper::SetSampleRate(uint32_t sampleRate)
+	{
+		return m_NativeAudioEngine->SetSampleRate(sampleRate);
+	}
+
+	bool AudioEngineWrapper::SetBufferSize(uint32_t bufferSize)
+	{
+		return m_NativeAudioEngine->SetBufferSize(bufferSize);
+	}
+
 	System::Collections::Generic::List<System::String^>^ AudioEngineWrapper::GetAvailableDevices()
 	{
 		auto cliList = gcnew System::Collections::Generic::List<System::String^>();
@@ -46,6 +56,35 @@ namespace AmpProcessingWrapper {
 
 			cliList->Add(cliString);
 		}
+
+		return cliList;
+	}
+
+	DeviceDetailsWrapper^ AudioEngineWrapper::GetDeviceDetails()
+	{
+		const auto& nativeDetails = m_NativeAudioEngine->GetDeviceDetails();
+
+		DeviceDetailsWrapper^ managedDetails = gcnew DeviceDetailsWrapper();
+		managedDetails->Name = gcnew System::String(nativeDetails.name.c_str());
+		managedDetails->InputChannels = nativeDetails.inputChannels;
+		managedDetails->OutputChannels = nativeDetails.outputChannels;
+		managedDetails->MinBufferSize = nativeDetails.minBufferSize;
+		managedDetails->MaxBufferSize = nativeDetails.maxBufferSize;
+		managedDetails->PreferredBufferSize = nativeDetails.prefferedBufferSize;
+		managedDetails->GranularityBuffer = nativeDetails.granularityBuffer;
+		managedDetails->SampleRate = nativeDetails.sampleRate;
+
+		return managedDetails;
+	}
+
+	System::Collections::Generic::List<EffectProcessorWrapper^>^ AudioEngineWrapper::GetAvailableEffects()
+	{
+		auto cliList = gcnew System::Collections::Generic::List<EffectProcessorWrapper^>();
+
+		auto& effects = m_NativeAudioEngine->GetAvailableEffects();
+
+		for each (auto & effect in effects)
+			cliList->Add(gcnew EffectProcessorWrapper(effect.get()));
 
 		return cliList;
 	}

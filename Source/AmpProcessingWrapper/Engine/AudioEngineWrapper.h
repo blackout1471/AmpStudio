@@ -1,12 +1,11 @@
 #pragma once
 #include <AudioEngine.h>
+#include "DeviceDetailsWrapper.h"
+#include "EffectProcessorWrapper.h"
 
 namespace AmpProcessingWrapper {
 	public ref class AudioEngineWrapper
 	{
-	private:
-		AmpProcessing::AudioEngine* m_NativeAudioEngine;
-
 	public:
 		AudioEngineWrapper();
 		~AudioEngineWrapper();
@@ -33,6 +32,16 @@ namespace AmpProcessingWrapper {
 		void SetDesiredInputDbLevel(int desiredLevel);
 		void SetDesiredOutputDbLevel(int desiredLevel);
 
+		bool SetSampleRate(uint32_t sampleRate);
+		bool SetBufferSize(uint32_t bufferSize);
+
 		System::Collections::Generic::List<System::String^>^ GetAvailableDevices();
+
+		DeviceDetailsWrapper^ GetDeviceDetails();
+
+		System::Collections::Generic::List<EffectProcessorWrapper^>^ GetAvailableEffects();
+
+	private:
+		AmpProcessing::AudioEngine* m_NativeAudioEngine;
 	};
 }

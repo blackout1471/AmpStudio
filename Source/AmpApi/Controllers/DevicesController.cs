@@ -17,11 +17,21 @@ public class DevicesController(AudioEngineWrapper audioEngineWrapper) : Controll
         return Ok(_audioEngineWrapper.GetAvailableDevices());
     }
 
-    //[HttpGet("current")]
-    //public ActionResult GetDeviceDetails()
-    //{
-    //    return Ok(_audioEngineWrapper.GetDeviceDetails());
-    //}
+    [HttpGet("current")]
+    public ActionResult<DeviceDetailsWrapper> GetDeviceDetails()
+    {
+        return Ok(_audioEngineWrapper.GetDeviceDetails());
+    }
 
+    [HttpPost("samplerate")]
+    public ActionResult<bool> SetSampleRate([FromQuery] uint sampleRate)
+    {
+        return Ok(_audioEngineWrapper.SetSampleRate(sampleRate));
+    }
 
+    [HttpPost("buffersize")]
+    public ActionResult<bool> SetBufferSize([FromQuery] uint bufferSize)
+    {
+        return Ok(_audioEngineWrapper.SetBufferSize(bufferSize));
+    }
 }

@@ -11,11 +11,11 @@ public class EffectsController(AudioEngineWrapper audioEngineWrapper) : Controll
 
     private readonly AudioEngineWrapper _audioEngineWrapper = audioEngineWrapper;
 
-    //[HttpGet("available")]
-    //public ActionResult<IEnumerable<string>> GetEffectsAvailable()
-    //{
-    //    var effects = _audioEngineWrapper.GetAvailableEffects();
+    [HttpGet("available")]
+    public ActionResult<IEnumerable<EffectProcessorWrapper>> GetEffectsAvailable()
+    {
+        var effects = _audioEngineWrapper.GetAvailableEffects();
 
-    //    return Ok();
-    //}
+        return Ok(effects);
+    }
 }
